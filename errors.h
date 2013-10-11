@@ -1,4 +1,3 @@
-
 // Error kody
 #define E_OK 0
 #define E_LEX 1 // Chyba v programu v ramci lexikalni analyzy
@@ -13,6 +12,7 @@
 #define E_INTERN 99 // Interni chyba interpretu 
 #define E_WRONG_PARAM 20 // Spatny pocet parametru
 #define E_FILE 21 // Chyba v souboru, nejde otevrit apod.
+#define STR_CR_ERR 22 // Chyba pri alokaci stringu
 
 // Funkce pro obsluhu error kodu
 void print_error(int err_code);
