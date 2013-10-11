@@ -13,7 +13,7 @@ pridate tam:<br>
 [remote "origin"]<br>
 url = git@github.com:BigTony/ifj2013.git<br>
 fetch = +refs/heads/hvezdicka:refs/remotes/origin/hvezdicka<br>
-nevim proc tu ty hvezdicky tak mrdaji :D /* <br>
+nevim proc tu ty hvezdicky tak mrdaji :D * <br>
 
 pak by melo stacit uz jen dat $ git pull<br>
 a melo by to vse stahnout<br>
