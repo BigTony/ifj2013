@@ -1,7 +1,18 @@
+// Project interpret IFJ2013
+// Dev team:
+////////////////////////////////
+// Seidl Antonin  - xseidl01
+// Slunsky Tomas  - xsluns01
+// Skacel David   - xskace12
+// Skyva Petr     - xskyva02
+////////////////////////////////
+// interpret.c
+// 
+//
+
 /**
 * Hlavickovy soubor pro lexikalni analyzator
 */
-
 
 /**
 * Tabulka tokenu
@@ -39,10 +50,6 @@
 // Funkce
 int getToken();
 
-
-
-
-
 /**
 * Struktury
 */
@@ -53,7 +60,7 @@ union Unie{
 }tokenValue;
 
 typedef struct{
-	int id,
-	tokenValue value,
+	int id;
+	tokenValue value;
 }token;
 

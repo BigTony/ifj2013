@@ -9,3 +9,20 @@
 // ial.c
 // Iplementation sort and find functions
 //
+
+#include "ial.h"
+#include "errors.h"
+
+void tableInit(ProgramState *main){
+	tHashTbl *hash_table;
+	if((hash_table = malloc(sizeof(tHashTbl)))==NULL){
+		main->err_code = ALLOC_ERR;
+		return;
+	}
+	if((hash_table->tableItems = malloc(ALLOC*sizeof(item)))==NULL){
+		main->err_code = ALLOC_ERR;
+		return;
+	}
+	hash_table->size = ALLOC;
+	main->table = hash_table;
+}

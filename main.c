@@ -18,30 +18,35 @@
 #include "errors.h"
 
 
-int main(int argc,char** argv)
-{
-  FILE *source;
+
+int main(int argc,char** argv){
+  
+  ProgramState main;
+  main.err_code = 0;
+  main.table = NULL;
+  main.source = NULL;
+  // main.instruction = TODO
+
   // Testovani parametru
-  if (argc == 1 || argc > 2){
+  if (argc != 2){
   	print_error(E_WRONG_PARAM);
   	return E_WRONG_PARAM;
   }
   // Testovani otevreni souboru
-  if ((source = fopen(argv[1], "r")) == NULL){
+  if ((main.source = fopen(argv[1], "r")) == NULL){
     print_error(E_FILE);
     return E_FILE;
   } 
 
   // Provedeni syntakticke analyzy
-  int result;
-  //result = parser(); TODO :D
+  tableInit(&main);
+  parser(&main);
 
   // Pri chybe vypsani chyby, a return error kodu
-  if(result != E_OK){
+  if(main.err_code != E_OK){
   	print_error(result);
-  	return result;
+  	return main.err_code;
   }
-  
 
   fclose(source);
   //freeAll(); TODO, dealakovat veskerej bullshit

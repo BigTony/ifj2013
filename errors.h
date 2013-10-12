@@ -1,3 +1,6 @@
+#include "ial.h"
+#include ""
+
 // Error kody
 #define E_OK 0
 #define E_LEX 1 // Chyba v programu v ramci lexikalni analyzy
@@ -10,9 +13,18 @@
 #define E_SEM_TYPE 12 // Chyba typove kompatibility v aritmetickych a relacnich vyrazech
 #define E_SEM_OTHER 13 // Ostatni semanticke chyby 
 #define E_INTERN 99 // Interni chyba interpretu 
+// meine chyby
 #define E_WRONG_PARAM 20 // Spatny pocet parametru
 #define E_FILE 21 // Chyba v souboru, nejde otevrit apod.
-#define STR_CR_ERR 22 // Chyba pri alokaci stringu
+#define ALLOC_ERR 22 // Chyba pri alokaci 
 
 // Funkce pro obsluhu error kodu
 void print_error(int err_code);
+
+
+typedef struct {
+	int err_code;
+	tHashTbl *table;
+	FILE *source;
+	// tabulka instrukci TODO
+}ProgramState;
