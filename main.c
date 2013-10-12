@@ -44,11 +44,11 @@ int main(int argc,char** argv){
 
   // Pri chybe vypsani chyby, a return error kodu
   if(main.err_code != E_OK){
-  	print_error(result);
+  	print_error(main.err_code);
   	return main.err_code;
   }
 
-  fclose(source);
+  fclose(main.source);
   //freeAll(); TODO, dealakovat veskerej bullshit
   return E_OK;
 }

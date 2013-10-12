@@ -10,7 +10,7 @@
 // Iplementation sort and find functions
 //
 
-#include "ial.h"
+
 #include "errors.h"
 
 void tableInit(ProgramState *main){
@@ -26,3 +26,4 @@ void tableInit(ProgramState *main){
 	hash_table->size = ALLOC;
 	main->table = hash_table;
 }
+

@@ -53,7 +53,8 @@ int getToken();
 /**
 * Struktury
 */
-union Unie{
+
+typedef union {
     int varInt;
     double varDouble;
     char *varString;

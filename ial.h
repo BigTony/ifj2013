@@ -12,20 +12,20 @@
 
 #define ALLOC 64
 
-union {
+typedef union {
 	int varInt;
 	char *string;
 	double varDouble;
 	// int instruction;
 }itemValue;
 
-typedef struct {
+typedef struct item{
 	int key;
 	itemValue *data;
-	item *nextItem;
+	struct item *nextItem;
 }item;
 
 typedef struct {
-	tItemTbl **tableItems; // Odkaz na tabulku itemu
+	item **tableItems; // Odkaz na tabulku itemu
 	int size; // pocet itemu v tabulce
 }tHashTbl;
