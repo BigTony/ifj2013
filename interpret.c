@@ -9,6 +9,9 @@
 // interpret.c
 // 
 //
+
+#include "interpret.h"
+
 void interpret () {
 
 }
