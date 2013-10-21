@@ -21,6 +21,10 @@ typedef enum {
    I_DIV,  // /   
    I_POW,  // ^
 
+//===== Řetězcový operátor ==================
+
+   I_DOT,  // .  (konkatenance řetězců)     
+
 //===== logické operace ==================
 
    I_G,    // >
