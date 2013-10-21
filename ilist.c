@@ -46,11 +46,12 @@ typedef enum {
    I_GETS, // GET string
    I_GETSU,// GET SUBstring
 
-//===== skoky =================
+//===== skoky ==========================
 
    I_JMP,  // nepodmíněný
    I_JZ,   // jump if zero	 (false)
    I_JNZ,  // jump if not zero	 (true)
+   I_LAB,  // 
 
    //// NEDODELANO ------------
 
