@@ -1,8 +1,19 @@
+// Project interpret IFJ2013
+// Dev team:
+////////////////////////////////
+// Seidl Antonin - xseidl01
+// Slunsky Tomas - xsluns01
+// Skacel David - xskace12
+// Skyva Petr - xskyva02
+////////////////////////////////
+// interpret.c
+//
+//
+
 typedef enum { 
 
 //===== aritmeticke operace ==============
 
-           // dst, src1, src2
    I_ASS,  // =       
    I_ADD,  // +       
    I_SUB,  // -
@@ -18,6 +29,8 @@ typedef enum {
    I_LE,   // <=
    I_E,    // ==
    I_NE,   // !=
+   I_ET,   // ===
+   I_NET,  // !==
 
 //===== vestavene funkce =================
 
@@ -32,6 +45,9 @@ typedef enum {
 //===== skoky =================
 
    I_JMP,  // nepodmíněný
+   I_JZ,   // jump if zero	 (false)
+   I_JNZ,  // jump if not zero	 (true)
+
    //// NEDODELANO ------------
 
 } TInstr;
