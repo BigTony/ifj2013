@@ -55,4 +55,12 @@ typedef enum {
 
    //// NEDODELANO ------------
 
+} TIType;
+
+
+typedef struct {
+  TIType operation;
+  void *src1;
+  void *src2;
+  void *result;
 } TInstr;
