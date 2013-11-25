@@ -29,3 +29,10 @@ typedef struct {
 	FILE *source;
 	// tabulka instrukci TODO
 }ProgramState;
+
+// struktura pro dealokaci a errory
+// vsechno co se naalokuje se ulozi sem
+typedef struct {
+	Ttoken *token;
+	tHashTbl *hashTbl;
+}pointers;

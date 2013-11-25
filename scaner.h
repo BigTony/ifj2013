@@ -46,9 +46,12 @@
 #define FUNCTION 	34
 // Konstanty
 #define NIL			40 // NULL
+// starty konce lol
+#define START 		50 // <?php
+#define KONEC		51 // eof
 
 // Funkce
-int getToken();
+int getToken(Ttoken *token);
 
 /**
 * Struktury
@@ -63,5 +66,5 @@ typedef union {
 typedef struct{
 	int id;
 	tokenValue value;
-}token;
+}Ttoken;
 
