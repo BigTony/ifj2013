@@ -35,7 +35,7 @@ void defReturn(){
 }
 
 // definice funkce jsem nalitej
-void defFunction{
+void defFunction(){
 	
 }
 
