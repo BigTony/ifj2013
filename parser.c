@@ -34,10 +34,17 @@ void defReturn(){
 
 }
 
+// definice funkce jsem nalitej
+void defFunction{
+	
+}
+
+
 // volani funkce
 void callFunction(tokenValue value){
 
 }
+
 
 // vyber spravnej postup pro token
 void classify(){
@@ -57,8 +64,10 @@ void classify(){
 			defIf();
 		}else if(*token.id == WHILE){
 			defWhile();
-		}else if*(*token.id == RETURN){
+		}else if(*token.id == RETURN){
 			defRetrun();
+		}else if(*token.id == FUNCTION){
+			defFunction();
 		}
 	}
 }
