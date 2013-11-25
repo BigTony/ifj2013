@@ -10,20 +10,21 @@
 //
 //
 
-typedef enum { 
+// VÝČET JEDNOTLIVÝCH INSTRUKCÍ
+typedef enum {
 
 //===== aritmeticke operace ==============
 
-   I_ASS,  // =       
-   I_ADD,  // +       
+   I_ASS,  // =
+   I_ADD,  // +
    I_SUB,  // -
-   I_MUL,  // *  
-   I_DIV,  // /   
+   I_MUL,  // *
+   I_DIV,  // /
    I_POW,  // ^
 
 //===== Řetězcový operátor ==================
 
-   I_CON,  // .  (konkatenance řetězců)     
+   I_CON, // . (konkatenance řetězců)
 
 //===== logické operace ==================
 
@@ -49,18 +50,31 @@ typedef enum {
 //===== skoky ==========================
 
    I_JMP,  // nepodmíněný
-   I_JZ,   // jump if zero	 (false)
-   I_JNZ,  // jump if not zero	 (true)
+   I_JZ,   // jump if zero        (false)
+   I_JNZ,  // jump if not zero    (true)
    I_LAB,  // navěští, no effect
-
-   //// NEDODELANO ------------
 
 } TIType;
 
-
+// STRUKTURA INSTRUKCE
 typedef struct {
   TIType operation;
   void *src1;
   void *src2;
   void *result;
 } TInstr;
+
+// STRUKTURA POLOZKY SEZNAMU
+typedef struct tlitem
+{
+  struct tlitem *Next;
+  TInstr Instruction;
+} TLItem;
+  
+// STRUKTURA SEZNAMU  
+typedef struct
+{
+  TLItem *Act;    // ukazatel na aktivni prvek
+  TLItem *First;  // ukazatel na prvni prvek
+  TLItem *Last;   // ukazatel na posledni prvek
+} TList;
