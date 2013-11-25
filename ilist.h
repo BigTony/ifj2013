@@ -23,7 +23,7 @@ typedef enum {
 
 //===== Řetězcový operátor ==================
 
-   I_DOT,  // .  (konkatenance řetězců)     
+   I_CON,  // .  (konkatenance řetězců)     
 
 //===== logické operace ==================
 
@@ -51,7 +51,7 @@ typedef enum {
    I_JMP,  // nepodmíněný
    I_JZ,   // jump if zero	 (false)
    I_JNZ,  // jump if not zero	 (true)
-   I_LAB,  // 
+   I_LAB,  // navěští, no effect
 
    //// NEDODELANO ------------
 
