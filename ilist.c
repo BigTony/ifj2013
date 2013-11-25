@@ -50,6 +50,7 @@ void InsertFirst (TList *L,TInstr Instr)
 	{
 		L->Last = New;
 	}
+	
   }
 }
 
@@ -67,7 +68,7 @@ void InsertLast (TList *L,TInstr Instr)
 	{
 		L->Last->Next = New;
 	}
-     else {
+      else {
 		L->First = New;
 	}
 
