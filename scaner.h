@@ -1,4 +1,4 @@
-// Project interpret IFJ2013
+git// Project interpret IFJ2013
 // Dev team:
 ////////////////////////////////
 // Seidl Antonin  - xseidl01
@@ -50,26 +50,20 @@
 #define FUNCTION 	34
 // Konstanty
 #define NIL			40 // NULL
-<<<<<<< HEAD
-// starty konce lol
-#define START 		50 // <?php
-#define KONEC		51 // eof
-
-// Funkce
-int getToken(Ttoken *token);
-=======
 #define true        41
 #define false       42
+//-------------------
+#define EOF         45
+//-------------------
 //Unikove sekvence
-#define ESC_TAB     45 // \t
+/*#define ESC_TAB     45 // \t
 #define ESC_N_L     46 // \n
 #define ESC_DOLAR   47 // \$
 #define ESC_ESC     48 // \\
-#define ESC_UVOZ    49 // \"
+#define ESC_UVOZ    49 // \"   */
 
 //Alokace
 #define BUFF        100 //Alok ci realok vstupniho stringu
->>>>>>> Rozpracovane
 
 // Funkce
 int getToken(FILE *fp);
@@ -87,5 +81,5 @@ typedef union {
 typedef struct{
 	int id;
 	tokenValue value;
-}Ttoken;
+}token;
 

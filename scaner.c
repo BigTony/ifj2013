@@ -129,5 +129,6 @@ token getToken(FILE *fp){
         return n;
                 
     }
+    if( (c=='')
 
 }
