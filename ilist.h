@@ -29,7 +29,7 @@ typedef enum {
 //===== logické operace ==================
 
    I_G,    // >
-   I_GE    // >=
+   I_GE,    // >=
    I_L,    // <
    I_LE,   // <=
    I_E,    // ==
