@@ -29,13 +29,18 @@ typedef enum {
 //===== logické operace ==================
 
    I_G,    // >
-   I_GE,    // >=
+   I_GE,   // >=
    I_L,    // <
    I_LE,   // <=
    I_E,    // ==
    I_NE,   // !=
    I_ET,   // ===
    I_NET,  // !==
+
+//===== call & return fce =================
+
+   I_CALL     // 
+   I_RETURN,  // 
 
 //===== vestavene funkce =================
 
