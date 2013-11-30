@@ -93,7 +93,7 @@ void ActiveNextItem (TList *L)
 }
 
 // AKTIVUJ POLOZKU DANOU POINTEREM -> podmíněné & nepodmíněné skoky v interpreteru
-void ActivePtrItem (TList *L,void *Item) // TLItem *Item
+void ActivePtrItem (TList *L,TLItem *Item) 
 {
   if (Item!=NULL) 
   {
