@@ -78,7 +78,7 @@ void InsertLast (TList *L,TInstr Instr)
 
 
 // Aktivuj prvni prvek
-void ActiFirstItem (TList *L) 
+void ActiveFirstItem (TList *L) 
 {
 	L->Act = L->First;
 }
@@ -89,5 +89,14 @@ void ActiveNextItem (TList *L)
   if (L->Act!=NULL) 
   {
 	L->Act = L->Act->Next;
+  }
+}
+
+// AKTIVUJ POLOZKU DANOU POINTEREM -> podmíněné & nepodmíněné skoky v interpreteru
+void ActivePtrItem (TList *L,void *Item) // TLItem *Item
+{
+  if (Item!=NULL) 
+  {
+	L->Act = Item;
   }
 }
