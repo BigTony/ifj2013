@@ -227,7 +227,8 @@ void ExGreater(TStack *stack){
 						printf("ERROR_T1\n");
 					SPop(&temp);
 					if(STop(&temp) > COM){
-						printf("ERROR_T2\n");
+						if(STop(&temp) != KONK)
+							printf("ERROR_T2\n");
 					}
 					SPop(&temp);
 					if(STop(&temp) != NONTERM)
@@ -300,8 +301,23 @@ TExpType skipNonTerm(TStack *stack){
 }
 
 int main(int argc,char** argv){
-	int array[15] = {FUNCTION_CALL,ZAV_JEDN_L,VARIABLE,CARKA,VARIABLE,ZAV_JEDN_P,STREDNIK};
+	// int array[15] = {FUNCTION_CALL,ZAV_JEDN_L,VARIABLE,CARKA,VARIABLE,ZAV_JEDN_P,STREDNIK};
 	// int array[15] = {ZAV_JEDN_L,VARIABLE,KRAT,VARIABLE,ZAV_JEDN_P,STREDNIK};
+	int array[30] = {ZAV_JEDN_L,ZAV_JEDN_L,VARIABLE,KRAT,VARIABLE,ZAV_JEDN_P,PLUS,ZAV_JEDN_L,ZAV_JEDN_L,VARIABLE,DELENO,VARIABLE,ZAV_JEDN_P,MINUS,ZAV_JEDN_L,VARIABLE,TECKA,VARIABLE,ZAV_JEDN_P,ZAV_JEDN_P,ZAV_JEDN_P,STREDNIK};
+	// int array[30] = {ZAV_JEDN_L,
+	// 				 ZAV_JEDN_L,
+	// 				 VARIABLE,
+	// 				 DELENO,
+	// 				 VARIABLE,
+	// 				 ZAV_JEDN_P,
+	// 				 MINUS,
+	// 				 ZAV_JEDN_L,
+	// 				 VARIABLE,
+	// 				 TECKA,
+	// 				 VARIABLE,
+	// 				 ZAV_JEDN_P,
+	// 				 ZAV_JEDN_P,
+	// 				 STREDNIK};
 	TStack stack;
 	TStack tempstack;
 	TExpType a;
