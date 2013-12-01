@@ -13,12 +13,28 @@
 #include "ilist.h"
 #include "interpret.h"
 
+void initOfAll () {
+// fuck 1
+// fuck 2
+// fuck 3
+}
+
+
 void interpret (/*Tabulka_symbolu*/) 
 {
    TInstr   *instruction;   // data aktualni instrukce
+   TDataType *src1;
+   TDataType *src2;
+   TDataType *destination;
 
   while (/*instruction list!=NULL*/) 
   {
+
+    /* -------------------------------------------------------------
+     *	
+     *  semantic controll 
+     *
+     * ------------------------------------------------------------ */
 
       switch (/*instruction*/) 
       {
@@ -40,11 +56,11 @@ void interpret (/*Tabulka_symbolu*/)
 	 break;
 
 	 /*========================I_DIV=========================*/
-	 case I_MUL:
+	 case I_DIV:
 	 break;
 
 	 /*========================I_POW=========================*/
-	 case I_MUL:
+	 case I_POW:
 	 break;
 
 	 /*========================I_CON=========================*/ 
