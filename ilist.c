@@ -76,11 +76,27 @@ void InsertLast (TList *L,TInstr Instr)
   }
 }
 
+// over aktivitu
+int IsActiveItem (TList *L) 
+{
+	if (L->Act!=NULL) 
+	{
+		return 1;	
+	}
+
+  return 0;
+}
 
 // Aktivuj prvni prvek
 void ActiveFirstItem (TList *L) 
 {
 	L->Act = L->First;
+}
+
+// Aktivuj posledni prvek
+void ActiveLastItem (TList *L) 
+{
+	L->Act = L->Last;
 }
 
 // POSUN AKTIVITY NA DALSI PRVEK
