@@ -81,7 +81,7 @@ typedef struct {
 typedef struct tlitem
 {
   struct tlitem *Next;
-  TInstr Instruction;
+  TInstr *Instruction; // or (void *) Instruction
 } TLItem;
   
 // STRUKTURA SEZNAMU  
