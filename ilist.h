@@ -61,6 +61,14 @@ typedef enum {
 
 } TIType;
 
+// VÝČET TYPU DAT  
+typedef enum
+{
+  STRING,
+  NUMBER,
+  BOOLEAN,
+} TDataType;
+
 // STRUKTURA INSTRUKCE
 typedef struct {
   TIType operation;
