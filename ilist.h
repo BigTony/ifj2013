@@ -81,6 +81,7 @@ typedef struct {
 typedef struct tlitem
 {
   struct tlitem *Next;
+  struct tlitem *Data; // instrukcni podseznam
   TInstr *Instruction; // or (void *) Instruction
 } TLItem;
   
