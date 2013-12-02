@@ -34,6 +34,15 @@ void DisposeList (TList *L)
   }
 }
 
+
+/**   
+*
+*  ---------	     ---------	      ---------
+*  | main  |-------> | fce   |------->| fce2  |
+*  ---------	     ---------	      ---------
+*
+**/
+
 // vlozi instrukci na zacatek
 void InsertFirst (TList *L,TInstr Instr) 
 {
@@ -75,6 +84,37 @@ void InsertLast (TList *L,TInstr Instr)
 	L->Last = New;
   }
 }
+
+
+/**
+*
+*  ---------
+*  | main  |
+*  ---------
+*      |
+*      |
+*      |
+*      |
+*      v
+*  ---------
+*  | instr |
+*  ---------
+*      |
+*      |
+*      v  
+*    
+/*
+
+
+/// doplni se
+
+
+
+/*****************************************************************************
+*
+*        PRESUN AKTIVITY
+*
+******************************************************************************/
 
 // over aktivitu
 int IsActiveItem (TList *L) 
