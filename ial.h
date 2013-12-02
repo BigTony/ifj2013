@@ -11,6 +11,7 @@
 //
 
 #define ALLOC 64
+typedef char* itemKey;
 
 typedef union {
 	int varInt;
@@ -20,7 +21,7 @@ typedef union {
 }itemValue;
 
 typedef struct item{
-	int key;
+	itemKey key;
 	itemValue *data;
 	struct item *nextItem;
 }item;
@@ -29,3 +30,6 @@ typedef struct {
 	item **tableItems; // Odkaz na tabulku itemu
 	int size; // pocet itemu v tabulce
 }tHashTbl;
+
+
+
