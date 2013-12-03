@@ -9,3 +9,18 @@
 // adt.h
 //
 //
+
+
+
+// struktury pro zasobnik
+// ktery bude pouzit pro tabulky symbolu
+//
+typedef struct tSItem{
+	tHashTbl hashTbl;
+	TLItem NavrInstrukce;
+	struct tSItem *ptrNext;
+} *tStackItem;
+
+typedef struct {
+	tSItemPtr top;
+} tHashTblStack;
