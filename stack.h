@@ -1,31 +1,34 @@
+#include "scaner.h"
+#include "ilist.h"
+// hodnoty ktere jsou mozne ulozit na zasobnik
 typedef enum{
-	// hodnoty ktere jsou mozne ulozit na zasobnik
-	PLUS, // +
-	MINUS, // -
-	MULTI, // *
-	DIV, // /
-	KONK, // konkatenace .
-	EQ, // ===
-	NEQ, // !==
-	GTHE, // >=
-	LTHE, // <=
-	GTH, // >
-	LTH, // <
-	BRACE_L, // (
-	BRACE_R, // )
-	VALUE, // promena + konstanta
-	FUNC, // Funkce
-	COM, // ,	
-	END, // $
+	VALUE, // promena 0F
+	PLUS_, // + 1
+	MINUS_, // - 2
+	MULTI, // * 3
+	DIV, // / 4
+	EQ, // === 5
+	NEQ, // !== 6
+	GTHE, // >= 7 
+	LTHE, // <= 8
+	GTH, // > 9
+	LTH, // < 10 
+	COM, // , 11
+	// FUNC, // Funkce 12 
+	BRACE_L, // ( 13 
+	BRACE_R, // ) 14		
+	KONK, // konkatenace . 15
+	END, // $ 16
 
 	// nonterminal
-	NONTERM, // pravidlo r
-	G,
-	L,
-	E,
-	B,	
-	ERROR
-} TExpType;
+	NONTERM, // pravidlo r 17
+	G, // 18
+	L, // 19
+	E, // 20
+	B, // 21
+	ENDSTACK, // 22
+	ERROR // 23
+} TExpType; // 24
 
 #define MAX_INDEX 17
 
@@ -37,6 +40,7 @@ typedef enum{
 
 // struktury pro zasobnik
 typedef struct TSItem{
+	tokenValue var;
 	TExpType item;
 	struct TSItem *ptrNext;
 } *TSItemPtr;
@@ -48,7 +52,7 @@ typedef struct {
 // init zasobniku
 void SInit(TStack *stack);
 // vloz prvek na zasobnik
-void SPush(TStack *stack,TExpType item);
+void SPush(TStack *stack,TExpType item,tokenValue value);
 // odstran prvek z vrcholu zasobniku
 void SPop(TStack *stack);
 // nacteni z vrcholu

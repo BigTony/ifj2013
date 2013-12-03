@@ -1,5 +1,4 @@
 #include "stack.h"
-#include "scaner.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -7,23 +6,23 @@
 int TabulkaVyrazu [MAX_INDEX][MAX_INDEX] = {	
 
 				/* VALUE|PLUS|MINUS|MULTI|DIV|EQ|NEQ|GTHE|LTHE|GTH|LTH|COM|FUNC|BRACER_L|BRACE_R|KONK|END*/
-	/* VALUE*/		{B,G,G,G,G,G,G,G,G,G,G,G,B,B,G,G,G},
-	/* PLUS*/		{L,G,G,L,L,G,G,G,G,G,G,G,L,L,G,G,G},
-	/* MINUS*/		{L,G,G,L,L,G,G,G,G,G,G,G,L,L,G,G,G},
-	/* MULTI*/		{L,G,G,G,G,G,G,G,G,G,G,G,L,L,G,G,G},
-	/* DIV */		{L,G,G,G,G,G,G,G,G,G,G,G,L,L,G,G,G},
-	/* EQ */		{L,L,L,L,L,G,G,L,L,L,L,G,L,L,G,L,G},
-	/* NEQ */		{L,L,L,L,L,G,G,L,L,L,L,G,L,L,G,L,G},
-	/* GTHE */		{L,L,L,L,L,G,G,G,G,G,G,G,L,L,G,L,G},
-	/* LTHE */		{L,L,L,L,L,G,G,G,G,G,G,G,L,L,G,L,G},
-	/* GTH */		{L,L,L,L,L,G,G,G,G,G,G,G,L,L,G,L,G},
-	/* LTH */		{L,L,L,L,L,G,G,G,G,G,G,G,L,L,G,L,G},
-	/* COM */		{L,L,L,L,L,L,L,L,L,L,L,E,L,L,E,L,B},
-	/* FUNC */		{B,B,B,B,B,B,B,B,B,B,B,B,B,E,B,B,B},
-	/* BRACE_L */	{L,L,L,L,L,L,L,L,L,L,L,E,L,L,E,L,B},
-	/* BRACE_R */	{B,G,G,G,G,G,G,G,G,G,G,G,B,B,G,G,G},
-	/* KONK */		{L,G,G,L,L,G,G,G,G,G,G,G,L,L,G,G,G},
-	/* END */   	{L,L,L,L,L,L,L,L,L,L,L,B,L,L,B,L,B}
+	/* VALUE*/		{B,G,G,G,G,G,G,G,G,G,G,G,B,G,G,G},
+	/* PLUS*/		{L,G,G,L,L,G,G,G,G,G,G,G,L,G,G,G},
+	/* MINUS*/		{L,G,G,L,L,G,G,G,G,G,G,G,L,G,G,G},
+	/* MULTI*/		{L,G,G,G,G,G,G,G,G,G,G,G,L,G,G,G},
+	/* DIV */		{L,G,G,G,G,G,G,G,G,G,G,G,L,G,G,G},
+	/* EQ */		{L,L,L,L,L,G,G,L,L,L,L,G,L,G,L,G},
+	/* NEQ */		{L,L,L,L,L,G,G,L,L,L,L,G,L,G,L,G},
+	/* GTHE */		{L,L,L,L,L,G,G,G,G,G,G,G,L,G,L,G},
+	/* LTHE */		{L,L,L,L,L,G,G,G,G,G,G,G,L,G,L,G},
+	/* GTH */		{L,L,L,L,L,G,G,G,G,G,G,G,L,G,L,G},
+	/* LTH */		{L,L,L,L,L,G,G,G,G,G,G,G,L,G,L,G},
+	/* COM */		{L,L,L,L,L,L,L,L,L,L,L,E,L,E,L,B},
+	// /* FUNC */		{B,B,B,B,B,B,B,B,B,B,B,B,B,E,B,B,B},
+	/* BRACE_L */	{L,L,L,L,L,L,L,L,L,L,L,E,L,E,L,B},
+	/* BRACE_R */	{B,G,G,G,G,G,G,G,G,G,G,G,B,G,G,G},
+	/* KONK */		{L,G,G,L,L,G,G,G,G,G,G,G,L,G,G,G},
+	/* END */   	{L,L,L,L,L,L,L,L,L,L,L,B,L,B,L,B}
 };
 
 /* FUNKCE PRO PRACI SE ZASOBNIKEM */
@@ -33,13 +32,14 @@ void SInit(TStack *stack){
 	stack->top = NULL;
 }
 // vloz prvek na zasobnik
-void SPush(TStack *stack,TExpType item){
+void SPush(TStack *stack,TExpType item,tokenValue value){
 	TSItemPtr temp;
 	// alokace nove polozky
     temp = malloc(sizeof(struct TSItem));
     if (temp == NULL)
     	return;
     temp->item = item;
+    temp->var = value;
     temp->ptrNext = stack->top;
     stack->top = temp;
 }
@@ -107,8 +107,8 @@ TExpType TokenToExpresion(int token){
 		case VARINT:
 		case VARDOUBLE:
 			return VALUE;
-		case FUNCTION_CALL:
-			return FUNC;
+		// case FUNCTION_CALL:
+		// 	return FUNC;
 		default:
 			return ERROR;
 	}
@@ -136,9 +136,9 @@ void printstack(TStack *stack){
 			case VALUE:
 				printf("i\n");
 				break;
-			case FUNC:
-				printf("FUNC\n");
-				break;
+			// case FUNC:
+			// 	printf("FUNC\n");
+			// 	break;
 		}
 		SPop(stack);
 		temp = STop(stack);
@@ -147,16 +147,18 @@ void printstack(TStack *stack){
 }
 
 void ExEqual(TStack *stack,TExpType input){
-	SPush(stack,input);
+	tokenValue value;
+	SPush(stack,input,value);
 }
 
 void ExLess(TStack *stack,TExpType input){
 	TStack *cur_ptr = stack;
 	TSItemPtr prev_ptr;	
+	tokenValue value;
 	// kdyz je hned nahore
 	if(STop(cur_ptr) <= END){
-		SPush(stack,L);
-		SPush(stack,input);		
+		SPush(stack,L,value);
+		SPush(stack,input,value);		
 		return;
 	}
 	// kdyz neni hned nahore
@@ -174,7 +176,7 @@ void ExLess(TStack *stack,TExpType input){
     		prev_ptr->ptrNext = temp;
           	temp->ptrNext = cur_ptr->top;
 			cur_ptr->top = prev_ptr;
-			SPush(stack,input);
+			SPush(stack,input,value);
 			return;
 		}
 	}
@@ -183,14 +185,14 @@ void ExLess(TStack *stack,TExpType input){
 
 // $ < ( E
 void ExGreater(TStack *stack){
-
+	tokenValue value;
 	TStack *cur_ptr = stack;
 	TStack temp;
 	SInit(&temp);
 	
 	while(STop(cur_ptr) != ENDSTACK){
 		if(STop(cur_ptr) != L){
-			SPush(&temp,STop(cur_ptr));
+			SPush(&temp,STop(cur_ptr),value);
 			cur_ptr->top=cur_ptr->top->ptrNext;
 		}else{
 			cur_ptr->top=cur_ptr->top->ptrNext;
@@ -199,11 +201,12 @@ void ExGreater(TStack *stack){
 				case VALUE:
 					if(STop(&temp) != VALUE)
 						printf("ERROR_V1\n");
+					tokenValue value_i = temp.top->var;
 					SPop(&temp);
 					// zasobnik musi byt prazdny => nic za E->VALUE
 					if(!SEmpty(&temp))
 						printf("ERROR_V2\n");
-					SPush(cur_ptr,NONTERM);
+					SPush(cur_ptr,NONTERM,value_i);
 					break;
 				// E->(VALUE)
 				case BRACE_L:
@@ -212,6 +215,7 @@ void ExGreater(TStack *stack){
 					SPop(&temp);
 					if(STop(&temp) != NONTERM)
 						printf("ERROR_B2\n");
+					tokenValue value = temp.top->var;
 					SPop(&temp);
 					if(STop(&temp) != BRACE_R)
 						printf("ERROR_B3\n");
@@ -219,54 +223,66 @@ void ExGreater(TStack *stack){
 					// zasobnik musi byt prazdny => nic za E->(VALUE)
 					if(!SEmpty(&temp))
 						printf("ERROR_B4\n");
-					SPush(cur_ptr,NONTERM);
+					SPush(cur_ptr,NONTERM,value);
 					break;
 				// E-> E op E
 				case NONTERM:
+					// operand 1
 					if(STop(&temp) != NONTERM)
 						printf("ERROR_T1\n");
+					tokenValue value1 = temp.top->var;
 					SPop(&temp);
+					// operator
 					if(STop(&temp) > COM){
 						if(STop(&temp) != KONK)
 							printf("ERROR_T2\n");
 					}
+					TIType op;
+					switch(STop(&temp)){
+						case PLUS_:
+							op = I_ADD;
+							break;
+						case MINUS_:
+							op = I_SUB;
+							break;
+						case MULTI:
+							op = I_MUL;
+							break;
+						case DIV:
+							op = I_DIV;
+							break;
+						case EQ:
+							op = I_ET;
+							break;
+						case NEQ:	
+							op = I_NET;
+							break;
+						case GTHE:
+							op = I_GE;
+							break;
+						case LTHE:
+							op = I_LE;
+							break;
+						case GTH:
+							op = I_G;
+							break;
+						case LTH:
+							op = I_L;
+							break;
+					}
 					SPop(&temp);
+					// operand 2
 					if(STop(&temp) != NONTERM)
 						printf("ERROR_T3\n");
+					tokenValue value2 = temp.top->var;
 					SPop(&temp);
+
+					callCreateINstruction(value1,value2,op);
+					
 					if(!SEmpty(&temp))
 						printf("ERROR_T4\n");
-					SPush(cur_ptr,NONTERM);
-					break;
-				// E-> FUNC(param,param,..)
-				case FUNC:
-					if(STop(&temp) != FUNC)
-						printf("ERROR_1\n");
-					SPop(&temp);
-					if(STop(&temp) != BRACE_L)
-						printf("ERROR_2\n");
-					SPop(&temp);
-					if(STop(&temp) == BRACE_R){
-						SPop(&temp);
-					}else{
-						while(STop(&temp) != BRACE_R){
-							if(STop(&temp) != NONTERM){
-								printf("ERROR_3\n");
-							}
-								
-							SPop(&temp);
-							if(STop(&temp) == BRACE_R){
-								SPop(&temp);
-								break;
-							}
-							if(STop(&temp) != COM)
-								printf("ERROR_4\n");
-							SPop(&temp);
-						}
-					}
-					if(!SEmpty(&temp))
-						printf("ERROR!\n");
-					SPush(cur_ptr,NONTERM);
+					// value musi bejt kam se uklada instrukce aww yeaaah
+					SPush(cur_ptr,NONTERM,value);
 					break;
 				default:
 					printf("ERROR\n");
@@ -282,42 +298,36 @@ void ExGreater(TStack *stack){
 TExpType skipNonTerm(TStack *stack){
 	TStack tempstack;
 	SInit(&tempstack);
+	tokenValue value;
 	TExpType b;
 
 	while(1){	
 		b = STop(stack);
 		if(b < NONTERM){
 			while(!SEmpty(&tempstack)){
-				SPush(stack,STop(&tempstack));
+				SPush(stack,STop(&tempstack),value);
 				SPop(&tempstack);
 			}
 			break;
 		}else{
-			SPush(&tempstack,b);
+			SPush(&tempstack,b,value);
 			SPop(stack);
 		} 
 	}	
 	return b;
 }
 
-int main(int argc,char** argv){
-	// int array[15] = {FUNCTION_CALL,ZAV_JEDN_L,VARIABLE,CARKA,VARIABLE,ZAV_JEDN_P,STREDNIK};
-	// int array[15] = {ZAV_JEDN_L,VARIABLE,KRAT,VARIABLE,ZAV_JEDN_P,STREDNIK};
-	int array[30] = {ZAV_JEDN_L,ZAV_JEDN_L,VARIABLE,KRAT,VARIABLE,ZAV_JEDN_P,PLUS,ZAV_JEDN_L,ZAV_JEDN_L,VARIABLE,DELENO,VARIABLE,ZAV_JEDN_P,MINUS,ZAV_JEDN_L,VARIABLE,TECKA,VARIABLE,ZAV_JEDN_P,ZAV_JEDN_P,ZAV_JEDN_P,STREDNIK};
-	// int array[30] = {ZAV_JEDN_L,
-	// 				 ZAV_JEDN_L,
-	// 				 VARIABLE,
-	// 				 DELENO,
-	// 				 VARIABLE,
-	// 				 ZAV_JEDN_P,
-	// 				 MINUS,
-	// 				 ZAV_JEDN_L,
-	// 				 VARIABLE,
-	// 				 TECKA,
-	// 				 VARIABLE,
-	// 				 ZAV_JEDN_P,
-	// 				 ZAV_JEDN_P,
-	// 				 STREDNIK};
+void ExEx(int ifYes,char *result){
+	tokenValue value;
+	if(ifYes == IF){
+		if(gettoken(ptrs->token) != ZAV_JEDN_L){
+			printf("ERROR BIATCH\n");
+			return;
+		}
+	}else{
+		gettoken(*token);
+	}
+
 	TStack stack;
 	TStack tempstack;
 	TExpType a;
@@ -325,14 +335,14 @@ int main(int argc,char** argv){
 	TExpType nonterm;
 	SInit(&stack);
 	SInit(&tempstack);
-	SPush(&stack,ENDSTACK);
-	SPush(&stack,END);
+	SPush(&stack,ENDSTACK,value);
+	SPush(&stack,END,value);
 	int c = 0;
 	int redukce = 0;
 
-	while(array[c] != STREDNIK){
+	do{
 		printf("%i\n",c );
-		a = TokenToExpresion(array[c]);
+		a = TokenToExpresion(*token.id);
 		b = skipNonTerm(&stack);		
 
 		if(b > END){
@@ -365,8 +375,8 @@ int main(int argc,char** argv){
 		}else{
 			redukce = 0;
 		}
-		
-	}
+	}while(gettoken(*token));
+
 
 	// po nalezeni ; dokonceni vyrazu 
 	while(1){
@@ -394,4 +404,88 @@ int main(int argc,char** argv){
 
 }
 
-// git ls-files | xargs wc -l
+
+
+
+// int main(int argc,char** argv){
+// 	// int array[15] = {FUNCTION_CALL,ZAV_JEDN_L,VARIABLE,CARKA,VARIABLE,ZAV_JEDN_P,STREDNIK};
+// 	// int array[15] = {ZAV_JEDN_L,VARIABLE,KRAT,VARIABLE,ZAV_JEDN_P,STREDNIK};
+// 	int array[30] = {ZAV_JEDN_L,ZAV_JEDN_L,VARIABLE,KRAT,VARIABLE,ZAV_JEDN_P,PLUS,ZAV_JEDN_L,ZAV_JEDN_L,VARIABLE,DELENO,VARIABLE,ZAV_JEDN_P,MINUS,ZAV_JEDN_L,VARIABLE,TECKA,VARIABLE,ZAV_JEDN_P,ZAV_JEDN_P,ZAV_JEDN_P,STREDNIK};
+
+// 	TStack stack;
+// 	TStack tempstack;
+// 	TExpType a;
+// 	TExpType b;
+// 	TExpType nonterm;
+// 	SInit(&stack);
+// 	SInit(&tempstack);
+// 	SPush(&stack,ENDSTACK);
+// 	SPush(&stack,END);
+// 	int c = 0;
+// 	int redukce = 0;
+
+// 	while(array[c] != STREDNIK){
+// 		printf("%i\n",c );
+// 		a = TokenToExpresion(array[c]);
+// 		b = skipNonTerm(&stack);		
+
+// 		if(b > END){
+// 			printf("ERROR NA ZASOBNIKU NENI HODNOTA Z TABULKY\n");
+// 			return;
+// 		}
+	
+// 		nonterm = TabulkaVyrazu[b][a];
+			
+// 		if(nonterm == E){
+// 			printf("[E]\n");
+// 			ExEqual(&stack,a);
+// 		}else if(nonterm == L){
+// 			printf("[L]\n");
+// 			ExLess(&stack,a);
+// 		}else if(nonterm == G){
+// 			printf("[G]\n");
+// 			ExGreater(&stack);
+// 			redukce = 1;
+// 		}else if(nonterm == B){
+// 			printf("SYNTAX ERROR\n");
+// 			return;
+// 		}else{
+// 			printf("ERROR\n");
+// 			return;
+// 		}
+
+// 		if(redukce == 0){
+// 			c = c+1;
+// 		}else{
+// 			redukce = 0;
+// 		}
+		
+// 	}
+
+// 	// po nalezeni ; dokonceni vyrazu 
+// 	while(1){
+// 		a = END;
+// 		b = skipNonTerm(&stack);
+// 		if(b == END)
+// 			break;
+// 		if(b > END){
+// 			printf("ERROR NA ZASOBNIKU NENI HODNOTA Z TABULKY\n");
+// 			return;
+// 		}
+// 		nonterm = TabulkaVyrazu[b][a];
+// 		if(nonterm == G){
+// 			printf("[G]\n");
+// 			ExGreater(&stack);
+// 		}else if(nonterm == B){
+// 			printf("ERROR\n");
+// 			return;
+// 		}else{
+// 			printf("ERROR\n");
+// 			return;
+// 		}
+// 	}
+// 	printstack(&stack);
+
+// }
+
+// // git ls-files | xargs wc -l
