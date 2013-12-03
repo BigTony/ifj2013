@@ -10,6 +10,7 @@
 //
 //
 
+#include "ial.c"
 #include "ilist.h"
 #include "interpret.h"
 
@@ -20,14 +21,14 @@ void initOfAll () {
 }
 
 
-void interpret (/*Tabulka_symbolu*/) 
+void interpret (tHashTbl table,TList *L) 
 {
-   TInstr   *instruction;   // data aktualni instrukce
+   TInstr    *instruction;   // data aktualni instrukce
    TDataType *src1;
    TDataType *src2;
    TDataType *destination;
 
-  while (/*instruction list!=NULL*/) 
+  while (IsActiveItem(L)) 
   {
 
     /* -------------------------------------------------------------
@@ -36,11 +37,12 @@ void interpret (/*Tabulka_symbolu*/)
      *
      * ------------------------------------------------------------ */
 
-      switch (/*instruction*/) 
+      switch ((ReturnActiveItem(L))->Instruction->operation) 
       {
 
 	 /*========================I_ASS========================= (EKV.: mov) */ 
 	 case I_ASS:
+
 	 break;
 
 	 /*========================I_ADD=========================*/

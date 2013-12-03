@@ -158,6 +158,11 @@ void ActivePtrItem (TList *L,TLItem *Item)
   }
 }
 
+// VRAT UKAZATEL NA AKTIVNI POLOZKU
+TLItem * ReturnActiveItem (TList *L) 
+{
+	return L->Act;
+}
 
 
 /* funkce pro generovani instrukci */

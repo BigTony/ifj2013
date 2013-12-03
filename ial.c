@@ -78,7 +78,7 @@ void TblInsert (tHashTbl *tab, itemKey key,itemValue data, int type)
 		AddNew->type = type;
 		/// navazuju
 	    AddNew->nextItem=tab->tableItems[Hashed];
-        tab->tableItems[Hashed]=AddNew->nextItem;
+            tab->tableItems[Hashed]=AddNew->nextItem;
 	} 
 	else 
 	{ 		
