@@ -16,6 +16,17 @@
 #define E_INTERN 99 // Interni chyba interpretu 
 // meine chyby
  
+// struktura pro dealokaci a errory
+// vsechno co se naalokuje a vyuziva se mezi jednotlivimi moduly se ulozi sem
+typedef struct tPointers{
+	Ttoken *token;	//predavany token
+	tHashTbl *main_symobol_tbl;	//hlavni tabulka symbolu
+	tHashTblStack *function_stack;	//zasobnik tabulek symbolu pro funkce 
+	tListIns *list_instr_list;	//List listu instrukci
+	FILE *source;	//ukazatel na v vstupni soubor
+}tPointers;
+
+extern tPointers *ptrs;
 
 // Funkce pro obsluhu error kodu
 void print_error(int err_code);
@@ -30,15 +41,6 @@ typedef void (*ptrDealoc) (tPointers *ptrs);
 
 
 
-// struktura pro dealokaci a errory
-// vsechno co se naalokuje a vyuziva se mezi jednotlivimi moduly se ulozi sem
-typedef struct tPointers{
-	Ttoken *token;	//predavany token
-	tHashTbl *main_symobol_tbl;	//hlavni tabulka symbolu
-	tHashTblStack *function_stack;	//zasobnik tabulek symbolu pro funkce 
-	tListIns *list_instr_list;	//List listu instrukci
-	FILE *source;	//ukazatel na v vstupni soubor
-}tPointers;
 
 
-extern tPointers *ptrs;
+
