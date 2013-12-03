@@ -9,8 +9,9 @@
 // ial.c
 // Iplementation sort and find functions
 //
+#include "errors.h"
 
-#define ALLOC 64
+#define ALLOC 67
 typedef char* itemKey;
 
 typedef union {
@@ -21,8 +22,9 @@ typedef union {
 }itemValue;
 
 typedef struct item{
+	int type;
 	itemKey key;
-	itemValue *data;
+	itemValue data;
 	struct item *nextItem;
 }item;
 

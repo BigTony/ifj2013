@@ -14,6 +14,7 @@
 #include "ilist.h"
 
 
+
 // init seznamu instrukci
 void InitList (TList *L) 
 {
@@ -155,4 +156,13 @@ void ActivePtrItem (TList *L,TLItem *Item)
   {
 	L->Act = Item;
   }
+}
+
+
+
+/* funkce pro generovani instrukci */
+
+void InsertInstrc(TList *L,TIType InstrNumber,){
+  TInstr Instr;
+  InsertLast(L,Instr);
 }

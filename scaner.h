@@ -23,10 +23,10 @@
 */
 
 
-#define FUNCTION_CALL 0
-#define VARINT 1
-#define VARDOUBLE 2
-#define VARIABLE 3
+#define FUNCTION_CALL 1
+#define VARINT 2
+#define VARDOUBLE 3
+#define VARIABLE 4
 // Znaky
 #define ZAV_JEDN_L  10 // (
 #define ZAV_JEDN_P  11 // )

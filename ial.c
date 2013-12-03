@@ -9,22 +9,22 @@
 // ial.c
 // Iplementation sort and find functions
 //
-
 #include "ial.h"
-#include "errors.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-void tableInit(ProgramState *main){
-	tHashTbl *hash_table;
-	if((hash_table = malloc(sizeof(tHashTbl)))==NULL){
-		main->err_code = ALLOC_ERR;
+void tableInit(tHashTbl *hash_table){
+	if((hash_table = (tHashTbl*)malloc(sizeof(tHashTbl)))==NULL){
+		print_error(E_INTERN,"chyba pri alokaci tHashTbl");
 		return;
 	}
-	if((hash_table->tableItems = malloc(ALLOC*sizeof(item)))==NULL){
-		main->err_code = ALLOC_ERR;
+	if((hash_table->tableItems = (item**)malloc(ALLOC*sizeof(item)))==NULL){
+		print_error(E_INTERN,"chyba pri alokaci tableItems");
 		return;
 	}
 	hash_table->size = ALLOC;
-	main->table = hash_table;
+	for(int i = 0;i<ALLOC;((hash_table->tableItems))[i++] = NULL);
 }
 
 // nahradit lepsi
@@ -33,7 +33,7 @@ int hashCode ( itemKey key ) {
 	int keylen = strlen(key);
 	for ( int i=0; i<keylen; i++ )
 		retval += key[i];
-	return ( retval % HTSIZE );
+	return ( retval % ALLOC );
 }
 
 /// HLEDANI
@@ -54,29 +54,31 @@ item* TblSearch (tHashTbl *tab, itemKey key)
 
 
 /// VLOZENI NOVE POLOZKY
-void TblInsert (tHashTbl *tab, itemKey key, itemValue data) 
+void TblInsert (tHashTbl *tab, itemKey key,itemValue data, int type) 
 {
 
- item *AddNew = NULL;
+  item *AddNew = NULL;
 
   int  Hashed = hashCode(key);
 
   if (TblSearch(tab, key)!=NULL) 
   {
 	/// provedu aktualizaci dat,pri shode,kdyztak se udela oprava... 
-	TblSearch(tab, key)->data=data;
+	AddNew = TblSearch(tab,key);
+	AddNew->data = data;
+	AddNew->type = type;
   } 
   else 
   {
-	if((AddNew = malloc (sizeof(item))!=NULL) 
+	if((AddNew = (item*) malloc (sizeof(item)))!=NULL) 
 	{
 		// new
-		AddNew->itemKey = key;
+		AddNew->key = key;
 		AddNew->data = data; /// [**data**]
-
+		AddNew->type = type;
 		/// navazuju
-	        AddNew->nextItem=tab->tableItems[Hashed];
-                tab->tableItems[Hashed]=AddNew->nextItem;
+	    AddNew->nextItem=tab->tableItems[Hashed];
+        tab->tableItems[Hashed]=AddNew->nextItem;
 	} 
 	else 
 	{ 		
@@ -86,14 +88,25 @@ void TblInsert (tHashTbl *tab, itemKey key, itemValue data)
 }
 
 /// PRECTE HODNOTU PROMENNE
-itemValue* TblRead (tHashTbl *tab, itemKey key) 
+itemValue* TblReadData (tHashTbl *tab, itemKey key) 
 {
   item *read;
   if ((read=TblSearch(tab,key)) != NULL)
   {
-	return (read->data);	
+	return &(read->data);	
   }
 return NULL;
+}
+
+/// PRECTE TYP PROMENNE
+int TblReadType (tHashTbl *tab, itemKey key) 
+{
+  item *read;
+  if ((read=TblSearch(tab,key)) != NULL)
+  {
+	return (read->type);	
+  }
+return 0;
 }
 
 
@@ -112,6 +125,9 @@ void TblDelete (tHashTbl *tab, itemKey key)
 	tab->tableItems[key]=NULL;	         /// polozka je jiz prazdna
   }
 }
+
+
+
 
 
 

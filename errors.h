@@ -1,6 +1,4 @@
-#include "ial.h"
-#include <stdio.h>
-
+#include "scaner.h"
 
 // Error kody
 #define E_OK 0
@@ -29,7 +27,7 @@ typedef struct tPointers{
 extern tPointers *ptrs;
 
 // Funkce pro obsluhu error kodu
-void print_error(int err_code);
+void print_error(int err_code,char* err_msg);
 // Funkce pro alokaci, inicializaci a dealokaci globalnich promenych
 void init_global(tPointers *ptrs);
 void dealloc_global(tPointers *ptrs);
