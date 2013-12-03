@@ -67,8 +67,8 @@ void destr_global(tPointers *ptrs)
 	destr_tToken(ptrs->token);
 	destr_tHashTbl(ptrs->main_symobol_tbl);
 	destr_tHashTblStack(ptrs->function_stack);
-   destr_tListIns(ptrs->list_instr_list);
-   if (FILE!=NULL)
+	destr_tListIns(ptrs->list_instr_list);
+	if (FILE!=NULL)
 	{
 		fclose(source);
 	}

@@ -1,3 +1,7 @@
+#ifndef H_HEADER_IAL
+#include "ial.h"
+#endif
+
 #include "scaner.h"
 
 // Error kody
@@ -18,7 +22,7 @@
 // vsechno co se naalokuje a vyuziva se mezi jednotlivimi moduly se ulozi sem
 typedef struct tPointers{
 	Ttoken *token;	//predavany token
-	tHashTbl *main_symobol_tbl;	//hlavni tabulka symbolu
+	struct tHashTbl *main_symobol_tbl;	//hlavni tabulka symbolu
 	tHashTblStack *function_stack;	//zasobnik tabulek symbolu pro funkce 
 	tListIns *list_instr_list;	//List listu instrukci
 	FILE *source;	//ukazatel na v vstupni soubor

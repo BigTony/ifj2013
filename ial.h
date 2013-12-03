@@ -9,7 +9,11 @@
 // ial.c
 // Iplementation sort and find functions
 //
+
+#ifndef H_HEADER_IAL
+#define H_HEADER_IAL
 #include "errors.h"
+#endif
 
 #define ALLOC 67
 typedef char* itemKey;
@@ -28,7 +32,7 @@ typedef struct item{
 	struct item *nextItem;
 }item;
 
-typedef struct {
+typedef struct tHashTbl{
 	item **tableItems; // Odkaz na tabulku itemu
 	int size; // pocet itemu v tabulce
 }tHashTbl;
