@@ -10,17 +10,17 @@
 //
 //
 
-// VÝČET JEDNOTLIVÝCH INSTRUKCÍ
+// VÝČET JEDNOTLIVÝCH INSTRUKCÍ => [operation, src1, src2, result]
 typedef enum {
 
 //===== aritmeticke operace ==============
-
-   I_ASS,  // =
-   I_ADD,  // +
-   I_SUB,  // -
-   I_MUL,  // *
-   I_DIV,  // /
-   I_POW,  // ^
+		 // src1 src2 result
+   I_ASS,  // = ||| src1 ...  result 
+   I_ADD,  // + ||| src1 src2 result
+   I_SUB,  // - ||| src1 src2 result
+   I_MUL,  // * ||| src1 src2 result
+   I_DIV,  // / ||| src1 src2 result
+   I_POW,  // ^ ||| src1 src2 result
 
 //===== Řetězcový operátor ==================
 
