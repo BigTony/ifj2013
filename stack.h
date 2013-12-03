@@ -1,5 +1,6 @@
 #include "scaner.h"
 #include "ilist.h"
+#include "errors.h"
 // hodnoty ktere jsou mozne ulozit na zasobnik
 typedef enum{
 	VALUE, // promena 0F

@@ -325,7 +325,7 @@ void ExEx(int ifYes,char *result){
 			return;
 		}
 	}else{
-		gettoken(*token);
+		gettoken(ptrs->token);
 	}
 
 	TStack stack;
@@ -342,7 +342,7 @@ void ExEx(int ifYes,char *result){
 
 	do{
 		printf("%i\n",c );
-		a = TokenToExpresion(*token.id);
+		a = TokenToExpresion(ptrs->token->id);
 		b = skipNonTerm(&stack);		
 
 		if(b > END){
@@ -375,7 +375,7 @@ void ExEx(int ifYes,char *result){
 		}else{
 			redukce = 0;
 		}
-	}while(gettoken(*token));
+	}while(gettoken(ptrs->token));
 
 
 	// po nalezeni ; dokonceni vyrazu 
