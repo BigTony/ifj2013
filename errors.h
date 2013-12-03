@@ -32,7 +32,7 @@ typedef void (*ptrDealoc) (tPointers *ptrs);
 
 // struktura pro dealokaci a errory
 // vsechno co se naalokuje a vyuziva se mezi jednotlivimi moduly se ulozi sem
-typedef struct {
+typedef struct tPointers{
 	Ttoken *token;	//predavany token
 	tHashTbl *main_symobol_tbl;	//hlavni tabulka symbolu
 	tHashTblStack *function_stack;	//zasobnik tabulek symbolu pro funkce 
