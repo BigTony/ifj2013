@@ -159,13 +159,25 @@ void interpret (tHashTbl *table,TList *L)
 
          if (TblSearch (table, src1)!=NULL  && TblSearch (table, src2)!=NULL) 
          {
-		temp = ConcString(TblSearch (table, src1))->data,( (TblSearch (table, src2))->data);
+		temp = ConcatenationString(TblSearch (table, src1))->data,( (TblSearch (table, src2))->data);
 		TblInsert (table, result,temp,/* int type*/); 	
          }
 	 break;
 
 	 /*========================I_G=========================*/ 
 	 case I_G:
+
+         src1 = instr->src1;
+         src2 = instr->src2;
+         result = instr->result;
+
+         if (TblSearch (table, src1)!=NULL  && TblSearch (table, src2)!=NULL) 
+         {
+		temp = ConcString(TblSearch (table, src1))->data,( (TblSearch (table, src2))->data);
+		TblInsert (table, result,temp,/* int type*/); 	
+         }
+
+
 	 break;
 
 	 /*========================I_GE=========================*/
