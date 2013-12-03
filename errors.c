@@ -36,4 +36,10 @@ void print_error(int err_code){
 	}
 }
 
-
+/**Inicializace globalni tabulky pointru
+ * @param tPointers: ukazatel na globalni tabuku pointru   
+ */  
+void init_global(tPointers *ptrs);
+{
+	 
+}

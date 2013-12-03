@@ -20,35 +20,21 @@
 
 
 int main(int argc,char** argv){
-  
-  ProgramState main;
-  main.err_code = 0;
-  main.table = NULL;
-  main.source = NULL;
-  // main.instruction = TODO
+  // inicializace globalni pametove tabulky
+  init_global(ptrs);
 
   // Testovani parametru
   if (argc != 2){
   	print_error(E_WRONG_PARAM);
-  	return E_WRONG_PARAM;
   }
   // Testovani otevreni souboru
-  if ((main.source = fopen(argv[1], "r")) == NULL){
+  if ((ptrs->source = fopen(argv[1], "r")) == NULL){
     print_error(E_FILE);
-    return E_FILE;
   } 
 
   // Provedeni syntakticke analyzy
-  tableInit(&main);
-  parser(&main);
+  parser(ptrs);
 
-  // Pri chybe vypsani chyby, a return error kodu
-  if(main.err_code != E_OK){
-  	print_error(main.err_code);
-  	return main.err_code;
-  }
-
-  fclose(main.source);
-  //freeAll(); TODO, dealakovat veskerej bullshit
+	//all ok
   return E_OK;
 }

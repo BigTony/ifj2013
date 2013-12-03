@@ -21,18 +21,27 @@
 
 // Funkce pro obsluhu error kodu
 void print_error(int err_code);
+// Funkce pro alokaci, inicializaci a dealokaci globalnich promenych
+void init_global(tPointers *ptrs);
+void dealloc_global(tPointers *ptrs);
+// Pole pro alokacni funkce
+typedef void (*ptrDealoc) (tPointers *ptrs);
+// Pole pro dealokacni fu 
 
 
-typedef struct {
-	int err_code;
-	tHashTbl *table;
-	FILE *source;
-	// tabulka instrukci TODO
-}ProgramState;
+
+
 
 // struktura pro dealokaci a errory
-// vsechno co se naalokuje se ulozi sem
+// vsechno co se naalokuje a vyuziva se mezi jednotlivimi moduly se ulozi sem
 typedef struct {
-	Ttoken *token;
-	tHashTbl *hashTbl;
-}pointers;
+	Ttoken *token;	//predavany token
+	tHashTbl *main_symobol_tbl;	//hlavni tabulka symbolu
+	tHashTblStack *function_stack;	//zasobnik tabulek symbolu pro funkce 
+	tListIns *list_instr_list;	//List listu instrukci
+	tListFun *list_function_tbl //List hashovacich tabulek pro jednotlive funkce	  
+	FILE *source;	//ukazatel na v vstupni soubor
+}tPointers;
+
+
+extern tPointers *ptrs;
