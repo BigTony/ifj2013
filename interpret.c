@@ -13,6 +13,8 @@
 #include "ial.c"
 #include "ilist.h"
 #include "interpret.h"
+#include "errors.h"
+#include <math.h>
 
 void initOfAll () {
 // fuck 1
@@ -21,15 +23,19 @@ void initOfAll () {
 }
 
 
-void interpret (tHashTbl table,TList *L) 
+void interpret (tHashTbl *table,TList *L) 
 {
-   TInstr    *instruction;   // data aktualni instrukce
-   TDataType *src1;
-   TDataType *src2;
-   TDataType *destination;
+   TInstr    *instr;   // data aktualni instrukce
+   TDataType *src1,*src2;
+   TDataType *tmp;
+   TDataType *result;
 
   while (IsActiveItem(L)) 
   {
+
+
+      // nactu instrukci
+      instr = (TInstr*) ReturnActiveInstr(L);
 
     /* -------------------------------------------------------------
      *	
@@ -37,36 +43,125 @@ void interpret (tHashTbl table,TList *L)
      *
      * ------------------------------------------------------------ */
 
-      switch ((ReturnActiveItem(L))->Instruction->operation) 
+
+      switch (instr->operation) 
       {
+
 
 	 /*========================I_ASS========================= (EKV.: mov) */ 
 	 case I_ASS:
 
+         src1 = instr->src1;
+         result = instr->result;
+	// type = instr->type;
+
+	 TblInsert (table, result,src1,/* int type*/); 
 	 break;
 
 	 /*========================I_ADD=========================*/
 	 case I_ADD:
+
+         src1 = instr->src1;
+         src2 = instr->src2;
+         result = instr->result;
+
+	if (/*TypeOfSearchedOperand1==BOOL*/ && /*TypeOfSearchedOperand2==BOOL*/) 
+	{
+	   if (TblSearch (table, src1)!=NULL  && TblSearch (table, src2)!=NULL) 
+           {
+	  	temp = (TblSearch (table, src1))->data + (TblSearch (table, src2))->data;
+		TblInsert (table, result,temp,/* int type*/); 	
+           }
+	}
+	else if (/*TypeOfSearchedOperand1==INTEGER*/ && /*TypeOfSearchedOperand2==INTEGER*/) 
+	{
+	   if (TblSearch (table, src1)!=NULL  && TblSearch (table, src2)!=NULL) 
+           {
+	  	temp = (TblSearch (table, src1))->data + (TblSearch (table, src2))->data;
+		TblInsert (table, result,temp,/* int type*/); 	
+           }
+	}
+	else if (/*TypeOfSearchedOperand1==DOUBLE*/ && /*TypeOfSearchedOperand2==DOUBLE*/) 
+	{
+	   if (TblSearch (table, src1)!=NULL  && TblSearch (table, src2)!=NULL) 
+           {
+	  	temp = (TblSearch (table, src1))->data + (TblSearch (table, src2))->data;
+		TblInsert (table, result,temp,/* int type*/); 	
+           }
+	}
+
+       /// kurwa tozasrany typovani
+       /// dal podle tabulky v zadani...
+
 	 break;
 
          /*========================I_SUB=========================*/
 	 case I_SUB:
+         src1 = instr->src1;
+         src2 = instr->src2;
+         result = instr->result;
+
+         if (TblSearch (table, src1)!=NULL  && TblSearch (table, src2)!=NULL) 
+         {
+		temp = (TblSearch (table, src1))->data - (TblSearch (table, src2))->data;
+		TblInsert (table, result,temp,/* int type*/); 	
+         }
 	 break;
 
 	 /*========================I_MUL=========================*/
 	 case I_MUL:
+
+         src1 = instr->src1;
+         src2 = instr->src2;
+         result = instr->result;
+
+         if (TblSearch (table, src1)!=NULL  && TblSearch (table, src2)!=NULL) 
+         {
+		temp = ((TblSearch (table, src1))->data) * ((TblSearch (table, src2))->data);
+		TblInsert (table, result,temp,/* int type*/); 	
+         }
 	 break;
 
 	 /*========================I_DIV=========================*/
 	 case I_DIV:
+
+         src1 = instr->src1;
+         src2 = instr->src2;
+         result = instr->result;
+
+         if (TblSearch (table, src1)!=NULL  && TblSearch (table, src2)!=NULL) 
+         {
+		temp = ((TblSearch (table, src1))->data) / ((TblSearch (table, src2))->data);
+		TblInsert (table, result,temp,/* int type*/); 	
+         }
 	 break;
 
 	 /*========================I_POW=========================*/
 	 case I_POW:
+
+         src1 = instr->src1;
+         src2 = instr->src2;
+         result = instr->result;
+
+         if (TblSearch (table, src1)!=NULL  && TblSearch (table, src2)!=NULL) 
+         {
+		temp =  pow((TblSearch (table, src1))->data, (TblSearch (table, src2))->data);
+		TblInsert (table, result,temp,/* int type*/); 	
+         }
 	 break;
 
 	 /*========================I_CON=========================*/ 
 	 case I_CON:
+
+         src1 = instr->src1;
+         src2 = instr->src2;
+         result = instr->result;
+
+         if (TblSearch (table, src1)!=NULL  && TblSearch (table, src2)!=NULL) 
+         {
+		temp = ConcString(TblSearch (table, src1))->data,( (TblSearch (table, src2))->data);
+		TblInsert (table, result,temp,/* int type*/); 	
+         }
 	 break;
 
 	 /*========================I_G=========================*/ 
@@ -166,7 +261,7 @@ void interpret (tHashTbl table,TList *L)
      }
 
   	/*posun se na dalsi instrukci*/
-	ActiveNextItem (/*TS_table->TList*/);
+	ActiveNextItem (L);
   }
 
 }
