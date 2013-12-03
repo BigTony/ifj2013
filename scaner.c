@@ -12,6 +12,7 @@
 
 #include "scaner.h"
 #include <stdlib.h>
+#include "errors.h"
 
 
 
@@ -26,18 +27,18 @@ void skipSpace(char *c,FILE *fp)
      *c=_c;
 }
 
-void horner(char *w,Ttoken *token,short which)
+/*void horner(char *w,Ttoken *token,short which)
 {
     if (which == VARDOUBLE)
     {
-        token->value->varDouble=atof(w);
+        token->value.varDouble=atof(w);
     }
     else if(which == VARINT)
     {
-        token->value->varInt=atoi(w);
+        token->value.varInt=atoi(w);
     }
     return;
-}
+}*/
 
 /////////////////
 //FUNKCE getToken(FILE *f)
@@ -48,17 +49,22 @@ int getToken(FILE *fp,Ttoken *token){
     char* w;
     char c;
     int len=0;
-    if((w = calloc(0,sizeof(char) * BUFF))==NULL)   //Alokace pro retezec
+    if((w = malloc(sizeof(char) * BUFF))==NULL)   //Alokace pro retezec
     {
-        return 1;
+        return ALLOC_ERR;
     }
     //Ttoken token = malloc(sizeof(token));  //Alokace pro token (Neni lepsi obdrzet od zadatele?)
 
 
     skipSpace(&c,fp);
 
+
     switch( c )
     {
+        case '\0':
+            token->id = KONEC;
+            w[0]='\0';
+            token->value.varString=w;
         case '{' :
             token->id = ZAV_SLOZ_L;
             w[len]=c; w[len+1]='\0';
@@ -123,10 +129,78 @@ int getToken(FILE *fp,Ttoken *token){
             w[len]=c; w[len+1]='\0';
             token->value.varString = w;
             free(w);
-            return 0;
-
+            return E_OK;
+            break;
         default:
             break;
+
+    }
+    if(c=='<')
+    {
+        w[len]=c;
+        len++;
+        c=fgetc(fp);
+        if(c== '=')
+        {
+            w[len]=c;
+            len++; w[len+1]='\0';
+            token->value.varString = w;
+            token->id=MENSI_ROVNO;
+            free(w);
+        }
+        else if(c=='?') //START?
+        {
+            w[len]=c;
+            len++;
+            if(c=='p'){
+                w[len]=c;
+                len++;
+                c=fgetc(fp);
+                if(c=='h'){
+                   w[len]=c;
+                   len++;
+                   c=fgetc(fp);
+                   if(c=='p'){
+                       w[len]=c;
+                       len++;
+                       c=fgetc(fp);
+                       if(isspace(c)!=0){
+                           w[len+1]='\0';
+                           token->value.varString = w;
+                           token->id=START;
+                           free(w);
+                           return E_OK;
+                        }
+                        else{
+                            free(w);
+                            return E_LEX;
+                        }
+                   }
+                   else{
+                    free(w);
+                    return E_LEX;
+                    }
+                }
+                else{
+                   free(w);
+                   return E_LEX;
+                }
+            }
+            else{
+                free(w);
+                return E_LEX;
+            }
+        }
+        else
+        {
+            ungetc(c,fp);
+            w[len]='\0';
+            len--;
+            token->value.varString = w;
+            token->id = MENSI;
+            free(w);
+            return E_OK;
+        }
 
     }
     if( (c=='_') || isalpha(c)!=0)   // IDENTIFIKATOR ?
@@ -146,8 +220,8 @@ int getToken(FILE *fp,Ttoken *token){
         len--;
         token->id=FUNCTION_CALL;
         token->value.varString = w;
-
-        return 0;
+        free(w);
+        return E_OK;
 
     }
     if( (isdigit(c)!=0) )
@@ -160,7 +234,19 @@ int getToken(FILE *fp,Ttoken *token){
             w[len]=c;
 
         }while(isdigit(c)!=0);
-        if(c=='+'|| c=='-')
+        if(c=='.')
+        {
+            do
+            {
+                c=fgetc(fp);
+                len++;
+                w[len]=c;
+
+            }while(isdigit(c)!=0);
+            w[len]='\0';
+        }
+
+        else if(c=='+'|| c=='-')
         {
             //len++;
             //w[len]=c;
@@ -184,14 +270,21 @@ int getToken(FILE *fp,Ttoken *token){
             }
             else
             {
+                free(w);
                 return 1; //RETURN E_OK
             }
 
         }
+        free(w);
+        return E_LEX;
+    }
+    else{
+        free(w);
+        return E_LEX;
     }
 
 
-return 0;
+
 }
 
 
@@ -224,12 +317,11 @@ int main(int argc,char** argv){
   //  getToken(fp,&token);
   do{
       token.id = 0;
-      token.value.varString = malloc(sizeof(char)*BUFF);
       token.value.varString = NULL;
-      token.value.varInt = -1;
+      token.value.varInt = 0;
       token.value.varDouble = -1.0;
 
-      getToken(fp,&token);
+        getToken(fp,&token);
 
       if(token.value.varString!=NULL)
       {
@@ -237,7 +329,7 @@ int main(int argc,char** argv){
         printf("%s\n",token.value.varString);
       }
 
-      if(token.value.varInt>=0)
+      if(token.value.varInt>0)
       {
         printf("%\n         ",token.id);
         printf("%d\n",token.value.varInt);
@@ -250,8 +342,9 @@ int main(int argc,char** argv){
       }
 
 
-        free(token.value.varString);
+
   }while(token.id != KONEC);
+
     free(token.value.varString);
 
   // Provedeni syntakticke analyzy
