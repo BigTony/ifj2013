@@ -22,8 +22,7 @@
 * Tabulka typu tokenu
 */
 
-
-#define FUNCTION_CALL 1
+#define IDENTIFIKATOR 1
 #define VARINT 2
 #define VARDOUBLE 3
 #define VARIABLE 4
@@ -74,7 +73,7 @@
                 #define ESC_UVOZ    49 // \"   */
 
 //Alokace
-#define BUFF        100 //Alok ci realok vstupniho stringu
+#define BUFF        15 //Alok ci realok vstupniho stringu
 
 /**
 * Struktury
