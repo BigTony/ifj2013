@@ -164,6 +164,15 @@ TLItem * ReturnActiveItem (TList *L)
 	return L->Act;
 }
 
+// VRAT UKAZATEL NA KONKRETNI INSTRUKCI AKTIVNI POLOZKY
+TInstr * ReturnActiveInstr (TList *L) 
+{
+   if (L->Act!=NULL) 
+   {
+     L->Act->Instruction;	
+   }
+ return NULL;
+}
 
 /* funkce pro generovani instrukci */
 
