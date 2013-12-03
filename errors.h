@@ -15,9 +15,7 @@
 #define E_SEM_OTHER 13 // Ostatni semanticke chyby 
 #define E_INTERN 99 // Interni chyba interpretu 
 // meine chyby
-#define E_WRONG_PARAM 20 // Spatny pocet parametru
-#define E_FILE 21 // Chyba v souboru, nejde otevrit apod.
-#define ALLOC_ERR 22 // Chyba pri alokaci 
+ 
 
 // Funkce pro obsluhu error kodu
 void print_error(int err_code);
@@ -39,7 +37,6 @@ typedef struct {
 	tHashTbl *main_symobol_tbl;	//hlavni tabulka symbolu
 	tHashTblStack *function_stack;	//zasobnik tabulek symbolu pro funkce 
 	tListIns *list_instr_list;	//List listu instrukci
-	tListFun *list_function_tbl //List hashovacich tabulek pro jednotlive funkce	  
 	FILE *source;	//ukazatel na v vstupni soubor
 }tPointers;
 
