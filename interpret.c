@@ -10,7 +10,7 @@
 //
 //
 
-#include "string.c"
+#include "strings.c"
 #include "ial.c"
 #include "ilist.h"
 #include "interpret.h"
@@ -18,11 +18,6 @@
 #include "scaner.h"
 #include <math.h>
 
-void initOfAll () {
-// fuck 1
-// fuck 2
-// fuck 3
-}
 
 /*  INTERPRET - vykona intepretaci jazyka IFJ13
  *  @param1: globalni TS
@@ -83,30 +78,6 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
       *
       * ------------------------------------------------------------ */
 
-     /*
-       #define IDENTIFIKATOR 1
-       #define VARINT 2
-       #define VARDOUBLE 3
-       #define VARIABLE 4
-       #define STRING 5
-     */
-
-     /*
-        typedef union {
-           int varInt;
-           double varDouble;
-           char *varString;
-        }tokenValue;
-      */
-
-      /*
-        typedef struct item{
-            	int type;
-            	itemKey key;
-            	tokenValue data;
-            	struct item *nextItem;
-        }item;
-      */
 
       /// item* TblSearch (tHashTbl *tab, itemKey key);
       /// void  TblInsert (tHashTbl *tab, itemKey key, tokenValue data, int type); 
@@ -391,6 +362,8 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
          src2Data   = tHsrc2->data;
          resultData = tHresult->data;
 
+         if (tHsrc1!=NULL || tHsrc2!=NULL) return E_SEM_OTHER;
+
          ///char * konkatenace(char*prvni,char*druhy)
          if (dataType1==VARSTRING && dataType2==VARSTRING) 
          {
@@ -415,7 +388,33 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
 
 	 break;
 
-	 /*========================I_G=========================*/ 
+     /*
+       #define IDENTIFIKATOR 1
+       #define VARINT 2
+       #define VARDOUBLE 3
+       #define VARIABLE 4
+       #define STRING 5
+     */
+
+     /*
+        typedef union {
+           int varInt;
+           double varDouble;
+           char *varString;
+        }tokenValue;
+      */
+
+      /*
+        typedef struct item{
+            	int type;
+            	itemKey key;
+            	tokenValue data;
+            	struct item *nextItem;
+        }item;
+      */
+
+
+	 /*========================I_G=================================================================*/ 
 	 case I_G:
 
          // nactu id src1,src2 & result z INSTRUKCE
@@ -428,40 +427,385 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
          tHsrc2   = (TblSearch (lokal_htable_main, src2));
          tHresult = (TblSearch (lokal_htable_main, result));
 
-         // nactu typ dat src1 & src2
-         dataType1 = tHsrc1->type;
-         dataType2 = tHsrc2->type;
+         // typ: tHsrc1->type   data:   tHsrc1->data   item:  tHsrc1 , tHsrc2 , tHresult
 
-         // nactu data src1, src2 & result
-         src1Data   = tHsrc1->data;
-         src2Data   = tHsrc2->data;
-         resultData = tHresult->data;
+         int datTyp=0;
 
+         if (tHsrc1!=NULL || tHsrc2!=NULL) return E_SEM_OTHER;
+
+         if (tHsrc1->type==tHsrc2->type) 
+         {
+              TypeOF = VARBOLEAN;
+
+              if (tHsrc1->type==VARINT) 
+              {
+                 if (tHsrc1->data->varInt > tHsrc2->data->varInt)  datTyp = 1;
+                 else datTyp = 0;
+              }
+
+	      else if (tHsrc1->type==VARDOUBLE) 
+              {
+                 if (tHsrc1->data->varDouble > tHsrc2->data->varDouble)  datTyp = 1;
+                 else datTyp = 0;
+              }
+
+              else if (tHsrc1->type==VARSTRING) 
+              {
+                 if (strcmp(tHsrc1->data->varString,tHsrc2->data->varString)>0)  datTyp = 1;
+                 else datTyp = 0;
+              }
+
+         } 
+         else 
+         {
+             return E_SEM_TYPE; // nejsou stejny typy vole!
+         }
+
+            // pokud result exituje, prepisu data
+            if (tHresult!=NULL) 
+	      {
+                 tHresult->data->varInt = datTyp; // uloim soucet do te exitusjici
+	      } else {
+                   // polozka result neexistovala, pridam to nove vytvorene
+                   TblInsert (lokal_htable_main, result, datTyp, TypeOF); 
+	       }
 	 break;
 
-	 /*========================I_GE=========================*/
+	 /*========================I_GE===================================================================*/
 	 case I_GE:
+         // nactu id src1,src2 & result z INSTRUKCE
+         src1   = instr->src1;
+         src2   = instr->src2;
+         result = instr->result;
+
+         // nactu id src1,src2 & result z HASH tabulky
+         tHsrc1   = (TblSearch (lokal_htable_main, src1));
+         tHsrc2   = (TblSearch (lokal_htable_main, src2));
+         tHresult = (TblSearch (lokal_htable_main, result));
+
+         // typ: tHsrc1->type   data:   tHsrc1->data   item:  tHsrc1 , tHsrc2 , tHresult
+
+         int datTyp=0;
+
+         if (tHsrc1!=NULL || tHsrc2!=NULL) return E_SEM_OTHER;
+
+         if (tHsrc1->type==tHsrc2->type) 
+         {
+              TypeOF = VARBOLEAN;
+
+              if (tHsrc1->type==VARINT) 
+              {
+                 if (tHsrc1->data->varInt >= tHsrc2->data->varInt)  datTyp = 1;
+                 else datTyp = 0;
+              }
+
+	      else if (tHsrc1->type==VARDOUBLE) 
+              {
+                 if (tHsrc1->data->varDouble >= tHsrc2->data->varDouble)  datTyp = 1;
+                 else datTyp = 0;
+              }
+
+              else if (tHsrc1->type==VARSTRING) 
+              {
+                 if (strcmp(tHsrc1->data->varString,tHsrc2->data->varString)>=0)  datTyp = 1;
+                 else datTyp = 0;
+              }
+
+         } 
+         else 
+         {
+             return E_SEM_TYPE; // nejsou stejny typy vole!
+         }
+
+            // pokud result exituje, prepisu data
+            if (tHresult!=NULL) 
+	      {
+                 tHresult->data->varInt = datTyp; // uloim soucet do te exitusjici
+	      } else {
+                   // polozka result neexistovala, pridam to nove vytvorene
+                   TblInsert (lokal_htable_main, result, datTyp, TypeOF); 
+	       }
 	 break;
 
 	 /*========================I_L=========================*/ 
 	 case I_L:
+         // nactu id src1,src2 & result z INSTRUKCE
+         src1   = instr->src1;
+         src2   = instr->src2;
+         result = instr->result;
+
+         // nactu id src1,src2 & result z HASH tabulky
+         tHsrc1   = (TblSearch (lokal_htable_main, src1));
+         tHsrc2   = (TblSearch (lokal_htable_main, src2));
+         tHresult = (TblSearch (lokal_htable_main, result));
+
+         // typ: tHsrc1->type   data:   tHsrc1->data   item:  tHsrc1 , tHsrc2 , tHresult
+
+         int datTyp=0;
+
+         if (tHsrc1!=NULL || tHsrc2!=NULL) return E_SEM_OTHER;
+
+         if (tHsrc1->type==tHsrc2->type) 
+         {
+              TypeOF = VARBOLEAN;
+
+              if (tHsrc1->type==VARINT) 
+              {
+                 if (tHsrc1->data->varInt < tHsrc2->data->varInt)  datTyp = 1;
+                 else datTyp = 0;
+              }
+
+	      else if (tHsrc1->type==VARDOUBLE) 
+              {
+                 if (tHsrc1->data->varDouble < tHsrc2->data->varDouble)  datTyp = 1;
+                 else datTyp = 0;
+              }
+
+              else if (tHsrc1->type==VARSTRING) 
+              {
+                 if (strcmp(tHsrc1->data->varString,tHsrc2->data->varString)<0)  datTyp = 1;
+                 else datTyp = 0;
+              }
+
+         } 
+         else 
+         {
+             return E_SEM_TYPE; // nejsou stejny typy vole!
+         }
+
+            // pokud result exituje, prepisu data
+            if (tHresult!=NULL) 
+	      {
+                 tHresult->data->varInt = datTyp; // uloim soucet do te exitusjici
+	      } else {
+                   // polozka result neexistovala, pridam to nove vytvorene
+                   TblInsert (lokal_htable_main, result, datTyp, TypeOF); 
+	       }
 	 break;
 
-	 /*========================I_LE=========================*/ 
+	 /*========================I_LE==========================================================*/ 
 	 case I_LE:
+         // nactu id src1,src2 & result z INSTRUKCE
+         src1   = instr->src1;
+         src2   = instr->src2;
+         result = instr->result;
+
+         // nactu id src1,src2 & result z HASH tabulky
+         tHsrc1   = (TblSearch (lokal_htable_main, src1));
+         tHsrc2   = (TblSearch (lokal_htable_main, src2));
+         tHresult = (TblSearch (lokal_htable_main, result));
+
+         // typ: tHsrc1->type   data:   tHsrc1->data   item:  tHsrc1 , tHsrc2 , tHresult
+
+         int datTyp=0;
+
+         if (tHsrc1!=NULL || tHsrc2!=NULL) return E_SEM_OTHER;
+
+         if (tHsrc1->type==tHsrc2->type) 
+         {
+              TypeOF = VARBOLEAN;
+
+              if (tHsrc1->type==VARINT) 
+              {
+                 if (tHsrc1->data->varInt <= tHsrc2->data->varInt)  datTyp = 1;
+                 else datTyp = 0;
+              }
+
+	      else if (tHsrc1->type==VARDOUBLE) 
+              {
+                 if (tHsrc1->data->varDouble <= tHsrc2->data->varDouble)  datTyp = 1;
+                 else datTyp = 0;
+              }
+
+              else if (tHsrc1->type==VARSTRING) 
+              {
+                 if (strcmp(tHsrc1->data->varString,tHsrc2->data->varString)<=0)  datTyp = 1;
+                 else datTyp = 0;
+              }
+
+         } 
+         else 
+         {
+             return E_SEM_TYPE; // nejsou stejny typy vole!
+         }
+
+            // pokud result exituje, prepisu data
+            if (tHresult!=NULL) 
+	      {
+                 tHresult->data->varInt = datTyp; // uloim soucet do te exitusjici
+	      } else {
+                   // polozka result neexistovala, pridam to nove vytvorene
+                   TblInsert (lokal_htable_main, result, datTyp, TypeOF); 
+	       }
 	 break;
 
-	 /*========================I_E=========================*/ 
+	 /*========================I_E================================================================*/ 
 	 case I_E:
+         // nactu id src1,src2 & result z INSTRUKCE
+         src1   = instr->src1;
+         src2   = instr->src2;
+         result = instr->result;
+
+         // nactu id src1,src2 & result z HASH tabulky
+         tHsrc1   = (TblSearch (lokal_htable_main, src1));
+         tHsrc2   = (TblSearch (lokal_htable_main, src2));
+         tHresult = (TblSearch (lokal_htable_main, result));
+
+         // typ: tHsrc1->type   data:   tHsrc1->data   item:  tHsrc1 , tHsrc2 , tHresult
+
+         int datTyp=0;
+
+         if (tHsrc1!=NULL || tHsrc2!=NULL) return E_SEM_OTHER;
+
+         if (tHsrc1->type==tHsrc2->type) 
+         {
+              TypeOF = VARBOLEAN;
+
+              if (tHsrc1->type==VARINT) 
+              {
+                 if (tHsrc1->data->varInt == tHsrc2->data->varInt)  datTyp = 1;
+                 else datTyp = 0;
+              }
+
+	      else if (tHsrc1->type==VARDOUBLE) 
+              {
+                 if (tHsrc1->data->varDouble == tHsrc2->data->varDouble)  datTyp = 1;
+                 else datTyp = 0;
+              }
+
+              else if (tHsrc1->type==VARSTRING) 
+              {
+                 if (strcmp(tHsrc1->data->varString,tHsrc2->data->varString)==0)  datTyp = 1;
+                 else datTyp = 0;
+              }
+
+         } 
+         else 
+         {
+             return E_SEM_TYPE; // nejsou stejny typy vole!
+         }
+
+            // pokud result exituje, prepisu data
+            if (tHresult!=NULL) 
+	      {
+                 tHresult->data->varInt = datTyp; // uloim soucet do te exitusjici
+	      } else {
+                   // polozka result neexistovala, pridam to nove vytvorene
+                   TblInsert (lokal_htable_main, result, datTyp, TypeOF); 
+	       }
 	 break;
 
 	 /*========================I_NE=========================*/ 
 	 case I_NE:
-	 break;
+
+	 break         // nactu id src1,src2 & result z INSTRUKCE
+         src1   = instr->src1;
+         src2   = instr->src2;
+         result = instr->result;
+
+         // nactu id src1,src2 & result z HASH tabulky
+         tHsrc1   = (TblSearch (lokal_htable_main, src1));
+         tHsrc2   = (TblSearch (lokal_htable_main, src2));
+         tHresult = (TblSearch (lokal_htable_main, result));
+
+         // typ: tHsrc1->type   data:   tHsrc1->data   item:  tHsrc1 , tHsrc2 , tHresult
+
+         int datTyp=0;
+
+         if (tHsrc1!=NULL || tHsrc2!=NULL) return E_SEM_OTHER;
+
+         if (tHsrc1->type==tHsrc2->type) 
+         {
+              TypeOF = VARBOLEAN;
+
+              if (tHsrc1->type==VARINT) 
+              {
+                 if (tHsrc1->data->varInt != tHsrc2->data->varInt)  datTyp = 1;
+                 else datTyp = 0;
+              }
+
+	      else if (tHsrc1->type==VARDOUBLE) 
+              {
+                 if (tHsrc1->data->varDouble != tHsrc2->data->varDouble)  datTyp = 1;
+                 else datTyp = 0;
+              }
+
+              else if (tHsrc1->type==VARSTRING) 
+              {
+                 if (strcmp(tHsrc1->data->varString,tHsrc2->data->varString)!=0)  datTyp = 1;
+                 else datTyp = 0;
+              }
+
+         } 
+         else 
+         {
+             return E_SEM_TYPE; // nejsou stejny typy vole!
+         }
+
+            // pokud result exituje, prepisu data
+            if (tHresult!=NULL) 
+	      {
+                 tHresult->data->varInt = datTyp; // uloim soucet do te exitusjici
+	      } else {
+                   // polozka result neexistovala, pridam to nove vytvorene
+                   TblInsert (lokal_htable_main, result, datTyp, TypeOF); 
+	       };
 
 
 	 /*========================I_ET=========================*/ 
 	 case I_ET:
+         // nactu id src1,src2 & result z INSTRUKCE
+         src1   = instr->src1;
+         src2   = instr->src2;
+         result = instr->result;
+
+         // nactu id src1,src2 & result z HASH tabulky
+         tHsrc1   = (TblSearch (lokal_htable_main, src1));
+         tHsrc2   = (TblSearch (lokal_htable_main, src2));
+         tHresult = (TblSearch (lokal_htable_main, result));
+
+         // typ: tHsrc1->type   data:   tHsrc1->data   item:  tHsrc1 , tHsrc2 , tHresult
+
+         int datTyp=0;
+
+         if (tHsrc1!=NULL || tHsrc2!=NULL) return E_SEM_OTHER;
+
+         if (tHsrc1->type==tHsrc2->type) 
+         {
+              TypeOF = VARBOLEAN;
+
+              if (tHsrc1->type==VARINT) 
+              {
+                 if (tHsrc1->data->varInt == tHsrc2->data->varInt)  datTyp = 1;
+                 else datTyp = 0;
+              }
+
+	      else if (tHsrc1->type==VARDOUBLE) 
+              {
+                 if (tHsrc1->data->varDouble == tHsrc2->data->varDouble)  datTyp = 1;
+                 else datTyp = 0;
+              }
+
+              else if (tHsrc1->type==VARSTRING) 
+              {
+                 if (strcmp(tHsrc1->data->varString,tHsrc2->data->varString)==0)  datTyp = 1;
+                 else datTyp = 0;
+              }
+
+         } 
+         else 
+         {
+             return E_SEM_TYPE; // nejsou stejny typy vole!
+         }
+
+            // pokud result exituje, prepisu data
+            if (tHresult!=NULL) 
+	      {
+                 tHresult->data->varInt = datTyp; // uloim soucet do te exitusjici
+	      } else {
+                   // polozka result neexistovala, pridam to nove vytvorene
+                   TblInsert (lokal_htable_main, result, datTyp, TypeOF); 
+	       }
 	 break;
 
 
