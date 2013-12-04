@@ -53,10 +53,8 @@ void init_global(tPointers *ptrs);
 	{
 		print_error(E_INTERN,"Chyba alokace pameti: init_global");
 	}
-	if (NULL == (ptrs=malloc(*sizeof(tPointers)))
-	{
-		print_error(E_INTERN,"Chyba alokace pameti: const_counter");
-	}	
+	ptrs->counter=allocString();
+	//nastavit na $$\0
 	ptrs->token=NULL;
 	ptrs->main_symobol_tbl=NULL
 	ptrs->function_stack=NULL;

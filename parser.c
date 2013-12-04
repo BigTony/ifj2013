@@ -19,8 +19,8 @@ void add_const_hashtbl(tHashTbl *hashTbl, int type, tokenValue value, char *coun
 	do
 	{
 		counter[i++]++;
-	} while ((counter[i]!='\0') &&(counter[i]==MAX_CHAR));
-		
+	} while ((counter[i]!='\0') &&(counter[i]==MAX_CHAR));	
+	TblInsert (hashTbl, counter, value, type);	
 }
 
 // deklarace nebo prirazeni promene
