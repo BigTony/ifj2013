@@ -13,7 +13,6 @@
 /**
 * Hlavickovy soubor pro lexikalni analyzator
 */
-//#include "errors.h"
 #include <stdio.h>
 #include <ctype.h>
 #include <stdlib.h>
@@ -27,6 +26,8 @@
 #define VARDOUBLE 3
 #define VARIABLE 4
 #define STRING 5
+#define VARBOOL 6
+#define NIL 7   //null
 // Znaky
 #define ZAV_JEDN_L  10 // (
 #define ZAV_JEDN_P  11 // )
@@ -57,9 +58,8 @@
 #define RETURN		43
 #define FUNCTION 	44
 // Konstanty
-#define null    	50 // NULL
-#define true        51
-#define false       52
+/*#define true        51
+#define false       52*/
 //=========================
 //-------------------
 // starty konce lol
@@ -74,7 +74,7 @@
                 #define ESC_UVOZ    49 // \"   */
 
 //Alokace
-#define BUFF        15 //Alok ci realok vstupniho stringu
+#define BUFF        10 //Alok ci realok vstupniho stringu
 
 /**
 * Struktury
