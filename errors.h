@@ -26,6 +26,7 @@ typedef struct tPointers{
 	tHashTblStack *function_stack;	//zasobnik tabulek symbolu pro funkce 
 	tListIns *list_instr_list;	//List listu instrukci
 	FILE *source;	//ukazatel na v vstupni soubor
+	int const_counter;
 }tPointers;
 
 extern tPointers *ptrs;
@@ -37,7 +38,7 @@ void init_global(tPointers *ptrs);
 void dealloc_global(tPointers *ptrs);
 // Pole pro alokacni funkce
 typedef void (*ptrDealoc) (tPointers *ptrs);
-// Pole pro dealokacni fu 
+// Pole pro dealokacni funkce 
 
 
 

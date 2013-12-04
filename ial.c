@@ -54,7 +54,7 @@ item* TblSearch (tHashTbl *tab, itemKey key)
 
 
 /// VLOZENI NOVE POLOZKY
-void TblInsert (tHashTbl *tab, itemKey key,itemValue data, int type) 
+void TblInsert (tHashTbl *tab, itemKey key,tokenValue data, int type) 
 {
 
   item *AddNew = NULL;
@@ -88,7 +88,7 @@ void TblInsert (tHashTbl *tab, itemKey key,itemValue data, int type)
 }
 
 /// PRECTE HODNOTU PROMENNE
-itemValue* TblReadData (tHashTbl *tab, itemKey key) 
+tokenValue* TblReadData (tHashTbl *tab, itemKey key) 
 {
   item *read;
   if ((read=TblSearch(tab,key)) != NULL)
@@ -111,7 +111,7 @@ return 0;
 
 
 /// SMAZU VSECHNO
-void TblDelete (tHashTbl *tab, itemKey key) 
+void TblDelete (tHashTbl *tab) 
 {
   item* Temp=NULL;
   for (int key=0;key<ALLOC;key++) 
