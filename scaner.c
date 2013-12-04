@@ -12,6 +12,7 @@
 #include "errors.h"
 #include "scaner.h"
 #include <stdlib.h>
+#include <string.h>
 
 
 
@@ -306,6 +307,51 @@ int getToken(FILE *fp,Ttoken *token){
     //end START  //
     ///////////////
 
+
+    /////////////////
+    //VARIABLE//
+    /////////////////
+    if(c=='$')
+    {
+        w[len]=c;
+        len++;
+        c=fgetc(fp);
+        if( (c=='_') || isalpha(c)!=0)   // IDENTIFIKATOR ?
+        {
+            w[len]=c;
+            do
+            {
+                if(len%10==9)
+                {
+                //    realloc()
+                }
+                c=fgetc(fp);
+                len++;
+                w[len]=c;
+            }
+            while(isalnum(c)!=0 || c=='_');
+            //navraceni nasledujiciho znaku ZA identifikatorem (kvuli dowhile)
+            //ulozeni a odeslani tokenu
+            ungetc(c,fp);
+            w[len]='\0';
+            len--;
+            token->id=VARIABLE;
+            token->value.varString = w;
+           // free(w);
+            return E_OK;
+
+        }
+        else
+        {
+            free(w);
+            return E_LEX;
+        }
+    }
+    ///^^^^^^/////////////
+    ///End VARIABLE/
+
+
+
     /////////////////
     //IDENTIFIKATOR//
     /////////////////
@@ -316,7 +362,7 @@ int getToken(FILE *fp,Ttoken *token){
         {
             if(len%10==9)
             {
-
+            //    realloc()
             }
             c=fgetc(fp);
             len++;
@@ -328,16 +374,29 @@ int getToken(FILE *fp,Ttoken *token){
         ungetc(c,fp);
         w[len]='\0';
         len--;
-        token->id=IDENTIFIKATOR;
-        token->value.varString = w;
-       // free(w);
-        return E_OK;
+        if((strcmp(w,"if")==0)||(strcmp(w,"else")==0)||(strcmp(w,"while")==0)||(strcmp(w,"return")==0
+            )||(strcmp(w,"function")==0)||(strcmp(w,"null")==0)||(strcmp(w,"true")==0)||(strcmp(w,"false")==0))
+        {
+            free(w);
+            return E_LEX;
+        }
+        else
+        {
+            token->id=IDENTIFIKATOR;
+            token->value.varString = w;
+           // free(w);
+            return E_OK;
+        }
 
-    }
+    }                ///
     ///^^^^^^/////////////
     ///End IDENTIFIKATOR/
     ///^^^^^^////////////
-
+    ///    /
+    ///   /
+    ///---/
+    ///
+   ///|
     ////////////////
     //NUMBERS   ///
     ///////////////
@@ -361,22 +420,20 @@ int getToken(FILE *fp,Ttoken *token){
 
             }while(isdigit(c)!=0);
             w[len]='\0';
+            ungetc(c,fp);
+            token->id=VARDOUBLE;
+            token->value.varDouble = strtod(w,NULL);
+            free(w);
+            return E_OK;
         }
 
         else if(c=='+'|| c=='-')
         {
-            //len++;
-            //w[len]=c;
-            /*
-            TADY PREVEST NA CISLO PRVNI CAST
-            */
             c=fgetc(fp);
-            if(c=='e')
+            if(c=='e'||c=='E')
             {
-                len=0;
-                w=NULL;
-                //    len++;
-                //    w[len]=c;
+                len++;
+                w[len]=c;
                 do
                 {
                     c=fgetc(fp);
@@ -384,26 +441,39 @@ int getToken(FILE *fp,Ttoken *token){
                     w[len]=c;
                 }while(isdigit(c)!=0);
                 w[len]='\0';
+                ungetc(c,fp);
+                token->id=VARDOUBLE;
+                token->value.varDouble = strtod(w,NULL);
+                free(w);
             }
             else
             {
-               // free(w);
-                return E_OK; //RETURN E_OK
+                free(w);
+                return E_LEX;
             }
-
         }
+        else
+        {
+            ungetc(c,fp);
+            w[len]='\0';
+            token->id=VARINT;
+            token->value.varInt=atoi(w);
+            free(w);
+            return E_OK;
+        }
+    }
+    else{
         free(w);
         return E_LEX;
     }
-    else{
 
-        return E_LEX;
-    }
     //////////////////
     //END NUMBERS   //
     //////////////////
 
-
+    //k tomuhle by nemelo vubec dojit, jen kvuli warningu
+    free(w);
+    return E_LEX;
 }
 
 
@@ -452,19 +522,19 @@ int main(int argc,char** argv){
 ////////////////
 
 
-      if(((token.id>=3) || (token.id==0)) && (token.id<61))
+      if(((token.id>=4) || (token.id==1)) && (token.id<61))
       {
         printf("%d\n         ",token.id);
         printf("%s\n",token.value.varString);
       }
 
-      if(token.id==1 && token.id<61)
+      if(token.id==2 && token.id<61)
       {
         printf("%d\n         ",token.id);
         printf("%d\n",token.value.varInt);
       }
 
-      if(token.id ==2 && token.id<61)
+      if(token.id ==3 && token.id<61)
       {
         printf("%d\n         ",token.id);
         printf("%f\n",token.value.varDouble);
