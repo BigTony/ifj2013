@@ -539,12 +539,14 @@ int main(int argc,char** argv){
   do{
       token.id = 0;
       token.value.varString = NULL;
-      token.value.varInt = 0;
+      token.value.varInt = -1;
       token.value.varDouble = -1.0;
+      printf("%d",token.value.varInt);
 /////////////////
 //getToken()
 ////////////////
         int error;
+
       if((error=getToken(fp,&token))!=E_OK)
       {
           printf("%d",error);
