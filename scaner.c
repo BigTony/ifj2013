@@ -434,11 +434,59 @@ int getToken(FILE *fp,Ttoken *token){
             ungetc(c,fp);
             w[len]='\0';
             len--;
-            if((strcmp(w,"if")==0)||(strcmp(w,"else")==0)||(strcmp(w,"while")==0)||(strcmp(w,"return")==0
+           /* if((strcmp(w,"if")==0)||(strcmp(w,"else")==0)||(strcmp(w,"while")==0)||(strcmp(w,"return")==0
                 )||(strcmp(w,"function")==0)||(strcmp(w,"null")==0)||(strcmp(w,"true")==0)||(strcmp(w,"false")==0))
             {
                 free(w);
                 print_error(E_LEX,"LexERROR"); return E_LEX;
+            }*/
+            if((strcmp(w,"if")==0))
+            {
+                token->id=IF;
+                token->value.varString=w;
+                return token->id;
+            }
+            else if((strcmp(w,"else")==0))
+            {
+                token->id=ELSE;
+                token->value.varString=w;
+                return token->id;
+            }
+            else if((strcmp(w,"while")==0))
+            {
+                token->id=WHILE;
+                token->value.varString=w;
+                return token->id;
+            }
+            else if((strcmp(w,"return")==0))
+            {
+                token->id=RETURN;
+                token->value.varString=w;
+                return token->id;
+            }
+            else if((strcmp(w,"function")==0))
+            {
+                token->id=FUNCTION;
+                token->value.varString=w;
+                return token->id;
+            }
+            else if((strcmp(w,"null")==0))
+            {
+                token->id=NIL;
+                token->value.varString=NULL;
+                return token->id;
+            }
+            else if((strcmp(w,"true")==0))
+            {
+                token->id=VARBOOL;
+                token->value.varInt=1;
+                return token->id;
+            }
+            else if((strcmp(w,"false")==0))
+            {
+                token->id=VARBOOL;
+                token->value.varInt=0;
+                return token->id;
             }
             else
             {
@@ -571,10 +619,7 @@ int getToken(FILE *fp,Ttoken *token){
             }
 
         }
-        else{
-            free(w);
-            print_error(E_LEX,"LexERROR"); return E_LEX;
-        }
+
 
         //////////////////
         //END NUMBERS   //
@@ -583,11 +628,12 @@ int getToken(FILE *fp,Ttoken *token){
         /**
         *VARSTRING
         **/
-        if(c=='\"')
+        if(c=='"')
         {
             c=fgetc(fp);
+            int pom=0;// na rozliseni " nebo \"
             //len++;
-            while(c!='\"');
+            while(c!='"'||pom==0)
             {
                 if(len%10==9)
                 {
@@ -597,22 +643,85 @@ int getToken(FILE *fp,Ttoken *token){
                         return E_LEX;
                     }
                 }
-                if(c>31)
+                if(c>31 && c!='"' && c!='$' && c!='t' && c!='\\' && c!='x')
                 {
-                    if(c=='$')
-                    {
-                        if(w[len-1]!='\\')
-                        {
-                            print_error(E_LEX,"$ neni predchazen \\");
-                        }
-                        else
-                        {
-                        }
-                    }
 
                     w[len]=c;
                     len++;
                     c=fgetc(fp);
+
+                }
+                else if(c=='"')
+                {
+                    if(w[len-1]=='\\')
+                    {
+                        w[len-1]=c;
+                        c=fgetc(fp);
+                    }
+                    else
+                        pom=1;
+                }
+                else if(c=='$')
+                {
+                    if(w[len-1]=='\\')
+                    {
+                        w[len-1]=c;
+                        c=fgetc(fp);
+                    }
+                    else
+                    {
+                        print_error(E_LEX,"$ neni predchazen \\");
+                    }
+                }
+                else if(c=='t')
+                {
+                    if(w[len-1]=='\\')
+                    {
+                        w[len-1]='\t';
+                        c=fgetc(fp);
+                    }
+                    else{};
+                }
+                else if(c=='x')
+                {
+                    if(w[len-1]=='\\')
+                    {//\xDD kde DD jsou hexadecimalni cisla od 00 do FF/Ff/fF/ff
+                        char dd[2];
+                        dd[0]=fgetc(fp);
+                        dd[1]=fgetc(fp);
+                        if(isxdigit(dd[0])&&isxdigit(dd[1]))
+                        {
+                            w[len-1]=(char)strtol(dd,NULL,16);
+                        }
+                        else
+                        {
+                            print_error(E_LEX,"Chybny format unikove skevence \xDD");
+                        }
+                    }
+                    else
+                    {
+                        w[len]=c;
+                        len++;
+                        c=fgetc(fp);
+                    }
+                }
+                else if(c=='\\')
+                {
+                    if(w[len-1]=='\\')
+                    {
+                        w[len-1]='\\';
+                        c=fgetc(fp);
+                        //len++;
+                    }
+                    else
+                    {
+                        w[len]=c;
+                        len++;
+                        c=fgetc(fp);
+                    }
+                }
+                else{
+                    print_error(E_LEX,"$ neni predchazen \\");
                 }
 
             }
@@ -620,114 +729,14 @@ int getToken(FILE *fp,Ttoken *token){
             w[len]='\0';
             token->id=STRING;
             token->value.varString=w;
-
+            return token->id;
         }
         //////////////////
         //END VARSTRING //
         //////////////////
-
-        /**
-        *KLICOVE SLOVA
-        **/
-        //////////////////////
-        //END KLICOVE SLOVA //
-        //////////////////////
-
-
-
 }
     //k tomuhle by nemelo vubec dojit, jen kvuli warningu
     free(w);
     print_error(E_LEX,"LexERROR"); return E_LEX;
     return E_LEX;
 }
-
-
-
-
-
-int main(int argc,char** argv){
-
-  /*ProgramState main;
-  main.err_code = 0;
-  main.table = NULL;
-  main.source = NULL;
-  // main.instruction = TODO
-*/
-  // Testovani parametru
-  /*if (argc != 2){
-  	print_error(E_WRONG_PARAM);
-  	return E_WRONG_PARAM;
-  }*/
-  // Testovani otevreni souboru
-  FILE *fp;
-  if ((fp = fopen("test.txt", "r")) == NULL){
-    printf("error fopen");
-    return 0;
-  }
-
- // Ttoken token = malloc(sizeof(token));  //Alokace pro token (Neni lepsi obdrzet od zadatele?)
-    Ttoken token;
-   // token.value.varString = malloc(sizeof(char)*BUFF);
-  //  getToken(fp,&token);
-  do{
-      token.id = 0;
-      token.value.varString = NULL;
-      token.value.varInt = -1;
-      token.value.varDouble = -1.0;
-/////////////////
-//getToken()
-////////////////
-
-        getToken(fp,&token);
-
-//////////////
-////////////////
-
-
-      if(((token.id>=4) || (token.id==1)) && (token.id<61))
-      {
-        printf("%d\n         ",token.id);
-        printf("%s\n",token.value.varString);
-      }
-
-      if(token.id==2 && token.id<61)
-      {
-        printf("%d\n         ",token.id);
-        printf("%d\n",token.value.varInt);
-      }
-
-      if(token.id ==3 && token.id<61)
-      {
-        printf("%d\n         ",token.id);
-        printf("%f\n",token.value.varDouble);
-      }
-
-
-    if(token.value.varString!=NULL)
-    {
-        free(token.value.varString);
-    }
-  }while(token.id != KONEC);
-  /*if(token.value.varString!=NULL)
-    {
-        free(token.value.varString);
-    }*/
-
-
-    fclose(fp);
-  // Provedeni syntakticke analyzy
- // tableInit(&main);
-  //parser(&main);
-    //scanner
-  // Pri chybe vypsani chyby, a return error kodu
-  /*if(main.err_code != E_OK){
-  	print_error(main.err_code);
-  	return main.err_code;
-  }
-
-  fclose(main.source);
-  //freeAll(); TODO, dealakovat veskerej bullshit*/
-  return E_OK;
-}
-
