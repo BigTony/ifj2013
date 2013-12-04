@@ -24,11 +24,13 @@ int reallocString(char** w)
     char* wPom;
     if((wPom = malloc(sizeof(char) * BUFF))==NULL)   //Alokace pro retezec
     {
-        return ALLOC_ERR;
+        print_error(E_INTERN,"LexAllocError");
     }
-    wPom = realloc(*w,sizeof(*w)+BUFF);
-    if(wPom==NULL){
-        return ALLOC_ERR;}
+    wPom = realloc(*w,strlen(*w)+BUFF);
+    if(wPom==NULL)
+    {
+        print_error(E_INTERN,"LexAllocError");
+    }
     else
     {
         *w=wPom;
@@ -72,119 +74,150 @@ int getToken(FILE *fp,Ttoken *token){
 
     if((w = malloc(sizeof(char) * BUFF))==NULL)   //Alokace pro retezec
     {
-        return ALLOC_ERR;
+        print_error(E_INTERN,"LexAllocError");
     }
     //Ttoken token = malloc(sizeof(token));  //Alokace pro token (Neni lepsi obdrzet od zadatele?)
 
 
     skipSpace(&c,fp);
-
-
-    switch( c )
+    while(1)
     {
-        case (char)-1: //KONEC
-            token->id = KONEC;
-            w[0]=c;
-            token->value.varString=w;
-            return E_OK;
-        case '{' :
-            token->id = ZAV_SLOZ_L;
-            w[len]=c; w[len+1]='\0';
-            token->value.varString = w;
-        	return E_OK;
-        case '}' :
-            token->id = ZAV_SLOZ_P;
-            w[len]=c; w[len+1]='\0';
-            token->value.varString = w;
-            free(w);
-        	return E_OK;
-        case ';' :
-            token->id = STREDNIK;
-            w[len]=c; w[len+1]='\0';
-            token->value.varString = w;
-        	return E_OK;
-        case '(' :
-            token->id = ZAV_JEDN_L;
-            w[len]=c; w[len+1]='\0';
-            token->value.varString = w;
-        	return E_OK;
-        case ')' :
-            token->id = ZAV_JEDN_P;
-            w[len]=c; w[len+1]='\0';
-            token->value.varString = w;
-        	return E_OK;
-        case '+' :
-            token->id = PLUS;
-            w[len]=c; w[len+1]='\0';
-            token->value.varString = w;
-        	return E_OK;
-        case '-' :
-            token->id = MINUS;
-            w[len]=c; w[len+1]='\0';
-            token->value.varString = w;
-        	return E_OK;
-        case '/' :
-            token->id = DELENO;
-            w[len]=c; w[len+1]='\0';
-            token->value.varString = w;
-        	return E_OK;
-        case '.' :
-            token->id = TECKA;
-            w[len]=c; w[len+1]='\0';
-            token->value.varString = w;
-            return E_OK;
-        case ',' :
-            token->id = CARKA;
-            w[len]=c; w[len+1]='\0';
-            token->value.varString = w;
-            return E_OK;
-
-        case '*' :
-            token->id = KRAT;
-            w[len]=c; w[len+1]='\0';
-            token->value.varString = w;
-            return E_OK;
-
-        default:
-            break;
-
-    }
-
-    //////////////
-    //>=    //////
-    //////////////
-    if(c=='>')
-    {
-        w[len]=c;
-        len++;
-        c=fgetc(fp);
-        if(c== '=')
+        /**
+        *Komentare
+        */
+        if(c=='/')
         {
-            w[len]=c; w[len+1]='\0';
-            token->value.varString = w;
-            token->id=VETSI_ROVNO;
-            return E_OK;
+            c=fgetc(fp);
+            if(c=='/')
+            {
+                while((c!='\n') && (c!=(char)-1))
+                {
+                    c=fgetc(fp);
+                }
+            }
+            else if(c=='*')
+            {
+                c=fgetc(fp);
+                char cPom[2];
+                cPom[0]=c;
+                cPom[1]=fgetc(fp);
+                while(!(cPom[0]=='*'&&cPom[1]=='/')&&cPom[1]!=(char)-1)
+                {
+                    cPom[0]=cPom[1];
+                    cPom[1]=fgetc(fp);
+                }
+                //skipSpace(&c,fp);
+            }
+            else
+            {
+                print_error(E_LEX,"LexERROR");
+                return E_LEX;
+            }
+            skipSpace(&c,fp);
+            continue;
         }
-        else
+        ////////////
+        //////////////////
+        switch( c )
         {
-            w[len]='\0';
-            ungetc(c,fp);
-            token->value.varString = w;
-            token->id=VETSI;
-            return E_OK;
+            case (char)-1: //KONEC
+                token->id = KONEC;
+                w[0]=c;
+                token->value.varString=w;
+                return token->id;
+            case '{' :
+                token->id = ZAV_SLOZ_L;
+                w[len]=c; w[len+1]='\0';
+                token->value.varString = w;
+                return token->id;
+            case '}' :
+                token->id = ZAV_SLOZ_P;
+                w[len]=c; w[len+1]='\0';
+                token->value.varString = w;
+                free(w);
+                return token->id;
+            case ';' :
+                token->id = STREDNIK;
+                w[len]=c; w[len+1]='\0';
+                token->value.varString = w;
+                return token->id;
+            case '(' :
+                token->id = ZAV_JEDN_L;
+                w[len]=c; w[len+1]='\0';
+                token->value.varString = w;
+                return token->id;
+            case ')' :
+                token->id = ZAV_JEDN_P;
+                w[len]=c; w[len+1]='\0';
+                token->value.varString = w;
+                return token->id;
+            case '+' :
+                token->id = PLUS;
+                w[len]=c; w[len+1]='\0';
+                token->value.varString = w;
+                return token->id;
+            case '-' :
+                token->id = MINUS;
+                w[len]=c; w[len+1]='\0';
+                token->value.varString = w;
+                return token->id;
+            case '/' :
+                token->id = DELENO;
+                w[len]=c; w[len+1]='\0';
+                token->value.varString = w;
+                return token->id;
+            case '.' :
+                token->id = TECKA;
+                w[len]=c; w[len+1]='\0';
+                token->value.varString = w;
+                return token->id;
+            case ',' :
+                token->id = CARKA;
+                w[len]=c; w[len+1]='\0';
+                token->value.varString = w;
+                return token->id;
+
+            case '*' :
+                token->id = KRAT;
+                w[len]=c; w[len+1]='\0';
+                token->value.varString = w;
+                return token->id;
+
+            default:
+                break;
+
         }
 
-    }
-///^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^///
+        //////////////
+        //>=    //////
+        //////////////
+        if(c=='>')
+        {
+            w[len]=c;
+            len++;
+            c=fgetc(fp);
+            if(c== '=')
+            {
+                w[len]=c; w[len+1]='\0';
+                token->value.varString = w;
+                token->id=VETSI_ROVNO;
+                return token->id;
+            }
+            else
+            {
+                w[len]='\0';
+                ungetc(c,fp);
+                token->value.varString = w;
+                token->id=VETSI;
+                return token->id;
+            }
 
-    ///////////////////
-    //=== / =       //
-    //////////////////
-    if(c=='=')
-    {
-        w[len]=c;
-        len++;
-        c=fgetc(fp);
+        }
+    ///^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^///
+
+        ///////////////////
+        //=== / =       //
+        //////////////////
         if(c=='=')
         {
             w[len]=c;
@@ -192,149 +225,196 @@ int getToken(FILE *fp,Ttoken *token){
             c=fgetc(fp);
             if(c=='=')
             {
-                w[len]=c;
-                len++; w[len]='\0';
-                token->value.varString = w;
-                token->id=ROVNO;
-                return E_OK;
-            }
-            else
-            {
-                free(w);
-                return E_LEX;
-            }
-        }
-        else
-        {
-            w[len]='\0';
-            token->value.varString = w;
-            token->id=PRIRAZENI;
-            return E_OK;
-        }
-    }
-///^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^///
-
-    ///////////////////
-    // !==   NEROVNO//
-    //////////////////
-    if(c=='!')
-    {
-        w[len]=c;
-        len++;
-        c=fgetc(fp);
-        if(c=='=')
-        {
-            w[len]=c;
-            len++;
-            c=fgetc(fp);
-            if(c=='=')
-            {
-                w[len]=c;
-                len++; w[len]='\0';
-                token->value.varString = w;
-                token->id=NEROVNO;
-                return E_OK;
-            }
-            else
-            {
-                free(w);
-                return E_LEX;
-            }
-        }
-        else
-        {
-            free(w);
-            return E_LEX;
-        }
-    }
-///^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^///
-
-
-
-    //////////////////////
-    //START // <?php    //
-    //////////////////////
-    if(c=='<')
-    {
-        w[len]=c;
-        len++;
-        //printf("%c",c);
-        c=fgetc(fp);
-        if(c== '=')
-        {
-            w[len]=c;
-            len++; w[len]='\0';
-            token->value.varString = w;
-            token->id=MENSI_ROVNO;
-            return E_OK;
-        }
-        else if(c=='?') //START?
-        {
-            w[len]=c;
-            len++;
-            c=fgetc(fp);
-            if(c=='p'){
                 w[len]=c;
                 len++;
                 c=fgetc(fp);
-                if(c=='h'){
-                   w[len]=c;
-                   len++;
-                   c=fgetc(fp);
-                   if(c=='p'){
+                if(c=='=')
+                {
+                    w[len]=c;
+                    len++; w[len]='\0';
+                    token->value.varString = w;
+                    token->id=ROVNO;
+                    return token->id;
+                }
+                else
+                {
+                    free(w);
+                    print_error(E_LEX,"LexERROR"); return E_LEX;
+                }
+            }
+            else
+            {
+                w[len]='\0';
+                token->value.varString = w;
+                token->id=PRIRAZENI;
+                return token->id;
+            }
+        }
+    ///^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^///
+
+        ///////////////////
+        // !==   NEROVNO//
+        //////////////////
+        if(c=='!')
+        {
+            w[len]=c;
+            len++;
+            c=fgetc(fp);
+            if(c=='=')
+            {
+                w[len]=c;
+                len++;
+                c=fgetc(fp);
+                if(c=='=')
+                {
+                    w[len]=c;
+                    len++; w[len]='\0';
+                    token->value.varString = w;
+                    token->id=NEROVNO;
+                    return token->id;
+                }
+                else
+                {
+                    free(w);
+                    print_error(E_LEX,"LexERROR"); return E_LEX;
+                }
+            }
+            else
+            {
+                free(w);
+                print_error(E_LEX,"LexERROR"); return E_LEX;
+            }
+        }
+    ///^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^///
+
+
+
+        //////////////////////
+        //START // <?php    //
+        //////////////////////
+        if(c=='<')
+        {
+            w[len]=c;
+            len++;
+            //printf("%c",c);
+            c=fgetc(fp);
+            if(c== '=')
+            {
+                w[len]=c;
+                len++; w[len]='\0';
+                token->value.varString = w;
+                token->id=MENSI_ROVNO;
+                return token->id;
+            }
+            else if(c=='?') //START?
+            {
+                w[len]=c;
+                len++;
+                c=fgetc(fp);
+                if(c=='p'){
+                    w[len]=c;
+                    len++;
+                    c=fgetc(fp);
+                    if(c=='h'){
                        w[len]=c;
                        len++;
                        c=fgetc(fp);
-                       if(isspace(c)!=0){
-                           w[len]='\0';
-                           token->value.varString = w;
-                           token->id=START;
-                           return E_OK;
+                       if(c=='p'){
+                           w[len]=c;
+                           len++;
+                           c=fgetc(fp);
+                           if(isspace(c)!=0){
+                               w[len]='\0';
+                               token->value.varString = w;
+                               token->id=START;
+                               return token->id;
+                            }
+                            else{
+                                free(w);
+                                print_error(E_LEX,"LexERROR"); return E_LEX;
+                            }
+                       }
+                       else{
+                        free(w);
+                        print_error(E_LEX,"LexERROR"); return E_LEX;
                         }
-                        else{
-                            free(w);
-                            return E_LEX;
-                        }
-                   }
-                   else{
-                    free(w);
-                    return E_LEX;
+                    }
+                    else{
+                       free(w);
+                       print_error(E_LEX,"LexERROR"); return E_LEX;
                     }
                 }
                 else{
-                   free(w);
-                   return E_LEX;
+                    free(w);
+                    print_error(E_LEX,"LexERROR"); return E_LEX;
                 }
             }
-            else{
+            else
+            {
+                w[len]='\0';
+                ungetc(c,fp);
+                len--;
+                token->value.varString = w;
+                token->id =MENSI;
+                return token->id;
+            }
+
+        }
+        ////////////////
+        //end START  //
+        ///////////////
+
+
+        /////////////////
+        //VARIABLE//
+        /////////////////
+        if(c=='$')
+        {
+            w[len]=c;
+            len++;
+            c=fgetc(fp);
+            if( (c=='_') || isalpha(c)!=0)   // IDENTIFIKATOR ?
+            {
+                w[len]=c;
+                do
+                {
+                    if(len%10==9)
+                    {
+                      if(reallocString(&w)!=E_OK)
+                      {
+                          print_error(E_LEX,"LexERROR"); return E_LEX;
+                      }
+                    }
+                    c=fgetc(fp);
+                    len++;
+                    w[len]=c;
+                }
+                while(isalnum(c)!=0 || c=='_');
+                //navraceni nasledujiciho znaku ZA identifikatorem (kvuli dowhile)
+                //ulozeni a odeslani tokenu
+                ungetc(c,fp);
+                w[len]='\0';
+                len--;
+                token->id=VARIABLE;
+                token->value.varString = w;
+               // free(w);
+                return token->id;
+
+            }
+            else
+            {
                 free(w);
-                return E_LEX;
+                print_error(E_LEX,"LexERROR"); return E_LEX;
             }
         }
-        else
-        {
-            w[len]='\0';
-            ungetc(c,fp);
-            len--;
-            token->value.varString = w;
-            token->id =MENSI;
-            return E_OK;
-        }
-
-    }
-    ////////////////
-    //end START  //
-    ///////////////
+        ///^^^^^^/////////////
+        ///End VARIABLE/
 
 
-    /////////////////
-    //VARIABLE//
-    /////////////////
-    if(c=='$')
-    {
-        w[len]=c;
-        len++;
-        c=fgetc(fp);
+
+        /////////////////
+        //IDENTIFIKATOR//
+        /////////////////
         if( (c=='_') || isalpha(c)!=0)   // IDENTIFIKATOR ?
         {
             w[len]=c;
@@ -342,17 +422,7 @@ int getToken(FILE *fp,Ttoken *token){
             {
                 if(len%10==9)
                 {
-                  /*  if(( wPom = malloc(sizeof(char) * BUFF))==NULL)   //Alokace pro retezec
-                    {
-                        free(w);
-                        return ALLOC_ERR;
-                    }
-                    if(wPom=realloc(w,BUFF)==NULL)
-                    {
-                        free(w);
-                        free(wPom);
-                        return ALLOC_ERR;
-                    }*/
+                  if(reallocString(&w)!=E_OK){print_error(E_LEX,"LexERROR"); return E_LEX;}
                 }
                 c=fgetc(fp);
                 len++;
@@ -364,129 +434,131 @@ int getToken(FILE *fp,Ttoken *token){
             ungetc(c,fp);
             w[len]='\0';
             len--;
-            token->id=VARIABLE;
-            token->value.varString = w;
-           // free(w);
-            return E_OK;
-
-        }
-        else
-        {
-            free(w);
-            return E_LEX;
-        }
-    }
-    ///^^^^^^/////////////
-    ///End VARIABLE/
-
-
-
-    /////////////////
-    //IDENTIFIKATOR//
-    /////////////////
-    if( (c=='_') || isalpha(c)!=0)   // IDENTIFIKATOR ?
-    {
-        w[len]=c;
-        do
-        {
-            if(len%10==9)
+            if((strcmp(w,"if")==0)||(strcmp(w,"else")==0)||(strcmp(w,"while")==0)||(strcmp(w,"return")==0
+                )||(strcmp(w,"function")==0)||(strcmp(w,"null")==0)||(strcmp(w,"true")==0)||(strcmp(w,"false")==0))
             {
-
-//                realloc();
+                free(w);
+                print_error(E_LEX,"LexERROR"); return E_LEX;
             }
-            c=fgetc(fp);
-            len++;
-            w[len]=c;
-        }
-        while(isalnum(c)!=0 || c=='_');
-        //navraceni nasledujiciho znaku ZA identifikatorem (kvuli dowhile)
-        //ulozeni a odeslani tokenu
-        ungetc(c,fp);
-        w[len]='\0';
-        len--;
-        if((strcmp(w,"if")==0)||(strcmp(w,"else")==0)||(strcmp(w,"while")==0)||(strcmp(w,"return")==0
-            )||(strcmp(w,"function")==0)||(strcmp(w,"null")==0)||(strcmp(w,"true")==0)||(strcmp(w,"false")==0))
-        {
-            free(w);
-            return E_LEX;
-        }
-        else
-        {
-            token->id=IDENTIFIKATOR;
-            token->value.varString = w;
-           // free(w);
-            return E_OK;
-        }
-
-    }                ///
-    ///^^^^^^/////////////
-    ///End IDENTIFIKATOR/
-    ///^^^^^^////////////
-    ///    /
-    ///   /
-    ///---/
-    ///
-   ///|
-    ////////////////
-    //NUMBERS   ///
-    ///////////////
-
-    if( (isdigit(c)!=0) )
-    {
-        w[len]=c;
-        do
-        {
-            c=fgetc(fp);
-            len++;
-            w[len]=c;
-
-        }while(isdigit(c)!=0);
-        if(len==1)
-        {
-            if(c=='.')
+            else
             {
-                do
-                {
-                    c=fgetc(fp);
-                    len++;
-                    w[len]=c;
+                token->id=IDENTIFIKATOR;
+                token->value.varString = w;
+               // free(w);
+                return token->id;
+            }
 
-                }while(isdigit(c)!=0);
-                if((c=='e'|| c=='E'))
+        }                ///
+        ///^^^^^^/////////////
+        ///End IDENTIFIKATOR/
+        ///^^^^^^////////////
+        ///    /
+        ///   /
+        ///---/
+        ///
+       ///|
+        ////////////////
+        //NUMBERS   ///
+        ///////////////
+
+        if( (isdigit(c)!=0) )
+        {
+            w[len]=c;
+            do
+            {
+                if(len%10==9)
                 {
-                    c=fgetc(fp);
-                    if((c=='+') || (c=='-'))
+                  if(reallocString(&w)!=E_OK){print_error(E_LEX,"LexERROR"); return E_LEX;}
+                }
+                c=fgetc(fp);
+                len++;
+                w[len]=c;
+
+            }while(isdigit(c)!=0);
+            if(len==1)
+            {
+                if(c=='.')
+                {
+                    do
                     {
+                        if(len%10==9)
+                        {
+                          if(reallocString(&w)!=E_OK){print_error(E_LEX,"LexERROR"); return E_LEX;}
+                        }
+                        c=fgetc(fp);
                         len++;
                         w[len]=c;
-                        do
+
+                    }while(isdigit(c)!=0);
+                    if((c=='e'|| c=='E'))
+                    {
+                        c=fgetc(fp);
+                        if((c=='+') || (c=='-'))
                         {
-                            c=fgetc(fp);
                             len++;
                             w[len]=c;
-                        }while(isdigit(c)!=0);
+                            do
+                            {
+                                if(len%10==9)
+                                {
+                                    if(reallocString(&w)!=E_OK){print_error(E_LEX,"LexERROR"); return E_LEX;}
+                                }
+                                c=fgetc(fp);
+                                len++;
+                                w[len]=c;
+                            }while(isdigit(c)!=0);
+
+                            w[len]='\0';
+                            ungetc(c,fp);
+                            token->id=VARDOUBLE;
+                            token->value.varDouble = strtod(w,NULL);
+                            free(w);
+                            return token->id;
+                        }
+                        else
+                        {
+                            free(w);
+                            print_error(E_LEX,"LexERROR"); return E_LEX;
+                        }
+                    }
+                    else
+                    {
                         w[len]='\0';
                         ungetc(c,fp);
                         token->id=VARDOUBLE;
                         token->value.varDouble = strtod(w,NULL);
                         free(w);
-                        return E_OK;
-                    }
-                    else
-                    {
-                        free(w);
-                        return E_LEX;
+                        return token->id;
                     }
                 }
                 else
                 {
-                    w[len]='\0';
                     ungetc(c,fp);
-                    token->id=VARDOUBLE;
-                    token->value.varDouble = strtod(w,NULL);
+                    w[len]='\0';
+                    token->id=VARINT;
+                    token->value.varInt=atoi(w);
                     free(w);
-                    return E_OK;
+                    return token->id;
                 }
+            }
+            else if(c=='.')
+            {
+                do{
+                    if(len%10==9)
+                    {
+                      if(reallocString(&w)!=E_OK){print_error(E_LEX,"LexERROR"); return E_LEX;}
+                    }
+                    c=fgetc(fp);
+                    len++;
+                    w[len]=c;
+                }while(isdigit(c)!=0);
+                w[len]='\0';
+                ungetc(c,fp);
+                token->id=VARDOUBLE;
+                token->value.varDouble = strtod(w,NULL);
+                free(w);
+                return token->id;
+
             }
             else
             {
@@ -495,46 +567,78 @@ int getToken(FILE *fp,Ttoken *token){
                 token->id=VARINT;
                 token->value.varInt=atoi(w);
                 free(w);
-                return E_OK;
+                return token->id;
             }
+
         }
-        else if(c=='.')
-        {
-            do{
-                c=fgetc(fp);
-                len++;
-                w[len]=c;
-            }while(isdigit(c)!=0);
-            w[len]='\0';
-            ungetc(c,fp);
-            token->id=VARDOUBLE;
-            token->value.varDouble = strtod(w,NULL);
+        else{
             free(w);
-            return E_OK;
-
+            print_error(E_LEX,"LexERROR"); return E_LEX;
         }
-        else
+
+        //////////////////
+        //END NUMBERS   //
+        //////////////////
+
+        /**
+        *VARSTRING
+        **/
+        if(c=='\"')
         {
-            ungetc(c,fp);
+            c=fgetc(fp);
+            //len++;
+            while(c!='\"');
+            {
+                if(len%10==9)
+                {
+                    if(reallocString(&w)!=E_OK)
+                    {
+                        print_error(E_LEX,"LexERROR");
+                        return E_LEX;
+                    }
+                }
+                if(c>31)
+                {
+                    if(c=='$')
+                    {
+                        if(w[len-1]!='\\')
+                        {
+                            print_error(E_LEX,"$ neni predchazen \\");
+                        }
+                        else
+                        {
+                        }
+                    }
+
+                    w[len]=c;
+                    len++;
+                    c=fgetc(fp);
+                }
+
+            }
+
             w[len]='\0';
-            token->id=VARINT;
-            token->value.varInt=atoi(w);
-            free(w);
-            return E_OK;
+            token->id=STRING;
+            token->value.varString=w;
+
         }
+        //////////////////
+        //END VARSTRING //
+        //////////////////
 
-    }
-    else{
-        free(w);
-        return E_LEX;
-    }
+        /**
+        *KLICOVE SLOVA
+        **/
+        //////////////////////
+        //END KLICOVE SLOVA //
+        //////////////////////
 
-    //////////////////
-    //END NUMBERS   //
-    //////////////////
 
+
+}
     //k tomuhle by nemelo vubec dojit, jen kvuli warningu
     free(w);
+    print_error(E_LEX,"LexERROR"); return E_LEX;
     return E_LEX;
 }
 
@@ -571,17 +675,12 @@ int main(int argc,char** argv){
       token.value.varString = NULL;
       token.value.varInt = -1;
       token.value.varDouble = -1.0;
-      printf("%d",token.value.varInt);
 /////////////////
 //getToken()
 ////////////////
-        int error;
 
-      if((error=getToken(fp,&token))!=E_OK)
-      {
-          printf("%d",error);
-          return E_LEX;
-      }
+        getToken(fp,&token);
+
 //////////////
 ////////////////
 
