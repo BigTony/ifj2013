@@ -14,6 +14,7 @@
 #include "ilist.h"
 #include "interpret.h"
 #include "errors.h"
+#include "scaner.h"
 #include <math.h>
 
 void initOfAll () {
@@ -22,20 +23,45 @@ void initOfAll () {
 // fuck 3
 }
 
-
-void interpret (tHashTbl *table,TList *L) 
+/*  INTERPRET - vykona intepretaci jazyka IFJ13
+ *  @param1: globalni TS
+ *  @param2: Instrukcni seznam MAINU
+ *  @param3: zasobnik adres TS a ptr na navrat do instrukcniho seznamu
+ */
+void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack) 
 {
-   TInstr    *instr;   // data aktualni instrukce
-   TDataType *src1,*src2;
-   TDataType *tmp;
-   TDataType *result;
+//------------------- INIT -------------------------------------------------------------
 
-  while (IsActiveItem(L)) 
+   // aktivuju seznam MAINU
+   TList *ActiveList = L; 
+     
+   // data aktualni instrukce
+   TInstr    *instr;           
+   itemValue *src1,*src2;
+   itemValue *tmp;
+   itemValue *result;
+
+   /// navratva dresa instrukcniho seznamu MAINU
+   TLItem nil = NULL;
+
+   // Lokalni TS
+   tHashTbl *lokal_htable_main;
+
+   // provedu naalokovani a inicializaci LOKALNI TS
+   tableInit(lokal_htable_main);
+
+   // pushnu adresu lokalni TS na stack
+   pushStack(stack,lokal_htable_main,nil);
+
+
+//------------------- EXECUTE -------------------------------------------------------------
+
+  /// cekuju jestli je instrukce aktivni, pokud ano = while (1), jinak = while (0) = end
+  while (IsActiveItem(ActiveList)) 
   {
-
-
       // nactu instrukci
-      instr = (TInstr*) ReturnActiveInstr(L);
+      instr = (TInstr*) ReturnActiveInstr (ActiveList);
+
 
     /* -------------------------------------------------------------
      *	
@@ -43,10 +69,16 @@ void interpret (tHashTbl *table,TList *L)
      *
      * ------------------------------------------------------------ */
 
+/*
+#define IDENTIFIKATOR 1
+#define VARINT 2
+#define VARDOUBLE 3
+#define VARIABLE 4
+#define STRING 5
+*/
 
       switch (instr->operation) 
       {
-
 
 	 /*========================I_ASS========================= (EKV.: mov) */ 
 	 case I_ASS:
@@ -273,7 +305,8 @@ void interpret (tHashTbl *table,TList *L)
      }
 
   	/*posun se na dalsi instrukci*/
-	ActiveNextItem (L);
+	ActiveNextItem (ActiveList);
   }
 
 }
+
