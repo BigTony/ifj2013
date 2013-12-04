@@ -10,9 +10,15 @@
 // Iplementation sort and find functions
 //
 
-#pragma once
-#include "errors.h"
 
+
+
+
+#ifndef IAL_H
+#define IAL_H
+
+#include "errors.h"
+#include "scaner.h"
 #define ALLOC 67
 typedef char* itemKey;
 
@@ -37,7 +43,7 @@ void TblInsert (tHashTbl *tab, itemKey key,tokenValue data, int type);
 tokenValue* TblReadData (tHashTbl *tab, itemKey key);
 int TblReadType (tHashTbl *tab, itemKey key);
 void TblDelete (tHashTbl *tab);
- 
+#endif
  
 
 

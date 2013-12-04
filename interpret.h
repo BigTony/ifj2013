@@ -9,11 +9,13 @@
 // interpret.c
 //
 //
-#pragma once
-#include <string.h>
-#include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <errno.h>
+#ifndef INTEPRET_H
+#define INTEPRET_H
+#include "string.c"
+#include "ial.c"
 #include "ilist.h"
+#include "interpret.h"
+#include "errors.h"
+#include "scaner.h"
+#endif
 

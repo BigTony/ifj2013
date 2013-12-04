@@ -9,14 +9,16 @@
 // scaner.h
 //
 //
-#pragma once
 /**
 * Hlavickovy soubor pro lexikalni analyzator
 */
-#include <stdio.h>
-#include <ctype.h>
-#include <stdlib.h>
 
+
+
+#ifndef SCANER_H
+#define SCANER_H
+#include <stdio.h>
+#include "errors.h"
 /**
 * Tabulka typu tokenu
 */
@@ -94,3 +96,4 @@ typedef struct{
 
 // Funkce
 int getToken(FILE *fp,Ttoken *token);
+#endif

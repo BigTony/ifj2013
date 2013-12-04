@@ -10,9 +10,12 @@
 // 
 //
 
-#pragma once
-#include "scaner.h"
 
+#ifndef PARSER_H
+#define PARSER_H
+#include "scaner.h"
+#include "ilist.h"
+#include "errors.h"
 /**
 * Hlavickovy soubor pro syntakticky analyzator
 */
@@ -20,4 +23,4 @@
 void parser(tPointers *ptrs);
 //funkce na pridani do hashTbl
 void add_hash_tbl(tHashTbl *hashTbl, int type, tokenValue value);
-
+#endif

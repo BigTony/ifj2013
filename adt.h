@@ -10,14 +10,20 @@
 //
 //
 
-#pragma once
+
+
+#ifndef ADT_H
+#define ADT_H
+#include "ilist.h"
+#include "ial.h"
+#include "errors.h"
 
 // struktury pro zasobnik
 // ktery bude pouzit pro tabulky symbolu
 //
 typedef struct tSHashItem{
 	tHashTbl hashTbl;
-	TLItem NavrInstrukce;
+	TLItem *NavrInstrukce;
 	struct tSHashItem *ptrNext;
 } *tStackItemPtr;
 
@@ -26,7 +32,7 @@ typedef struct {
 } tHashTblStack;
 
 void initStack(tHashTblStack *stack);
-void pushStack(tHashTblStack *stack,tHashTbl hashTbl,TLItem NavrInstrukce);
+void pushStack(tHashTblStack *stack,tHashTbl hashTbl,TLItem *NavrInstrukce);
 void popStack(tHashTblStack *stack);
 tStackItemPtr topStack(tHashTblStack *stack);
 int emptyStack(tHashTblStack *stack);
@@ -50,6 +56,6 @@ void popStackIE(tIfElseStack *stack);
 tStackItemIEPtr topStackIE(tIfElseStack *stack);
 int emptyStackIE(tIfElseStack *stack);
 void freeStackIE(tIfElseStack *stack);
-
+#endif
 
 

@@ -9,7 +9,9 @@
 // adt.c
 //
 //
-
+#include <stdio.h>
+#include <stdlib.h>
+#include "adt.h"
 
 // zasobnik pro tabulku symbolu
 //
@@ -17,9 +19,9 @@ void initStack(tHashTblStack *stack){
 	stack->top = NULL;
 }
 
-void pushStack(tHashTblStack *stack,tHashTbl hashTbl,TLItem NavrInstrukce){
+void pushStack(tHashTblStack *stack,tHashTbl hashTbl,TLItem *NavrInstrukce){
 	tStackItemPtr temp;
-	if(temp = malloc(sizeof(struct tStackItemPtr)) == NULL){
+	if((temp = (tStackItemPtr )malloc(sizeof(tStackItemPtr))) == NULL){
 		print_error(E_INTERN,"chyba pri alokaci stacku pro tabulku symbolu");
 	}
 	temp->hashTbl = hashTbl;
@@ -30,7 +32,7 @@ void pushStack(tHashTblStack *stack,tHashTbl hashTbl,TLItem NavrInstrukce){
 }
 
 void popStack(tHashTblStack *stack){
-	tStackItem temp;
+	tStackItemPtr temp;
 	if (stack->top != NULL){
 		temp = stack->top;
 		stack->top = stack->top->ptrNext;
@@ -42,6 +44,7 @@ tStackItemPtr topStack(tHashTblStack *stack){
 	if(stack->top != NULL){
 		return stack->top;
 	}
+	return NULL;
 }
 
 int emptyStack(tHashTblStack *stack){
@@ -52,7 +55,7 @@ int emptyStack(tHashTblStack *stack){
 }
 
 void freeStack(tHashTblStack *stack){
-	while(!SEmpty(stack)){
+	while(!emptyStack(stack)){
 		popStack(stack);
 	}        
 	free(stack);
@@ -69,17 +72,17 @@ void initStackIE(tIfElseStack *stack){
 
 void pushStackIE(tIfElseStack *stack,int symbol){
 	tStackItemIEPtr temp;
-	if(temp = malloc(sizeof(struct tStackItemIEPtr)) == NULL){
+	if((temp = (tStackItemIEPtr)malloc(sizeof(tStackItemIEPtr))) == NULL){
 		print_error(E_INTERN,"chyba pri alokaci stacku pro tabulku symbolu");
 	}
-	temp->zavorka = hashTbl;
+	temp->zavorka = symbol;
 
 	temp->ptrNext = stack->top;
     stack->top = temp;
 }
 
 void popStackIE(tIfElseStack *stack){
-	tStackItem temp;
+	tStackItemIEPtr temp;
 	if (stack->top != NULL){
 		temp = stack->top;
 		stack->top = stack->top->ptrNext;
@@ -91,6 +94,7 @@ tStackItemIEPtr topStackIE(tIfElseStack *stack){
 	if(stack->top != NULL){
 		return stack->top;
 	}
+	return NULL;
 }
 
 int emptyStackIE(tIfElseStack *stack){
@@ -101,8 +105,8 @@ int emptyStackIE(tIfElseStack *stack){
 }
 
 void freeStackIE(tIfElseStack *stack){
-	while(!SEmpty(stack)){
-		popStack(stack);
+	while(!emptyStackIE(stack)){
+		popStackIE(stack);
 	}        
 	free(stack);
 }

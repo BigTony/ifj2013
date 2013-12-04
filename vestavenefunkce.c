@@ -1,5 +1,6 @@
 #include <limits.h>
 #include <ctype.h>
+#include "vestavenefunkce.h"
 
 // pretypovani
 void tovarint(item *item){

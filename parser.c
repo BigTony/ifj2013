@@ -11,7 +11,7 @@
 //
 #include <string.h>
 #include <limits.h>
-#include "errors.h"
+#include "parser.h"
 
 
 /**Funkce pro vlozeni constanty do hashTbl

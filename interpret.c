@@ -10,13 +10,13 @@
 //
 //
 
-#include "string.c"
-#include "ial.c"
-#include "ilist.h"
-#include "interpret.h"
-#include "errors.h"
-#include "scaner.h"
+
+#include <string.h>
 #include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <errno.h>
+#include "interpret.h"
 
 void initOfAll () {
 // fuck 1

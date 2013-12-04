@@ -9,12 +9,10 @@
 // scaner.c
 //
 //
-#include "errors.h"
-#include "scaner.h"
 #include <stdlib.h>
 #include <string.h>
-
-
+#include <ctype.h>
+#include "scaner.h"
 
 
 //////

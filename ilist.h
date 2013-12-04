@@ -10,8 +10,10 @@
 //
 //
 
-#pragma once
 
+#ifndef ILIST_H
+#define ILIST_H
+#include "errors.h"
 // VÝČET JEDNOTLIVÝCH INSTRUKCÍ => [operation, src1, src2, result]
 typedef enum {
 
@@ -64,7 +66,7 @@ typedef enum {
 
 
 // STRUKTURA INSTRUKCE
-typedef struct {
+typedef struct TInstr{
   TIType operation;
   char *src1;
   char *src2;
@@ -72,16 +74,18 @@ typedef struct {
 } TInstr;
 
 // STRUKTURA POLOZKY SEZNAMU
-typedef struct tlitem
+typedef struct TLItem
 {
-  struct tlitem *Next;
+  struct TLItem *Next;
   TInstr *Instruction; // or (void *) Instruction
 } TLItem;
   
 // STRUKTURA SEZNAMU  
-typedef struct
+typedef struct TList
 {
   TLItem *Act;    // ukazatel na aktivni prvek
   TLItem *First;  // ukazatel na prvni prvek
   TLItem *Last;   // ukazatel na posledni prvek
 } TList;
+
+#endif

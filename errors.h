@@ -1,7 +1,10 @@
-#pragma once
+#ifndef ERRORS_H
+#define ERRORS_H
+#include "ilist.h"
 #include "ial.h"
-#include "adt.h"
 #include "scaner.h"
+#include "adt.h"
+
 
 // Error kody
 #define E_OK 0
@@ -22,9 +25,9 @@
 typedef struct tPointers{
 	Ttoken *token;	//predavany token
 	struct tHashTbl *main_symobol_tbl;	//hlavni tabulka symbolu
-	tHashTblStack *function_stack;	//zasobnik tabulek symbolu pro funkce 
-	TList *list_instr;	//Ukazatel List main instrukci 
-	TList *act_list_inst //Ukazatel na aktulani instruction list
+	struct tHashTblStack *function_stack;	//zasobnik tabulek symbolu pro funkce
+	struct TList *list_instr;	//Ukazatel List main instrukci 
+	struct TList *act_list_inst; //Ukazatel na aktulani instruction list
 	FILE *source;	//ukazatel na v vstupni soubor
 	int const_counter;
 }tPointers;
@@ -39,7 +42,7 @@ void dealloc_global(tPointers *ptrs);
 // Pole pro alokacni funkce
 typedef void (*ptrDealoc) (tPointers *ptrs);
 // Pole pro dealokacni funkce 
-
+#endif
 
 
 

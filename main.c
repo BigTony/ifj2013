@@ -14,9 +14,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "scaner.h"
+#include "parser.h"
 #include "errors.h"
-
 
 
 int main(int argc,char** argv){

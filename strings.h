@@ -9,9 +9,8 @@
 // strings.h
 // 
 //
-#pragma once
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
+#ifndef STRINGS_H
+#define STRINGS_H
 #include "errors.h"
+#endif
 

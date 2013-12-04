@@ -1,4 +1,8 @@
-#pragma once
+
+
+
+#ifndef VYRAZY_H
+#define VYRAZY_H
 #include "scaner.h"
 #include "ilist.h"
 #include "errors.h"
@@ -63,7 +67,7 @@ TExpType STop(TStack *stack);
 int SEmpty(TStack *stack);
 // odstran vsechny prvky
 void SPopAll(TStack *stack);
-
+#endif
 
 
 

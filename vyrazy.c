@@ -1,6 +1,6 @@
-#include "vyrazy.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include "vyrazy.h"
 
 // PA tabulka
 int TabulkaVyrazu [MAX_INDEX][MAX_INDEX] = {	
@@ -178,7 +178,6 @@ void ExLess(TStack *stack,TExpType input){
 			// alokace nove polozky
     		temp = malloc(sizeof(struct TSItem));
     		if (temp == NULL){
-    			SPopAll(&temp);
     			SPopAll(stack);
 				print_error(E_INTERN,"chyba pri alokaci ExLess");
 			}
@@ -191,7 +190,6 @@ void ExLess(TStack *stack,TExpType input){
 			return;
 		}
 	}
-	SPopAll(&temp);
     SPopAll(stack);
 	print_error(E_SYN,"chyby zavorka pri ExLess");
 }
@@ -232,7 +230,7 @@ void ExGreater(TStack *stack){
 					if(STop(&temp) != BRACE_L){
 						SPopAll(&temp);
 						SPopAll(stack);
-						print_error(E_SYN,"chyba pri E->(E) chyby";
+						print_error(E_SYN,"chyba pri E->(E) chyby");
 					}
 					SPop(&temp);
 					if(STop(&temp) != NONTERM){
@@ -450,86 +448,8 @@ void ExEx(int ifYes,char *result){
 
 
 
-
-// int main(int argc,char** argv){
-// 	// int array[15] = {FUNCTION_CALL,ZAV_JEDN_L,VARIABLE,CARKA,VARIABLE,ZAV_JEDN_P,STREDNIK};
-// 	// int array[15] = {ZAV_JEDN_L,VARIABLE,KRAT,VARIABLE,ZAV_JEDN_P,STREDNIK};
-// 	int array[30] = {ZAV_JEDN_L,ZAV_JEDN_L,VARIABLE,KRAT,VARIABLE,ZAV_JEDN_P,PLUS,ZAV_JEDN_L,ZAV_JEDN_L,VARIABLE,DELENO,VARIABLE,ZAV_JEDN_P,MINUS,ZAV_JEDN_L,VARIABLE,TECKA,VARIABLE,ZAV_JEDN_P,ZAV_JEDN_P,ZAV_JEDN_P,STREDNIK};
-
-// 	TStack stack;
-// 	TStack tempstack;
-// 	TExpType a;
-// 	TExpType b;
-// 	TExpType nonterm;
-// 	SInit(&stack);
-// 	SInit(&tempstack);
-// 	SPush(&stack,ENDSTACK);
-// 	SPush(&stack,END);
-// 	int c = 0;
-// 	int redukce = 0;
-
-// 	while(array[c] != STREDNIK){
-// 		printf("%i\n",c );
-// 		a = TokenToExpresion(array[c]);
-// 		b = skipNonTerm(&stack);		
-
-// 		if(b > END){
-// 			printf("ERROR NA ZASOBNIKU NENI HODNOTA Z TABULKY\n");
-// 			return;
-// 		}
-	
-// 		nonterm = TabulkaVyrazu[b][a];
-			
-// 		if(nonterm == E){
-// 			printf("[E]\n");
-// 			ExEqual(&stack,a);
-// 		}else if(nonterm == L){
-// 			printf("[L]\n");
-// 			ExLess(&stack,a);
-// 		}else if(nonterm == G){
-// 			printf("[G]\n");
-// 			ExGreater(&stack);
-// 			redukce = 1;
-// 		}else if(nonterm == B){
-// 			printf("SYNTAX ERROR\n");
-// 			return;
-// 		}else{
-// 			printf("ERROR\n");
-// 			return;
-// 		}
-
-// 		if(redukce == 0){
-// 			c = c+1;
-// 		}else{
-// 			redukce = 0;
-// 		}
-		
-// 	}
-
-// 	// po nalezeni ; dokonceni vyrazu 
-// 	while(1){
-// 		a = END;
-// 		b = skipNonTerm(&stack);
-// 		if(b == END)
-// 			break;
-// 		if(b > END){
-// 			printf("ERROR NA ZASOBNIKU NENI HODNOTA Z TABULKY\n");
-// 			return;
-// 		}
-// 		nonterm = TabulkaVyrazu[b][a];
-// 		if(nonterm == G){
-// 			printf("[G]\n");
-// 			ExGreater(&stack);
-// 		}else if(nonterm == B){
-// 			printf("ERROR\n");
-// 			return;
-// 		}else{
-// 			printf("ERROR\n");
-// 			return;
-// 		}
-// 	}
-// 	printstack(&stack);
-
-// }
+int main(){
+	return 0;
+}
 
 // // git ls-files | xargs wc -l
