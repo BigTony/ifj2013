@@ -28,7 +28,7 @@ void initOfAll () {
  *  @param2: Instrukcni seznam MAINU
  *  @param3: zasobnik adres TS a ptr na navrat do instrukcniho seznamu
  */
-int interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack) 
+void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack) 
 {
 
 //------------------- INIT -------------------------------------------------------------
@@ -178,7 +178,9 @@ int interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
                {
                    // vysledek bude double
                    TypeOF = VARDOUBLE;
-                   tmp = todouble(tHsrc1) + todouble(tHsrc2)
+                   todouble(tHsrc1);
+                   todouble(tHsrc2);
+                   tmp = src1Data + src2Data;
                }
                else {
                   return E_SEM_TYPE; // bude chyba!?
@@ -197,6 +199,7 @@ int interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
 
          /*========================I_SUB=========================*/
 	 case I_SUB:
+
          // nactu id src1,src2 & result z INSTRUKCE
          src1   = instr->src1;
          src2   = instr->src2;
@@ -232,7 +235,9 @@ int interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
                {
                    // vysledek bude double
                    TypeOF = VARDOUBLE;
-                   tmp = todouble(tHsrc1) - todouble(tHsrc2)
+                   todouble(tHsrc1);
+                   todouble(tHsrc2);
+                   tmp = src1Data - src2Data;
                }
                else {
                   return E_SEM_TYPE; // bude chyba!?
@@ -250,6 +255,7 @@ int interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
 
 	 /*========================I_MUL=========================*/
 	 case I_MUL:
+
          // nactu id src1,src2 & result z INSTRUKCE
          src1   = instr->src1;
          src2   = instr->src2;
@@ -285,7 +291,9 @@ int interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
                {
                    // vysledek bude double
                    TypeOF = VARDOUBLE;
-                   tmp = todouble(tHsrc1) * todouble(tHsrc2)
+                   todouble(tHsrc1);
+                   todouble(tHsrc2);
+                   tmp = src1Data * src2Data;
                }
                else {
                   return E_SEM_TYPE; // bude chyba!?
@@ -303,6 +311,7 @@ int interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
 
 	 /*========================I_DIV=========================*/
 	 case I_DIV:
+
          // nactu id src1,src2 & result z INSTRUKCE
          src1   = instr->src1;
          src2   = instr->src2;
@@ -338,7 +347,9 @@ int interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
                {
                    // vysledek bude double
                    TypeOF = VARDOUBLE;
-                   tmp = todouble(tHsrc1) / todouble(tHsrc2)
+                   todouble(tHsrc1);
+                   todouble(tHsrc2);
+                   tmp = src1Data / src2Data;
                }
                else {
                   return E_SEM_TYPE; // bude chyba!?
