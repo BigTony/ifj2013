@@ -37,10 +37,14 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
    TList *ActiveList = L; 
      
    // data aktualni instrukce
-   TInstr    *instr;           
-   tokenValue *src1,*src2;
-   tokenValue *tmp;
+   TInstr     *instr;           
+   tokenValue *src1;
+   tokenValue *src2;
    tokenValue *result;
+
+   // POMOCNE PROM
+   tokenValue *tmp;
+   tokenValue *dataType;
 
    /// navratva dresa instrukcniho seznamu MAINU
    TLItem nil = NULL;
@@ -48,12 +52,14 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
    // Lokalni TS
    tHashTbl *lokal_htable_main;
 
-   // provedu naalokovani a inicializaci LOKALNI TS
+   // naalokovani a inicializaci LOKALNI TS
    tableInit(lokal_htable_main);
 
-   // pushnu adresu lokalni TS na stack
+   // push adresy lokalni TS na stack
    pushStack(stack,lokal_htable_main,nil);
 
+   // aktivace prvni instrukce z prave provadenyho instrukcniho listu
+   ActiveFirstItem (ActiveList);
 
 //------------------- EXECUTE -------------------------------------------------------------
 
@@ -77,17 +83,51 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
        #define STRING 5
      */
 
+     /*
+        typedef union {
+           int varInt;
+           double varDouble;
+           char *varString;
+        }tokenValue;
+      */
+
+      /*
+        typedef struct item{
+            	int type;
+            	itemKey key;
+            	tokenValue data;
+            	struct item *nextItem;
+        }item;
+      */
+
+      /// item* TblSearch (tHashTbl *tab, itemKey key);
+      /// void  TblInsert (tHashTbl *tab, itemKey key, tokenValue data, int type); 
+
       switch (instr->operation) 
       {
 
 	 /*========================I_ASS========================= (EKV.: mov) */ 
 	 case I_ASS:
 
-         src1 = instr->src1;
+         // nactu id src1 & result
+         src1   = instr->src1;
          result = instr->result;
-	// type = instr->type;
+	
+         // nactu typ dat src1
+         dataType = (TblSearch (lokal_htable_main, src1))->type;
 
-	 TblInsert (table, result,src1,/* int type*/); 
+         // POKUD operand do ktereho prirazuju jiz exituje, tak jeho data prepisu
+         if (TblSearch (lokal_htable_main, result)!=NULL) 
+         {
+            // prepisu data operandu result daty operandu src1
+            (TblSearch (lokal_htable_main, result))->data = (TblSearch (lokal_htable_main, src1))->data;
+
+            // prepisu datovy typ operandu result datovym typem operandu src1
+            (TblSearch (lokal_htable_main, result))->type = (TblSearch (lokal_htable_main, src1))->type;
+         } else {
+            // v pripade ze operand result jeste neexsituje, vlozim novou polozku
+            TblInsert (lokal_htable_main, result, src1, dataType); 
+         }
 	 break;
 
 	 /*========================I_ADD=========================*/
@@ -95,6 +135,8 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
 
          src1 = instr->src1;
          src2 = instr->src2;
+
+         TblSearch (table, src1)
          result = instr->result;
 
 	if (/*TypeOfSearchedOperand1==BOOL*/ && /*TypeOfSearchedOperand2==BOOL*/) 

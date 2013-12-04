@@ -20,7 +20,6 @@ typedef enum {
    I_SUB,  // - ||| src1 src2 result
    I_MUL,  // * ||| src1 src2 result
    I_DIV,  // / ||| src1 src2 result
-   I_POW,  // ^ ||| src1 src2 result
 
 //===== Řetězcový operátor ==================
 
