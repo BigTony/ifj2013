@@ -3,7 +3,7 @@
 void boolval(item *item){
 	switch(item->type){
 		case VARINT:
-			item->type = VARINT;
+			
 			break;
 		case VARDOUBLE:
 			break;
