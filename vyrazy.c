@@ -45,8 +45,11 @@ void SPush(TStack *stack,TExpType item,tokenValue value){
 }
 // odstran prvek z vrcholu zasobniku
 void SPop(TStack *stack){
+	TSItemPtr temp;
 	if(stack->top != NULL){
+		temp = stack->top;
 		stack->top = stack->top->ptrNext;
+		free(temp);
 	}
 }
 // nacteni z vrcholu
@@ -67,6 +70,7 @@ void SPopAll(TStack *stack){
 	while(!SEmpty(stack)){
 		SPop(stack);
 	}        
+	free(stack);
 }
 
 /* HLAVNI FUNKCE PRO PSA */
