@@ -22,34 +22,45 @@
  * Naalokuje jeden string, a vrati ukazatel na nej
  *
  */
-int allocString(String *s){
-   return (String *)malloc(sizeof(String));
+
+char * allocString(){
+	char *temp = malloc(ALLOC_SIZE*sizeof(char));
+	if(temp == NULL){
+		print_error(E_INTERN,"chyba pri alokaci stringu");
+	}
+	strcpy(temp,"\0");
+	return temp;
 }
 
 /**
 * Uvolni string
 */
-void freeString(String *s){
-	free(s->str);
+void freeString(char *s){
+	if(s != NULL){
+		free(s);
+	}
+}
+
+char * reallocString(char *s,int length){
+	char *temp = NULL;
+	temp = (char *) realloc((void *) s, length+1);
+	if ((temp == NULL) && (s)){
+		free(s);
+		print_error(E_INTERN,"chyba pri realokaci stirngu");
+	}
+	s = temp;
+	return s;
 }
 
 /**
 * Vyprazdni retezec
 */
-void clearString(String *s){
-   s->str[0] = '\0';
-   s->length = 0;
-}
+
 
 /**
 * Zkontroluje zda je retezec prazdny
 */
-bool isEmptyString(String *s){
-	if(s->data == NULL || s->length == 0){
-		return true;
-	}
-	return false;
-}
+
 
 /**
 *	strcmp // porovnani
