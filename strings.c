@@ -14,7 +14,8 @@
 *	Knihovna pro praci s retezci
 */
 
-
+#include <stdio.h>
+#include <stdlib.h>
 #include "strings.h"
 #define ALLOC_SIZE 8
 
@@ -43,7 +44,7 @@ void freeString(char *s){
 
 char * reallocString(char *s,int length){
 	char *temp = NULL;
-	temp = (char *) realloc((void *) s, length+1);
+	temp = (char *) realloc(s, length+1);
 	if ((temp == NULL) && (s)){
 		free(s);
 		print_error(E_INTERN,"chyba pri realokaci stirngu");
@@ -52,17 +53,14 @@ char * reallocString(char *s,int length){
 	return s;
 }
 
-/**
-* Vyprazdni retezec
-*/
 
-
-/**
-* Zkontroluje zda je retezec prazdny
-*/
-
-
-/**
-*	strcmp // porovnani
-*	strcpy // kopirovani
-*/
+// int main(){
+// 	char *mujstring = allocString();
+// 	strcpy(mujstring,"kokot");
+// 	mujstring = reallocString(mujstring,20);
+// 	printf("%s\n",mujstring);
+// 	strcpy(mujstring,"mrdat psa do prdele");
+// 	printf("%s\n",mujstring);
+// 	freeString(mujstring);
+// 	return 0;
+// }
