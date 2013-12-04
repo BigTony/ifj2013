@@ -13,52 +13,64 @@
 #include <limits.h>
 #include "errors.h"
 
+
+/**Funkce pro vlozeni constanty do hashTbl
+ * @param hashTbl: tabulka kam vkladas
+ * @param type: typ vlozene hodnoty
+ * @param tokenValue: hodnota vlozene hodnoty
+ * @param counter: ukazatel na pocitadlo constant string  
+ */     
 void add_const_hashtbl(tHashTbl *hashTbl, int type, tokenValue value, char *counter)
+{
+	TblInsert (hashTbl, gen_id(counter), value, type);	
+}
+
+char* gen_id(char *counter)
 {
 	int i=2;
 	do
 	{
 		counter[i++]++;
 	} while ((counter[i]!='\0') &&(counter[i]==MAX_CHAR));	
-	TblInsert (hashTbl, counter, value, type);	
+	return(counter);	
 }
 
 // deklarace nebo prirazeni promene
 void defVar(tokenValue value){
-	var_name = tokenValue value;
+	var_name = value;
 	if(gettoken(*token) != PRIRAZENI){
 		print_error(E_SYN);
 	}else{
-		// vyhodnoceni vyrazu
-		// vytvoreni 3AC
+		ExEx(0,var_name);
 	}
 }
 
 // podminka if
 void defIf(){
-	if(gettoken(*token) != ZAV_JEDN_L){
+	TInstr NewInstr;
+	char* TmpExp=gen_id(counter);
+	char* TmpJmp=gen_id(counter);
+	
+	ExEx(IF,tmpc)
+	// vyhodnoceni vyrazu
+	// vytvoreni 3AC
+	// vytvoreni 3AC podmineneho skoku1
+	if(gettoken(*token) != ZAV_SLOZ_L){
 		print_error(E_SYN);
 	}else{
-		// vyhodnoceni vyrazu
-		// vytvoreni 3AC
-		// vytvoreni 3AC podmineneho skoku1
-		if(gettoken(*token) != ZAV_SLOZ_L){
-			print_error(E_SYN);
-		}else{
-			// { ulozym na zasobnik
-			classify();
-			// vytvoreni 3AC podmineneho obsahu skoku1
-			if(gettoken(*token)) == ELSE){
-				if(gettoken(*token) != ZAV_SLOZ_L){
-					print_error(E_SYN);
-				}else{
-					// { ulozym na zasobnik
-					classify();
-					// vytvoreni 3AC podmineneho obsahu skoku1
-				}
+		// { ulozym na zasobnik
+		classify();
+		// vytvoreni 3AC podmineneho obsahu skoku1
+		if(gettoken(*token)) == ELSE){
+			if(gettoken(*token) != ZAV_SLOZ_L){
+				print_error(E_SYN);
+			}else{
+				// { ulozym na zasobnik
+				classify();
+				// vytvoreni 3AC podmineneho obsahu skoku1
 			}
-			return;
 		}
+		return;
 	}
 }
 
@@ -162,18 +174,14 @@ void classify(){
 	}
 }
 
-void parser(ProgramState *main){
-	// init vseho
-	Ttoken *temp_token;
-	if (gettoken(Ttoken *token) == 0){
-		if (*token.id == START){
+void parser(tPointers *ptrs){
+	gettoken(ptrs->token);
+	if (*token.id == START){
 			classify();
-		}else{
-			print_error(E_SYN);
-			return;
 		}
-	}else{
-		print_error(E_LEX);
+	else{
+		print_error(E_SYN);
 		return;
-	}	
+	}
+	
 }

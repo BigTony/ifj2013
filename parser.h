@@ -17,7 +17,7 @@
 * Hlavickovy soubor pro syntakticky analyzator
 */
 //hlavni funkce parseru
-void parser(ProgramState *main);
+void parser(tPointers *ptrs);
 //funkce na pridani do hashTbl
 void add_hash_tbl(tHashTbl *hashTbl, int type, tokenValue value);
 
