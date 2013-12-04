@@ -25,6 +25,13 @@ typedef struct {
 	tStackItemPtr top;
 } tHashTblStack;
 
+void initStack(tHashTblStack *stack);
+void pushStack(tHashTblStack *stack,tHashTbl hashTbl,TLItem NavrInstrukce);
+void popStack(tHashTblStack *stack);
+tStackItem topStack(tHashTblStack *stack);
+int emptyStack(tHashTblStack *stack);
+void freeStack(tHashTblStack *stack);
+
 // struktury pro zasobnik
 // ktery bude pouzivat if else
 //
@@ -36,3 +43,13 @@ typedef struct tSItemIE{
 typedef struct {
 	tStackItemIE top;
 } tIfElseStack;
+
+void initStack(tIfElseStack *stack);
+void pushStack(tIfElseStack *stack,int symbol);
+void popStack(tIfElseStack *stack);
+tStackItem topStack(tIfElseStack *stack);
+int emptyStack(tIfElseStack *stack);
+void freeStack(tIfElseStack *stack);
+
+
+

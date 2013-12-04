@@ -36,8 +36,10 @@ void SPush(TStack *stack,TExpType item,tokenValue value){
 	TSItemPtr temp;
 	// alokace nove polozky
     temp = malloc(sizeof(struct TSItem));
-    if (temp == NULL)
-    	return;
+    if (temp == NULL){
+    	SPopAll(stack);
+		print_error(E_INTERN,"chyba pri alokaci SPush");
+	}
     temp->item = item;
     temp->var = value;
     temp->ptrNext = stack->top;
@@ -175,6 +177,11 @@ void ExLess(TStack *stack,TExpType input){
 			TExpType item = L;
 			// alokace nove polozky
     		temp = malloc(sizeof(struct TSItem));
+    		if (temp == NULL){
+    			SPopAll(&temp);
+    			SPopAll(stack);
+				print_error(E_INTERN,"chyba pri alokaci ExLess");
+			}
     		temp->item = item;
   
     		prev_ptr->ptrNext = temp;
@@ -184,7 +191,9 @@ void ExLess(TStack *stack,TExpType input){
 			return;
 		}
 	}
-	printf("ERROR CHYBY ZAVORKA\n");
+	SPopAll(&temp);
+    SPopAll(stack);
+	print_error(E_SYN,"chyby zavorka pri ExLess");
 }
 
 // $ < ( E
@@ -203,43 +212,67 @@ void ExGreater(TStack *stack){
 			switch(STop(&temp)){
 				// E->VALUE
 				case VALUE:
-					if(STop(&temp) != VALUE)
-						printf("ERROR_V1\n");
+					if(STop(&temp) != VALUE){
+						SPopAll(&temp);
+						SPopAll(stack);
+						print_error(E_SYN,"chyba pri E->VALUE neco jineho nez value");
+					}
 					tokenValue value_i = temp.top->var;
 					SPop(&temp);
 					// zasobnik musi byt prazdny => nic za E->VALUE
-					if(!SEmpty(&temp))
-						printf("ERROR_V2\n");
+					if(!SEmpty(&temp)){
+						SPopAll(&temp);
+						SPopAll(stack);
+						print_error(E_SYN,"chyba pri E->VALUE neco za value");
+					}
 					SPush(cur_ptr,NONTERM,value_i);
 					break;
-				// E->(VALUE)
+				// E->(E)
 				case BRACE_L:
-					if(STop(&temp) != BRACE_L)
-						printf("ERROR_B1\n");
+					if(STop(&temp) != BRACE_L){
+						SPopAll(&temp);
+						SPopAll(stack);
+						print_error(E_SYN,"chyba pri E->(E) chyby";
+					}
 					SPop(&temp);
-					if(STop(&temp) != NONTERM)
-						printf("ERROR_B2\n");
+					if(STop(&temp) != NONTERM){
+						SPopAll(&temp);
+						SPopAll(stack);
+						print_error(E_SYN,"chyba pri E->(E) chyby NONTERM");
+					}
 					tokenValue value = temp.top->var;
 					SPop(&temp);
-					if(STop(&temp) != BRACE_R)
-						printf("ERROR_B3\n");
+					if(STop(&temp) != BRACE_R){
+						SPopAll(&temp);
+						SPopAll(stack);
+						print_error(E_SYN,"chyba pri E->(E) chyby");
+					}
 					SPop(&temp);
 					// zasobnik musi byt prazdny => nic za E->(VALUE)
-					if(!SEmpty(&temp))
-						printf("ERROR_B4\n");
+					if(!SEmpty(&temp)){
+						SPopAll(&temp);
+						SPopAll(stack);
+						print_error(E_SYN,"chyba pri E->(E) zasobnik neni prazdny");
+					}
 					SPush(cur_ptr,NONTERM,value);
 					break;
 				// E-> E op E
 				case NONTERM:
 					// operand 1
-					if(STop(&temp) != NONTERM)
-						printf("ERROR_T1\n");
+					if(STop(&temp) != NONTERM){
+						SPopAll(&temp);
+						SPopAll(stack);
+						print_error(E_SYN,"chyba pri E->E op E , chyby operand 1");
+					}
 					tokenValue value1 = temp.top->var;
 					SPop(&temp);
 					// operator
 					if(STop(&temp) > COM){
-						if(STop(&temp) != KONK)
-							printf("ERROR_T2\n");
+						if(STop(&temp) != KONK){
+							SPopAll(&temp);
+							SPopAll(stack);
+							print_error(E_SYN,"chyba pri E->E op E , spatny operand");
+						}
 					}
 					TIType op;
 					switch(STop(&temp)){
@@ -276,27 +309,36 @@ void ExGreater(TStack *stack){
 					}
 					SPop(&temp);
 					// operand 2
-					if(STop(&temp) != NONTERM)
-						printf("ERROR_T3\n");
+					if(STop(&temp) != NONTERM){
+						SPopAll(&temp);
+						SPopAll(stack);
+						print_error(E_SYN,"chyba pri E->E op E , chyby operand 2");
+					}
 					tokenValue value2 = temp.top->var;
 					SPop(&temp);
 
 					callCreateINstruction(value1,value2,op);
 					
-					if(!SEmpty(&temp))
-						printf("ERROR_T4\n");
+					if(!SEmpty(&temp)){
+						SPopAll(&temp);
+						SPopAll(stack);
+						print_error(E_SYN,"chyba pri E->E op E , stack neni prazdny )");
+					}
 					// value musi bejt kam se uklada instrukce aww yeaaah
 					SPush(cur_ptr,NONTERM,value);
 					break;
 				default:
-					printf("ERROR\n");
-					break;
+					SPopAll(&temp);
+					SPopAll(stack);
+					print_error(E_SYN,"chyba pri E->E op E , stack neni prazdny )");
 			}
 			// printstack(&temp);
 			return;
 		}
 	}
-	printf("ERROR OPERATOR NEJAKEJ POJEBANEJ\n");
+	SPopAll(&temp);
+	SPopAll(stack);
+	print_error(E_SYN,"chyba pri ExGreater");
 }
 
 TExpType skipNonTerm(TStack *stack){
@@ -325,8 +367,7 @@ void ExEx(int ifYes,char *result){
 	tokenValue value;
 	if(ifYes == IF){
 		if(gettoken(ptrs->token) != ZAV_JEDN_L){
-			printf("ERROR BIATCH\n");
-			return;
+			print_error(E_SYN,"chyby ( v ifu");
 		}
 	}else{
 		gettoken(ptrs->token);
@@ -350,8 +391,8 @@ void ExEx(int ifYes,char *result){
 		b = skipNonTerm(&stack);		
 
 		if(b > END){
-			printf("ERROR NA ZASOBNIKU NENI HODNOTA Z TABULKY\n");
-			return;
+			SPopAll(&stack);
+			print_error(E_SYN,"chyba na zasobniku neni symbol z tabulky");
 		}
 	
 		nonterm = TabulkaVyrazu[b][a];
@@ -367,11 +408,11 @@ void ExEx(int ifYes,char *result){
 			ExGreater(&stack);
 			redukce = 1;
 		}else if(nonterm == B){
-			printf("SYNTAX ERROR\n");
-			return;
+			SPopAll(&stack);
+			print_error(E_SYN,"chyba prazdne misto z tabulky");
 		}else{
-			printf("ERROR\n");
-			return;
+			SPopAll(&stack);
+			print_error(E_SYN,"chyba tabulka vratila neexistujici hodnotu");
 		}
 
 		if(redukce == 0){
@@ -389,22 +430,21 @@ void ExEx(int ifYes,char *result){
 		if(b == END)
 			break;
 		if(b > END){
-			printf("ERROR NA ZASOBNIKU NENI HODNOTA Z TABULKY\n");
-			return;
+			SPopAll(&stack);
+			print_error(E_SYN,"chyba na zasobniku neni symbol z tabulky");
 		}
 		nonterm = TabulkaVyrazu[b][a];
 		if(nonterm == G){
 			printf("[G]\n");
 			ExGreater(&stack);
 		}else if(nonterm == B){
-			printf("ERROR\n");
-			return;
+			SPopAll(&stack);
+			print_error(E_SYN,"chyba prazdne misto z tabulky");
 		}else{
-			printf("ERROR\n");
-			return;
+			SPopAll(&stack);
+			print_error(E_SYN,"chyba tabulka vratila neexistujici hodnotu");
 		}
 	}
-	printstack(&stack);
 
 }
 
