@@ -29,9 +29,10 @@ typedef struct {
 // ktery bude pouzivat if else
 //
 typedef struct tSItemIE{
+	int zavorka;
 	struct tSItemIE *ptrNext;
-}*tStackItemIE;
+}*tStackItemIEPtr;
 
 typedef struct {
-
+	tStackItemIE top;
 } tIfElseStack;
