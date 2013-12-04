@@ -13,8 +13,6 @@
 #include <stdio.h>
 #include "ilist.h"
 
-
-
 // init seznamu instrukci
 void InitList (TList *L) 
 {
@@ -22,6 +20,23 @@ void InitList (TList *L)
   L->Last   = NULL;
   L->First  = NULL;
 }
+
+TList *CreateList ();
+{
+	TList* New;
+	if ( (New=(TList*)malloc(sizeof(TList))) != NULL) 
+	{
+	InitList(New);
+	return (New);
+	}
+	else
+	{
+	print_error(E_INTERN,"Chyba alokace pointeru List Instruction");
+	return (NULL);
+	}
+		
+}
+
 
 // zrusi seznam instrukci
 void DisposeList (TList *L) 
@@ -63,6 +78,8 @@ void InsertFirst (TList *L,TInstr *Instr)
   }
 }
 
+
+
 // vlozi instrukci na konec
 void InsertLast (TList *L,TInstr *Instr) 
 {
@@ -88,7 +105,8 @@ void InsertLast (TList *L,TInstr *Instr)
 		print_error(E_INTERN,"Chyba alokace List Item Instruction");
   }
 }
-void InsertInstLast (TList *L,char *src1,char* src2,char* dest) 
+// vlozi Instrukci na konec seznamu
+void InsertInstLast (TList *L,char *src1,char* src2,char* dest,TIType type) 
 {
   TInstr *New;
   if ((New=(TInstr*)malloc (sizeof(TInstr)))!=NULL )
@@ -96,6 +114,7 @@ void InsertInstLast (TList *L,char *src1,char* src2,char* dest)
   New->src1=src1;
   New->src2=src2;
   New->result=dest;
+  New->operation=type;
   InsertLast (L,TInstr Instr);
   }
   else

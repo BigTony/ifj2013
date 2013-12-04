@@ -20,9 +20,9 @@
  * @param tokenValue: hodnota vlozene hodnoty
  * @param counter: ukazatel na pocitadlo constant string  
  */     
-void add_const_hashtbl(tHashTbl *hashTbl, int type, tokenValue value, char *counter)
+void add_const_hashtbl(tHashTbl *hashTbl, int type, tokenValue value, char *id)
 {
-	TblInsert (hashTbl, gen_id(counter), value, type);	
+	TblInsert (hashTbl, id, value, type);	
 }
 
 char* gen_id(char *counter)
@@ -47,12 +47,11 @@ void defVar(tokenValue value){
 
 // podminka if
 void defIf(){
-	TInstr NewInstr;
-	char* TmpExp=gen_id(counter);
-	char* TmpJmp=gen_id(counter);
-	
-	ExEx(IF,tmpc)
-	// vyhodnoceni vyrazu
+	char* TmpExp=gen_id(ptrs->counter);
+	char* TmpJmp=gen_id(ptrs->counter);
+	ExEx(IF,tmpExp); // vyhodnoceni vyrazu	
+	InsertInstLast (ptrs->act_list_inst,TmpExp,NULL,TmpJmp,I_JZ);
+	TLItem *tmpItem;
 	// vytvoreni 3AC
 	// vytvoreni 3AC podmineneho skoku1
 	if(gettoken(*token) != ZAV_SLOZ_L){
@@ -60,7 +59,9 @@ void defIf(){
 	}else{
 		// { ulozym na zasobnik
 		classify();
-		// vytvoreni 3AC podmineneho obsahu skoku1
+		InsertInstLast (ptrs->act_list_inst,NULL,NULL,NULL,I_LAB);
+		add_const_hashtbl(ptrs->main_symobol_tbl, IDENTIFIKATOR, ptrs->act_list_inst->Last, TmpJmp);
+		//ulozeni nazvu a odkazu navesti do globalni tabulky
 		if(gettoken(*token)) == ELSE){
 			if(gettoken(*token) != ZAV_SLOZ_L){
 				print_error(E_SYN);
