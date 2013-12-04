@@ -181,7 +181,7 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
                    TypeOF = VARDOUBLE;
                    todouble(tHsrc1);
                    todouble(tHsrc2);
-                   tmp = src1Data + src2Data;
+                   tmp = (tHsrc1->data + tHsrc2->data);
                }
                else {
                   return E_SEM_TYPE; // bude chyba!?
@@ -239,7 +239,7 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
                    TypeOF = VARDOUBLE;
                    todouble(tHsrc1);
                    todouble(tHsrc2);
-                   tmp = src1Data - src2Data;
+                   tmp = (tHsrc1->data - tHsrc2->data);
                }
                else {
                   return E_SEM_TYPE; // bude chyba!?
@@ -296,7 +296,7 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
                    TypeOF = VARDOUBLE;
                    todouble(tHsrc1);
                    todouble(tHsrc2);
-                   tmp = (src1Data * src2Data;
+                   tmp = (tHsrc1->data * tHsrc2->data);
                }
                else {
                   return E_SEM_TYPE; // bude chyba!?
@@ -353,7 +353,7 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
                    TypeOF = VARDOUBLE;
                    todouble(tHsrc1);
                    todouble(tHsrc2);
-                   tmp = (src1Data / src2Data);
+                   tmp = (tHsrc1->data / tHsrc2->data);
                }
                else {
                   return E_SEM_TYPE; // bude chyba!?
@@ -398,7 +398,10 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
 		tmp = (tokenValue) konkatenace((char *)src1Data,(char *)src2Data);
          } else 
           {
-
+              TypeOF = VARSTRING;
+              tostring(tHsrc1);
+              tostring(tHsrc2);
+              tmp = (tokenValue) konkatenace((char *)tHsrc1->data,(char *)tHsrc2->data);
           }
 
             // pokud result exituje, prepisu data
@@ -408,23 +411,31 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
 	      } else {
                    // polozka result neexistovala, pridam 
                    TblInsert (lokal_htable_main, result, tmp, TypeOF); 
-	       }
+	      }
 
 	 break;
 
 	 /*========================I_G=========================*/ 
 	 case I_G:
 
-         src1 = instr->src1;
-         src2 = instr->src2;
+         // nactu id src1,src2 & result z INSTRUKCE
+         src1   = instr->src1;
+         src2   = instr->src2;
          result = instr->result;
 
-         if (TblSearch (table, src1)!=NULL  && TblSearch (table, src2)!=NULL) 
-         {
-		temp = ConcString(TblSearch (table, src1))->data,( (TblSearch (table, src2))->data);
-		TblInsert (table, result,temp,/* int type*/); 	
-         }
+         // nactu id src1,src2 & result z HASH tabulky
+         tHsrc1   = (TblSearch (lokal_htable_main, src1));
+         tHsrc2   = (TblSearch (lokal_htable_main, src2));
+         tHresult = (TblSearch (lokal_htable_main, result));
 
+         // nactu typ dat src1 & src2
+         dataType1 = tHsrc1->type;
+         dataType2 = tHsrc2->type;
+
+         // nactu data src1, src2 & result
+         src1Data   = tHsrc1->data;
+         src2Data   = tHsrc2->data;
+         resultData = tHresult->data;
 
 	 break;
 
