@@ -42,9 +42,15 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
    tokenValue *src2;
    tokenValue *result;
 
-   // POMOCNE PROM
+   // data aktualni instrukce z HASH table          
+   tokenValue *tHsrc1;
+   tokenValue *tHsrc2;
+   tokenValue *tHresult;
+
+   // POMOCNE PROMENNE
    tokenValue *tmp;
-   tokenValue *dataType;
+   tokenValue *dataType,*dataType1,*dataType2;
+   tokenValue *src1Data,*src2Data,*resultData;
 
    /// navratva dresa instrukcniho seznamu MAINU
    TLItem nil = NULL;
@@ -124,7 +130,9 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
 
             // prepisu datovy typ operandu result datovym typem operandu src1
             (TblSearch (lokal_htable_main, result))->type = (TblSearch (lokal_htable_main, src1))->type;
-         } else {
+         } 
+         else 
+         {
             // v pripade ze operand result jeste neexsituje, vlozim novou polozku
             TblInsert (lokal_htable_main, result, src1, dataType); 
          }
@@ -133,18 +141,33 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
 	 /*========================I_ADD=========================*/
 	 case I_ADD:
 
-         src1 = instr->src1;
-         src2 = instr->src2;
-
-         TblSearch (table, src1)
+         // nactu id src1,src2 & result z INSTRUKCE
+         src1   = instr->src1;
+         src2   = instr->src2;
          result = instr->result;
+
+         // nactu id src1,src2 & result z HASH tabulky
+         tHsrc1   = (TblSearch (lokal_htable_main, src1));
+         tHsrc2   = (TblSearch (lokal_htable_main, src2));
+         tHresult = (TblSearch (lokal_htable_main, result));
+
+         // nactu typ dat src1 & src2
+         dataType1 = (TblSearch (lokal_htable_main, src1))->type;
+         dataType2 = (TblSearch (lokal_htable_main, src2))->type;
+
+         // nactu data src1 & src2
+         src1Data = (TblSearch (lokal_htable_main, src1))->data;
+         src2Data = (TblSearch (lokal_htable_main, src2))->data;
+
+         // pokud src1 nebo src2 nebudou mit prirazenou hodnotu -> syntax error
+         if (src1Data==NULL || src2Data==NULL) return E_SEM_OTHER;
 
 	if (/*TypeOfSearchedOperand1==BOOL*/ && /*TypeOfSearchedOperand2==BOOL*/) 
 	{
 	   if (TblSearch (table, src1)!=NULL  && TblSearch (table, src2)!=NULL) 
            {
 	  	temp = (TblSearch (table, src1))->data + (TblSearch (table, src2))->data;
-		TblInsert (table, result,temp,/* int type*/); 	
+		TblInsert (table, result, temp,/* int type*/); 	
            }
 	}
 	else if (/*TypeOfSearchedOperand1==INTEGER*/ && /*TypeOfSearchedOperand2==INTEGER*/) 
@@ -206,20 +229,6 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
          if (TblSearch (table, src1)!=NULL  && TblSearch (table, src2)!=NULL) 
          {
 		temp = ((TblSearch (table, src1))->data) / ((TblSearch (table, src2))->data);
-		TblInsert (table, result,temp,/* int type*/); 	
-         }
-	 break;
-
-	 /*========================I_POW=========================*/
-	 case I_POW:
-
-         src1 = instr->src1;
-         src2 = instr->src2;
-         result = instr->result;
-
-         if (TblSearch (table, src1)!=NULL  && TblSearch (table, src2)!=NULL) 
-         {
-		temp =  pow((TblSearch (table, src1))->data, (TblSearch (table, src2))->data);
 		TblInsert (table, result,temp,/* int type*/); 	
          }
 	 break;
