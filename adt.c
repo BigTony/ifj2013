@@ -48,8 +48,9 @@ int emptyStack(tHashTblStack *stack){
 		return 0;
 }
 
-void popallStack(tHashTblStack *stack){
+void freeStack(tHashTblStack *stack){
 	while(!SEmpty(stack)){
-		SPop(stack);
+		popStack(stack);
 	}        
+	free(stack);
 }

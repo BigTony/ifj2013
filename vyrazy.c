@@ -70,6 +70,7 @@ void SPopAll(TStack *stack){
 	while(!SEmpty(stack)){
 		SPop(stack);
 	}        
+	free(stack);
 }
 
 /* HLAVNI FUNKCE PRO PSA */
