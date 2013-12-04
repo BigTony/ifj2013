@@ -400,6 +400,7 @@ int getToken(FILE *fp,Ttoken *token){
     ////////////////
     //NUMBERS   ///
     ///////////////
+
     if( (isdigit(c)!=0) )
     {
         w[len]=c;
@@ -410,14 +411,69 @@ int getToken(FILE *fp,Ttoken *token){
             w[len]=c;
 
         }while(isdigit(c)!=0);
-        if(c=='.')
+        if(len==1)
         {
-            do
+            if(c=='.')
             {
+                do
+                {
+                    c=fgetc(fp);
+                    len++;
+                    w[len]=c;
+
+                }while(isdigit(c)!=0);
+                if((c=='e'|| c=='E'))
+                {
+                    c=fgetc(fp);
+                    if((c=='+') || (c=='-'))
+                    {
+                        len++;
+                        w[len]=c;
+                        do
+                        {
+                            c=fgetc(fp);
+                            len++;
+                            w[len]=c;
+                        }while(isdigit(c)!=0);
+                        w[len]='\0';
+                        ungetc(c,fp);
+                        token->id=VARDOUBLE;
+                        token->value.varDouble = strtod(w,NULL);
+                        free(w);
+                        return E_OK;
+                    }
+                    else
+                    {
+                        free(w);
+                        return E_LEX;
+                    }
+                }
+                else
+                {
+                    w[len]='\0';
+                    ungetc(c,fp);
+                    token->id=VARDOUBLE;
+                    token->value.varDouble = strtod(w,NULL);
+                    free(w);
+                    return E_OK;
+                }
+            }
+            else
+            {
+                ungetc(c,fp);
+                w[len]='\0';
+                token->id=VARINT;
+                token->value.varInt=atoi(w);
+                free(w);
+                return E_OK;
+            }
+        }
+        else if(c=='.')
+        {
+            do{
                 c=fgetc(fp);
                 len++;
                 w[len]=c;
-
             }while(isdigit(c)!=0);
             w[len]='\0';
             ungetc(c,fp);
@@ -425,32 +481,7 @@ int getToken(FILE *fp,Ttoken *token){
             token->value.varDouble = strtod(w,NULL);
             free(w);
             return E_OK;
-        }
 
-        else if(c=='+'|| c=='-')
-        {
-            c=fgetc(fp);
-            if(c=='e'||c=='E')
-            {
-                len++;
-                w[len]=c;
-                do
-                {
-                    c=fgetc(fp);
-                    len++;
-                    w[len]=c;
-                }while(isdigit(c)!=0);
-                w[len]='\0';
-                ungetc(c,fp);
-                token->id=VARDOUBLE;
-                token->value.varDouble = strtod(w,NULL);
-                free(w);
-            }
-            else
-            {
-                free(w);
-                return E_LEX;
-            }
         }
         else
         {
@@ -461,6 +492,7 @@ int getToken(FILE *fp,Ttoken *token){
             free(w);
             return E_OK;
         }
+
     }
     else{
         free(w);
