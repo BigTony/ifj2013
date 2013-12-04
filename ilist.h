@@ -61,27 +61,19 @@ typedef enum {
 
 } TIType;
 
-// VÝČET TYPU DAT  
-typedef enum
-{
-  STRING,
-  NUMBER,
-  BOOLEAN,
-} TDataType;
 
 // STRUKTURA INSTRUKCE
 typedef struct {
   TIType operation;
-  void *src1;
-  void *src2;
-  void *result;
+  char *src1;
+  char *src2;
+  char *result;
 } TInstr;
 
 // STRUKTURA POLOZKY SEZNAMU
 typedef struct tlitem
 {
   struct tlitem *Next;
-  struct tlitem *Data; // instrukcni podseznam
   TInstr *Instruction; // or (void *) Instruction
 } TLItem;
   

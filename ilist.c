@@ -6,7 +6,7 @@
 // Skacel David - xskace12
 // Skyva Petr - xskyva02
 ////////////////////////////////
-// interpret.c
+// ilist.c
 //
 //
 
@@ -45,7 +45,7 @@ void DisposeList (TList *L)
 **/
 
 // vlozi instrukci na zacatek
-void InsertFirst (TList *L,TInstr Instr) 
+void InsertFirst (TList *L,TInstr *Instr) 
 {
   TLItem *New;
 
@@ -59,13 +59,12 @@ void InsertFirst (TList *L,TInstr Instr)
      if (!L->First->Next) 
 	{
 		L->Last = New;
-	}
-	
+	}	
   }
 }
 
 // vlozi instrukci na konec
-void InsertLast (TList *L,TInstr Instr) 
+void InsertLast (TList *L,TInstr *Instr) 
 {
   TLItem *New;
 
@@ -84,8 +83,26 @@ void InsertLast (TList *L,TInstr Instr)
 
 	L->Last = New;
   }
+  else 
+  {
+		print_error(E_INTERN,"Chyba alokace List Item Instruction");
+  }
 }
-
+void InsertInstLast (TList *L,char *src1,char* src2,char* dest) 
+{
+  TInstr *New;
+  if ((New=(TInstr*)malloc (sizeof(TInstr)))!=NULL )
+  {
+  New->src1=src1;
+  New->src2=src2;
+  New->result=dest;
+  InsertLast (L,TInstr Instr);
+  }
+  else
+  {
+		print_error(E_INTERN,"Chyba alokace Instruction");
+  }
+}
 
 /**
 *
