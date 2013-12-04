@@ -107,7 +107,7 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
          else 
          {
             // v pripade ze operand result jeste neexsituje, vlozim novou polozku
-            TblInsert (lokal_htable_main, result, src1, dataType); 
+            TblInsert (lokal_htable_main, result,/* src1*/, dataType); //ERROR
          }
 	 break;
 
@@ -129,13 +129,8 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
          dataType1 = tHsrc1->type;
          dataType2 = tHsrc2->type;
 
-         // nactu data src1, src2 & result
-         src1Data   = tHsrc1->data;
-         src2Data   = tHsrc2->data;
-         resultData = tHresult->data;
-
           // pokud src1 nebo src2 nebudou mit prirazenou hodnotu -> syntax error
-          if (src1Data==NULL || src2Data==NULL) 
+          if (tHsrc1->data==NULL || tHsrc2->data==NULL) 
            { 
              return E_SEM_OTHER;
            }
@@ -144,7 +139,7 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
                {
                    // vysledek bude int
                    TypeOF = VARINT;
-                   tmp = src1Data + src2Data; 
+                   tmp->varInt = (src1Data->varInt + src2Data->varInt); 
                }
               else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
                {
@@ -152,7 +147,7 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
                    TypeOF = VARDOUBLE;
                    todouble(tHsrc1);
                    todouble(tHsrc2);
-                   tmp = (tHsrc1->data + tHsrc2->data);
+                   tmp->varInt = (tHsrc1->data->varInt + tHsrc2->data->varInt);
                }
                else {
                   return E_SEM_TYPE; // bude chyba!?
@@ -161,12 +156,11 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
             // pokud result exituje, prepisu data
             if (tHresult!=NULL) 
 	      {
-                 resultData = tmp; // uloim soucet do te exitusjici
+                 tHresult->data->varInt = tmp->varInt; // uloim soucet do te exitusjici
 	      } else {
                    // polozka result neexistovala, pridam to nove vytvorene
                    TblInsert (lokal_htable_main, result, tmp, TypeOF); 
 	       }
- 
 	 break;
 
 
@@ -187,13 +181,8 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
          dataType1 = tHsrc1->type;
          dataType2 = tHsrc2->type;
 
-         //  nactu data src1, src2 & result
-         src1Data   = tHsrc1->data;
-         src2Data   = tHsrc2->data;
-         resultData = tHresult->data;
-
           // pokud src1 nebo src2 nebudou mit prirazenou hodnotu -> syntax error
-          if (src1Data==NULL || src2Data==NULL) 
+          if (tHsrc1->data==NULL || tHsrc2->data==NULL) 
            { 
              return E_SEM_OTHER;
            }
@@ -202,7 +191,7 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
                {
                    // vysledek bude int
                    TypeOF = VARINT;
-                   tmp = src1Data - src2Data; 
+                   tmp->varInt = (src1Data->varInt - src2Data->varInt); 
                }
               else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
                {
@@ -210,7 +199,7 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
                    TypeOF = VARDOUBLE;
                    todouble(tHsrc1);
                    todouble(tHsrc2);
-                   tmp = (tHsrc1->data - tHsrc2->data);
+                   tmp->varInt = (tHsrc1->data->varInt - tHsrc2->data->varInt);
                }
                else {
                   return E_SEM_TYPE; // bude chyba!?
@@ -219,7 +208,7 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
             // pokud result exituje, prepisu data
             if (tHresult!=NULL) 
 	      {
-                 resultData = tmp; // uloim soucet do te exitusjici
+                 tHresult->data->varInt = tmp->varInt; // uloim soucet do te exitusjici
 	      } else {
                    // polozka result neexistovala, pridam to nove vytvorene
                    TblInsert (lokal_htable_main, result, tmp, TypeOF); 
