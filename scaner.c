@@ -18,6 +18,25 @@
 
 
 //////
+
+int reallocString(char** w)
+{
+    char* wPom;
+    if((wPom = malloc(sizeof(char) * BUFF))==NULL)   //Alokace pro retezec
+    {
+        return ALLOC_ERR;
+    }
+    wPom = realloc(*w,sizeof(*w)+BUFF);
+    if(wPom==NULL){
+        return ALLOC_ERR;}
+    else
+    {
+        *w=wPom;
+    }
+
+    return E_OK;
+}
+
 void skipSpace(char *c,FILE *fp)
 {
     char _c=*c;
@@ -323,7 +342,17 @@ int getToken(FILE *fp,Ttoken *token){
             {
                 if(len%10==9)
                 {
-                //    realloc()
+                  /*  if(( wPom = malloc(sizeof(char) * BUFF))==NULL)   //Alokace pro retezec
+                    {
+                        free(w);
+                        return ALLOC_ERR;
+                    }
+                    if(wPom=realloc(w,BUFF)==NULL)
+                    {
+                        free(w);
+                        free(wPom);
+                        return ALLOC_ERR;
+                    }*/
                 }
                 c=fgetc(fp);
                 len++;
@@ -362,7 +391,8 @@ int getToken(FILE *fp,Ttoken *token){
         {
             if(len%10==9)
             {
-            //    realloc()
+
+//                realloc();
             }
             c=fgetc(fp);
             len++;
