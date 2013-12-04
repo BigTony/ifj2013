@@ -53,6 +53,14 @@ char * reallocString(char *s,int length){
 	return s;
 }
 
+char * konkatenace(char*prvni,char*druhy){
+	int delka = 0;
+	delka = strlen(prvni)+strlen(druhy);
+	char vysledek[delka+1];
+	strcpy(vysledek,prvni);
+	strcat(vysledek,druhy);
+	return vysledek;
+}
 
 // int main(){
 // 	char *mujstring = allocString();

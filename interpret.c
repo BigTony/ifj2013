@@ -10,6 +10,7 @@
 //
 //
 
+#include "string.c"
 #include "ial.c"
 #include "ilist.h"
 #include "interpret.h"
@@ -51,8 +52,9 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
    tokenValue *tmp;
    tokenValue *dataType,*dataType1,*dataType2;
    tokenValue *src1Data,*src2Data,*resultData;
+   int TypeOF;
 
-   /// navratva dresa instrukcniho seznamu MAINU
+   // navratva dresa instrukcniho seznamu MAINU
    TLItem nil = NULL;
 
    // Lokalni TS
@@ -112,7 +114,7 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
       switch (instr->operation) 
       {
 
-	 /*========================I_ASS========================= (EKV.: mov) */ 
+	 /*========================I_ASS=================================================== (EKV.: mov) */ 
 	 case I_ASS:
 
          // nactu id src1 & result
@@ -138,7 +140,8 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
          }
 	 break;
 
-	 /*========================I_ADD=========================*/
+
+	 /*========================I_ADD===================================================*/
 	 case I_ADD:
 
          // nactu id src1,src2 & result z INSTRUKCE
@@ -152,114 +155,287 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
          tHresult = (TblSearch (lokal_htable_main, result));
 
          // nactu typ dat src1 & src2
-         dataType1 = (TblSearch (lokal_htable_main, src1))->type;
-         dataType2 = (TblSearch (lokal_htable_main, src2))->type;
+         dataType1 = tHsrc1->type;
+         dataType2 = tHsrc2->type;
 
-         // nactu data src1 & src2
-         src1Data = (TblSearch (lokal_htable_main, src1))->data;
-         src2Data = (TblSearch (lokal_htable_main, src2))->data;
+         // nactu data src1, src2 & result
+         src1Data   = tHsrc1->data;
+         src2Data   = tHsrc2->data;
+         resultData = tHresult->data;
 
-         // pokud src1 nebo src2 nebudou mit prirazenou hodnotu -> syntax error
-         if (src1Data==NULL || src2Data==NULL) return E_SEM_OTHER;
-
-	if (/*TypeOfSearchedOperand1==BOOL*/ && /*TypeOfSearchedOperand2==BOOL*/) 
-	{
-	   if (TblSearch (table, src1)!=NULL  && TblSearch (table, src2)!=NULL) 
-           {
-	  	temp = (TblSearch (table, src1))->data + (TblSearch (table, src2))->data;
-		TblInsert (table, result, temp,/* int type*/); 	
+          // pokud src1 nebo src2 nebudou mit prirazenou hodnotu -> syntax error
+          if (src1Data==NULL || src2Data==NULL) 
+           { 
+             return E_SEM_OTHER;
            }
-	}
-	else if (/*TypeOfSearchedOperand1==INTEGER*/ && /*TypeOfSearchedOperand2==INTEGER*/) 
-	{
-	   if (TblSearch (table, src1)!=NULL  && TblSearch (table, src2)!=NULL) 
-           {
-	  	temp = (TblSearch (table, src1))->data + (TblSearch (table, src2))->data;
-		TblInsert (table, result,temp,/* int type*/); 	
-           }
-	}
-	else if (/*TypeOfSearchedOperand1==DOUBLE*/ && /*TypeOfSearchedOperand2==DOUBLE*/) 
-	{
-	   if (TblSearch (table, src1)!=NULL  && TblSearch (table, src2)!=NULL) 
-           {
-	  	temp = (TblSearch (table, src1))->data + (TblSearch (table, src2))->data;
-		TblInsert (table, result,temp,/* int type*/); 	
-           }
-	}
 
-       /// kurwa tozasrany typovani
-       /// dal podle tabulky v zadani...
+              if (dataType1==VARINT && dataType2==VARINT)
+               {
+                   // vysledek bude int
+                   TypeOF = VARINT;
+                   tmp = src1Data + src2Data; 
+               }
+              else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
+               {
+                   // vysledek bude double
+                   TypeOF = VARDOUBLE;
+                   todouble(tHsrc1);
+                   todouble(tHsrc2);
+                   tmp = (tHsrc1->data + tHsrc2->data);
+               }
+               else {
+                  return E_SEM_TYPE; // bude chyba!?
+               }
 
+            // pokud result exituje, prepisu data
+            if (tHresult!=NULL) 
+	      {
+                 resultData = tmp; // uloim soucet do te exitusjici
+	      } else {
+                   // polozka result neexistovala, pridam to nove vytvorene
+                   TblInsert (lokal_htable_main, result, tmp, TypeOF); 
+	       }
+ 
 	 break;
 
-         /*========================I_SUB=========================*/
+
+         /*========================I_SUB=========================================================*/
 	 case I_SUB:
-         src1 = instr->src1;
-         src2 = instr->src2;
+
+         // nactu id src1,src2 & result z INSTRUKCE
+         src1   = instr->src1;
+         src2   = instr->src2;
          result = instr->result;
 
-         if (TblSearch (table, src1)!=NULL  && TblSearch (table, src2)!=NULL) 
-         {
-		temp = (TblSearch (table, src1))->data - (TblSearch (table, src2))->data;
-		TblInsert (table, result,temp,/* int type*/); 	
-         }
+         // nactu id src1,src2 & result z HASH tabulky
+         tHsrc1   = (TblSearch (lokal_htable_main, src1));
+         tHsrc2   = (TblSearch (lokal_htable_main, src2));
+         tHresult = (TblSearch (lokal_htable_main, result));
+
+         // nactu typ dat src1 & src2
+         dataType1 = tHsrc1->type;
+         dataType2 = tHsrc2->type;
+
+         //  nactu data src1, src2 & result
+         src1Data   = tHsrc1->data;
+         src2Data   = tHsrc2->data;
+         resultData = tHresult->data;
+
+          // pokud src1 nebo src2 nebudou mit prirazenou hodnotu -> syntax error
+          if (src1Data==NULL || src2Data==NULL) 
+           { 
+             return E_SEM_OTHER;
+           }
+
+              if (dataType1==VARINT && dataType2==VARINT)
+               {
+                   // vysledek bude int
+                   TypeOF = VARINT;
+                   tmp = src1Data - src2Data; 
+               }
+              else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
+               {
+                   // vysledek bude double
+                   TypeOF = VARDOUBLE;
+                   todouble(tHsrc1);
+                   todouble(tHsrc2);
+                   tmp = (tHsrc1->data - tHsrc2->data);
+               }
+               else {
+                  return E_SEM_TYPE; // bude chyba!?
+               }
+
+            // pokud result exituje, prepisu data
+            if (tHresult!=NULL) 
+	      {
+                 resultData = tmp; // uloim soucet do te exitusjici
+	      } else {
+                   // polozka result neexistovala, pridam to nove vytvorene
+                   TblInsert (lokal_htable_main, result, tmp, TypeOF); 
+	       }
 	 break;
 
-	 /*========================I_MUL=========================*/
+
+	 /*========================I_MUL============================================================*/
 	 case I_MUL:
 
-         src1 = instr->src1;
-         src2 = instr->src2;
+         // nactu id src1,src2 & result z INSTRUKCE
+         src1   = instr->src1;
+         src2   = instr->src2;
          result = instr->result;
 
-         if (TblSearch (table, src1)!=NULL  && TblSearch (table, src2)!=NULL) 
-         {
-		temp = ((TblSearch (table, src1))->data) * ((TblSearch (table, src2))->data);
-		TblInsert (table, result,temp,/* int type*/); 	
-         }
+         // nactu id src1,src2 & result z HASH tabulky
+         tHsrc1   = (TblSearch (lokal_htable_main, src1));
+         tHsrc2   = (TblSearch (lokal_htable_main, src2));
+         tHresult = (TblSearch (lokal_htable_main, result));
+
+         // nactu typ dat src1 & src2
+         dataType1 = tHsrc1->type;
+         dataType2 = tHsrc2->type;
+
+         // nactu data src1 & src2
+         src1Data   = tHsrc1->data;
+         src2Data   = tHsrc2->data;
+         resultData = tHresult->data;
+
+          // pokud src1 nebo src2 nebudou mit prirazenou hodnotu -> syntax error
+          if (src1Data==NULL || src2Data==NULL) 
+           { 
+             return E_SEM_OTHER;
+           }
+
+              if (dataType1==VARINT && dataType2==VARINT)
+               {
+                   // vysledek bude int
+                   TypeOF = VARINT;
+                   tmp = src1Data * src2Data; 
+               }
+              else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
+               {
+                   // vysledek bude double
+                   TypeOF = VARDOUBLE;
+                   todouble(tHsrc1);
+                   todouble(tHsrc2);
+                   tmp = (tHsrc1->data * tHsrc2->data);
+               }
+               else {
+                  return E_SEM_TYPE; // bude chyba!?
+               }
+
+            // pokud result exituje, prepisu data
+            if (tHresult!=NULL) 
+	      {
+                 resultData = tmp; // uloim soucet do te exitusjici
+	      } else {
+                   // polozka result neexistovala, pridam to nove vytvorene
+                   TblInsert (lokal_htable_main, result, tmp, TypeOF); 
+	       }
 	 break;
 
-	 /*========================I_DIV=========================*/
+
+	 /*========================I_DIV==============================================================*/
 	 case I_DIV:
 
-         src1 = instr->src1;
-         src2 = instr->src2;
+         // nactu id src1,src2 & result z INSTRUKCE
+         src1   = instr->src1;
+         src2   = instr->src2;
          result = instr->result;
 
-         if (TblSearch (table, src1)!=NULL  && TblSearch (table, src2)!=NULL) 
-         {
-		temp = ((TblSearch (table, src1))->data) / ((TblSearch (table, src2))->data);
-		TblInsert (table, result,temp,/* int type*/); 	
-         }
+         // nactu id src1,src2 & result z HASH tabulky
+         tHsrc1   = (TblSearch (lokal_htable_main, src1));
+         tHsrc2   = (TblSearch (lokal_htable_main, src2));
+         tHresult = (TblSearch (lokal_htable_main, result));
+
+         // nactu typ dat src1 & src2
+         dataType1 = tHsrc1->type;
+         dataType2 = tHsrc2->type;
+
+         //  nactu data src1, src2 & result
+         src1Data   = tHsrc1->data;
+         src2Data   = tHsrc2->data;
+         resultData = tHresult->data;
+
+          // pokud src1 nebo src2 nebudou mit prirazenou hodnotu -> syntax error
+          if (src1Data==NULL || src2Data==NULL) 
+           { 
+             return E_SEM_OTHER;
+           }
+
+              if (dataType1==VARINT && dataType2==VARINT)
+               {
+                   // vysledek bude int
+                   TypeOF = VARINT;
+                   tmp = src1Data / src2Data; 
+               }
+              else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
+               {
+                   // vysledek bude double
+                   TypeOF = VARDOUBLE;
+                   todouble(tHsrc1);
+                   todouble(tHsrc2);
+                   tmp = (tHsrc1->data / tHsrc2->data);
+               }
+               else {
+                  return E_SEM_TYPE; // bude chyba!?
+               }
+
+            // pokud result exituje, prepisu data
+            if (tHresult!=NULL) 
+	      {
+                 resultData = tmp; // uloim soucet do te exitusjici
+	      } else {
+                   // polozka result neexistovala, pridam to nove vytvorene
+                   TblInsert (lokal_htable_main, result, tmp, TypeOF); 
+	       }
 	 break;
 
-	 /*========================I_CON=========================*/ 
-	 case I_CON:
 
-         src1 = instr->src1;
-         src2 = instr->src2;
+	 /*========================I_CON===============================================================*/ 
+	 case I_CON:
+         // nactu id src1,src2 & result z INSTRUKCE
+         src1   = instr->src1;
+         src2   = instr->src2;
          result = instr->result;
 
-         if (TblSearch (table, src1)!=NULL  && TblSearch (table, src2)!=NULL) 
+         // nactu id src1,src2 & result z HASH tabulky
+         tHsrc1   = (TblSearch (lokal_htable_main, src1));
+         tHsrc2   = (TblSearch (lokal_htable_main, src2));
+         tHresult = (TblSearch (lokal_htable_main, result));
+
+         // nactu typ dat src1 & src2
+         dataType1 = tHsrc1->type;
+         dataType2 = tHsrc2->type;
+
+         // nactu data src1, src2 & result
+         src1Data   = tHsrc1->data;
+         src2Data   = tHsrc2->data;
+         resultData = tHresult->data;
+
+         ///char * konkatenace(char*prvni,char*druhy)
+         if (dataType1==VARSTRING && dataType2==VARSTRING) 
          {
-		temp = ConcatenationString(TblSearch (table, src1))->data,( (TblSearch (table, src2))->data);
-		TblInsert (table, result,temp,/* int type*/); 	
-         }
+                TypeOF = VARSTRING;
+		tmp = (tokenValue) konkatenace((char *)src1Data,(char *)src2Data);
+         } else 
+          {
+              TypeOF = VARSTRING;
+              tostring(tHsrc1);
+              tostring(tHsrc2);
+              tmp = (tokenValue) konkatenace((char *)tHsrc1->data,(char *)tHsrc2->data);
+          }
+
+            // pokud result exituje, prepisu data
+            if (tHresult!=NULL) 
+	      {
+                 resultData = tmp; // uloim do te exitusjici
+	      } else {
+                   // polozka result neexistovala, pridam 
+                   TblInsert (lokal_htable_main, result, tmp, TypeOF); 
+	      }
+
 	 break;
 
 	 /*========================I_G=========================*/ 
 	 case I_G:
 
-         src1 = instr->src1;
-         src2 = instr->src2;
+         // nactu id src1,src2 & result z INSTRUKCE
+         src1   = instr->src1;
+         src2   = instr->src2;
          result = instr->result;
 
-         if (TblSearch (table, src1)!=NULL  && TblSearch (table, src2)!=NULL) 
-         {
-		temp = ConcString(TblSearch (table, src1))->data,( (TblSearch (table, src2))->data);
-		TblInsert (table, result,temp,/* int type*/); 	
-         }
+         // nactu id src1,src2 & result z HASH tabulky
+         tHsrc1   = (TblSearch (lokal_htable_main, src1));
+         tHsrc2   = (TblSearch (lokal_htable_main, src2));
+         tHresult = (TblSearch (lokal_htable_main, result));
 
+         // nactu typ dat src1 & src2
+         dataType1 = tHsrc1->type;
+         dataType2 = tHsrc2->type;
+
+         // nactu data src1, src2 & result
+         src1Data   = tHsrc1->data;
+         src2Data   = tHsrc2->data;
+         resultData = tHresult->data;
 
 	 break;
 
