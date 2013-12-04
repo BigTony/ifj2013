@@ -53,11 +53,6 @@ char * reallocString(char *s,int length){
 	return s;
 }
 
-/**
-*	strcmp // porovnani
-*	strcpy // kopirovani
-*/
-
 
 // int main(){
 // 	char *mujstring = allocString();
