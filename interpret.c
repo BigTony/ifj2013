@@ -11,11 +11,18 @@
 //
 
 
+
+#include <string.h>
+#include "strings.c"
+#include "ial.c"
+#include "ilist.h"
+#include "interpret.h"
+#include "errors.h"
+#include "scaner.h"
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
-#include "interpret.h"
 
 
 /*  INTERPRET - vykona intepretaci jazyka IFJ13
