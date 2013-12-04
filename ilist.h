@@ -55,10 +55,10 @@ typedef enum {
 
 //===== skoky ==========================
 
-   I_JMP,  // nepodmíněný
-   I_JZ,   // jump if zero        (false)
-   I_JNZ,  // jump if not zero    (true)
-   I_LAB,  // navěští, no effect
+   I_JMP,  // nepodmíněný 
+   I_JZ,   // jump if zero        (false) || src1 ... result
+   I_JNZ,  // jump if not zero    (true)  || src1 ... result
+   I_LAB,  // znacka, no effect
 
 } TIType;
 
