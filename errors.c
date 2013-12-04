@@ -52,6 +52,10 @@ void init_global(tPointers *ptrs);
 	if (NULL == (ptrs=malloc(sizeof(tPointers)))
 	{
 		print_error(E_INTERN,"Chyba alokace pameti: init_global");
+	}
+	if (NULL == (ptrs=malloc(*sizeof(tPointers)))
+	{
+		print_error(E_INTERN,"Chyba alokace pameti: const_counter");
 	}	
 	ptrs->token=NULL;
 	ptrs->main_symobol_tbl=NULL
@@ -64,6 +68,7 @@ void init_global(tPointers *ptrs);
  */   
 void destr_global(tPointers *ptrs)
 {
+	
 	destr_tToken(ptrs->token);
 	destr_tHashTbl(ptrs->main_symobol_tbl);
 	destr_tHashTblStack(ptrs->function_stack);
@@ -71,6 +76,10 @@ void destr_global(tPointers *ptrs)
 	if (FILE!=NULL)
 	{
 		fclose(source);
+	}
+	if (counter!=NULL)
+	{
+		free(counter);
 	}
 	free(ptrs);
 }

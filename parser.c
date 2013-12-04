@@ -9,10 +9,19 @@
 // parser.c
 // 
 //
-
+#include <string.h>
+#include <limits.h>
 #include "errors.h"
 
-
+void add_const_hashtbl(tHashTbl *hashTbl, int type, tokenValue value, char *counter)
+{
+	int i=2;
+	do
+	{
+		counter[i++]++;
+	} while ((counter[i]!='\0') &&(counter[i]==MAX_CHAR));
+		
+}
 
 // deklarace nebo prirazeni promene
 void defVar(tokenValue value){
