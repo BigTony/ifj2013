@@ -38,7 +38,7 @@ void popStack(tHashTblStack *stack){
 	}
 }
 
-tStackItem topStack(tHashTblStack *stack){
+tStackItemPtr topStack(tHashTblStack *stack){
 	if(stack->top != NULL){
 		return stack->top;
 	}
@@ -63,11 +63,11 @@ void freeStack(tHashTblStack *stack){
 // ZAV_SLOZ_L
 // ZAV_SLOZ_P
 
-void initStack(tIfElseStack *stack){
+void initStackIE(tIfElseStack *stack){
 	stack->top = NULL;
 }
 
-void pushStack(tIfElseStack *stack,int symbol){
+void pushStackIE(tIfElseStack *stack,int symbol){
 	tStackItemIEPtr temp;
 	if(temp = malloc(sizeof(struct tStackItemIEPtr)) == NULL){
 		print_error(E_INTERN,"chyba pri alokaci stacku pro tabulku symbolu");
@@ -78,7 +78,7 @@ void pushStack(tIfElseStack *stack,int symbol){
     stack->top = temp;
 }
 
-void popStack(tIfElseStack *stack){
+void popStackIE(tIfElseStack *stack){
 	tStackItem temp;
 	if (stack->top != NULL){
 		temp = stack->top;
@@ -87,20 +87,20 @@ void popStack(tIfElseStack *stack){
 	}
 }
 
-tStackItem topStack(tIfElseStack *stack){
+tStackItemIEPtr topStackIE(tIfElseStack *stack){
 	if(stack->top != NULL){
 		return stack->top;
 	}
 }
 
-int emptyStack(tIfElseStack *stack){
+int emptyStackIE(tIfElseStack *stack){
 	if(stack->top == NULL)
 		return 1;
 	else
 		return 0;
 }
 
-void freeStack(tIfElseStack *stack){
+void freeStackIE(tIfElseStack *stack){
 	while(!SEmpty(stack)){
 		popStack(stack);
 	}        

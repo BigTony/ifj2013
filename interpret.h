@@ -9,7 +9,7 @@
 // interpret.c
 //
 //
-
+#pragma once
 #include <string.h>
 #include <math.h>
 #include <stdio.h>

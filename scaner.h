@@ -9,7 +9,7 @@
 // scaner.h
 //
 //
-
+#pragma once
 /**
 * Hlavickovy soubor pro lexikalni analyzator
 */

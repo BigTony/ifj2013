@@ -10,6 +10,8 @@
 //
 //
 
+#pragma once
+
 // VÝČET JEDNOTLIVÝCH INSTRUKCÍ => [operation, src1, src2, result]
 typedef enum {
 

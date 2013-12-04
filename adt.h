@@ -10,7 +10,7 @@
 //
 //
 
-
+#pragma once
 
 // struktury pro zasobnik
 // ktery bude pouzit pro tabulky symbolu
@@ -28,7 +28,7 @@ typedef struct {
 void initStack(tHashTblStack *stack);
 void pushStack(tHashTblStack *stack,tHashTbl hashTbl,TLItem NavrInstrukce);
 void popStack(tHashTblStack *stack);
-tStackItem topStack(tHashTblStack *stack);
+tStackItemPtr topStack(tHashTblStack *stack);
 int emptyStack(tHashTblStack *stack);
 void freeStack(tHashTblStack *stack);
 
@@ -41,15 +41,15 @@ typedef struct tSItemIE{
 }*tStackItemIEPtr;
 
 typedef struct {
-	tStackItemIE top;
+	tStackItemIEPtr top;
 } tIfElseStack;
 
-void initStack(tIfElseStack *stack);
-void pushStack(tIfElseStack *stack,int symbol);
-void popStack(tIfElseStack *stack);
-tStackItem topStack(tIfElseStack *stack);
-int emptyStack(tIfElseStack *stack);
-void freeStack(tIfElseStack *stack);
+void initStackIE(tIfElseStack *stack);
+void pushStackIE(tIfElseStack *stack,int symbol);
+void popStackIE(tIfElseStack *stack);
+tStackItemIEPtr topStackIE(tIfElseStack *stack);
+int emptyStackIE(tIfElseStack *stack);
+void freeStackIE(tIfElseStack *stack);
 
 
 

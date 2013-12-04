@@ -1,7 +1,6 @@
-#ifndef H_HEADER_IAL
+#pragma once
 #include "ial.h"
-#endif
-
+#include "adt.h"
 #include "scaner.h"
 
 // Error kody

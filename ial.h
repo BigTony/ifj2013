@@ -10,11 +10,8 @@
 // Iplementation sort and find functions
 //
 
-#ifndef H_HEADER_IAL
-#define H_HEADER_IAL
+#pragma once
 #include "errors.h"
-#endif
-#define "scaner.h"
 
 #define ALLOC 67
 typedef char* itemKey;
