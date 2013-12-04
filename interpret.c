@@ -30,6 +30,7 @@ void initOfAll () {
  */
 void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack) 
 {
+
 //------------------- INIT -------------------------------------------------------------
 
    // aktivuju seznam MAINU
@@ -37,9 +38,9 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
      
    // data aktualni instrukce
    TInstr    *instr;           
-   itemValue *src1,*src2;
-   itemValue *tmp;
-   itemValue *result;
+   tokenValue *src1,*src2;
+   tokenValue *tmp;
+   tokenValue *result;
 
    /// navratva dresa instrukcniho seznamu MAINU
    TLItem nil = NULL;
@@ -59,23 +60,22 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
   /// cekuju jestli je instrukce aktivni, pokud ano = while (1), jinak = while (0) = end
   while (IsActiveItem(ActiveList)) 
   {
-      // nactu instrukci
+      // nactu aktivni instrukci z aktualniho instrukcniho listu
       instr = (TInstr*) ReturnActiveInstr (ActiveList);
 
+     /* -------------------------------------------------------------
+      *	
+      *  semantic controll 
+      *
+      * ------------------------------------------------------------ */
 
-    /* -------------------------------------------------------------
-     *	
-     *  semantic controll 
-     *
-     * ------------------------------------------------------------ */
-
-/*
-#define IDENTIFIKATOR 1
-#define VARINT 2
-#define VARDOUBLE 3
-#define VARIABLE 4
-#define STRING 5
-*/
+     /*
+       #define IDENTIFIKATOR 1
+       #define VARINT 2
+       #define VARDOUBLE 3
+       #define VARIABLE 4
+       #define STRING 5
+     */
 
       switch (instr->operation) 
       {
