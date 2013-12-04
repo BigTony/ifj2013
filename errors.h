@@ -23,7 +23,8 @@ typedef struct tPointers{
 	Ttoken *token;	//predavany token
 	struct tHashTbl *main_symobol_tbl;	//hlavni tabulka symbolu
 	tHashTblStack *function_stack;	//zasobnik tabulek symbolu pro funkce 
-	tListIns *list_instr_list;	//List listu instrukci
+	TList *list_instr;	//Ukazatel List main instrukci 
+	TList *act_list_inst //Ukazatel na aktulani instruction list
 	FILE *source;	//ukazatel na v vstupni soubor
 	int const_counter;
 }tPointers;
