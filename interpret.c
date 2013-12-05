@@ -29,7 +29,6 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
 //------------------- INIT -------------------------------------------------------------
  
  
- 
 // => PROMENNE_______________________________
 
    // data aktualni instrukce [operandy]
@@ -75,7 +74,6 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
    ActiveFirstItem (ActiveList);
 
 
-
 //------------------- EXECUTE -------------------------------------------------------------
 
   /// cekuju jestli je instrukce aktivni, pokud ano = while (1), jinak = while (0) = end
@@ -109,9 +107,20 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
          // POKUD operand do ktereho prirazuju jiz exituje, tak jeho data prepisu
          if (TblSearch (active_htable, result)!=NULL) 
          {
-            // prepisu data operandu result daty operandu src1
-            (TblSearch (active_htable, result))->data = (TblSearch (active_htable, src1))->data;
-
+			 if (dataType==VARINT)
+			 { 
+			    // prepisu data operandu result daty operandu src1
+				(TblSearch (active_htable, result))->data.varInt = (TblSearch (active_htable, src1))->data.varInt;
+		     }
+		     else if (dataType==VARDOUBLE) 
+		      {
+				(TblSearch (active_htable, result))->data.varDouble = (TblSearch (active_htable, src1))->data.varDouble;
+			  }
+			 else if (dataType==VARSTRING) 
+			   {
+				  (TblSearch (active_htable, result))->data.varString = (TblSearch (active_htable, src1))->data.varString;
+			   }
+           
             // prepisu datovy typ operandu result datovym typem operandu src1
             (TblSearch (active_htable result))->type = (TblSearch (active_htable, src1))->type;
          } 
@@ -159,7 +168,7 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
                    TypeOF = VARDOUBLE;
                    todouble(tHsrc1);
                    todouble(tHsrc2);
-                   tmp->varInt = (tHsrc1->data->varInt + tHsrc2->data->varInt);
+                   tmp->varInt = (tHsrc1->data.varInt + tHsrc2->data.varInt);
                }
                else {
                   return E_SEM_TYPE; // bude chyba!?
