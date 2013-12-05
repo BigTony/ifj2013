@@ -56,7 +56,10 @@ char * reallocString(char *s,int length){
 char * konkatenace(char*prvni,char*druhy){
 	int delka = 0;
 	delka = strlen(prvni)+strlen(druhy);
-	char vysledek[delka+1];
+	char *vysledek;
+	if((vysledek = (char *)malloc(sizeof(char) * delka+1)) == NULL){
+		print_error(E_INTERN,"chyba pri alokaci konkatenace");
+	}
 	strcpy(vysledek,prvni);
 	strcat(vysledek,druhy);
 	return vysledek;

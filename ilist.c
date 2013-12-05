@@ -11,6 +11,7 @@
 //
 
 #include <stdio.h>
+#include <stdlib.h>
 #include "ilist.h"
 
 // init seznamu instrukci
@@ -21,7 +22,7 @@ void InitList (TList *L)
   L->First  = NULL;
 }
 
-TList *CreateList ();
+TList *CreateList ()
 {
 	TList* New;
 	if ( (New=(TList*)malloc(sizeof(TList))) != NULL) 
@@ -41,7 +42,9 @@ TList *CreateList ();
 // zrusi seznam instrukci
 void DisposeList (TList *L) 
 {
-  TList *tmp = L->Act = L->Last = NULL;
+  TLItem *tmp = NULL;
+  L->Act = NULL;
+  L->Last = NULL;
   while (L->First!=NULL) 
   {
 	tmp = L->First;
@@ -115,7 +118,7 @@ void InsertInstLast (TList *L,char *src1,char* src2,char* dest,TIType type)
   New->src2=src2;
   New->result=dest;
   New->operation=type;
-  InsertLast (L,TInstr Instr);
+  InsertLast (L,New);
   }
   else
   {
@@ -140,14 +143,14 @@ void InsertInstLast (TList *L,char *src1,char* src2,char* dest,TIType type)
 *      |
 *      v  
 *    
-/*
+
 
 
 /// doplni se
 
 
 
-/*****************************************************************************
+****************************************************************************
 *
 *        PRESUN AKTIVITY
 *
@@ -205,14 +208,8 @@ TInstr * ReturnActiveInstr (TList *L)
 {
    if (L->Act!=NULL) 
    {
-     L->Act->Instruction;	
+     return L->Act->Instruction;	
    }
  return NULL;
 }
 
-/* funkce pro generovani instrukci */
-
-void InsertInstrc(TList *L,TIType InstrNumber,){
-  TInstr Instr;
-  InsertLast(L,Instr);
-}

@@ -31,15 +31,15 @@ char* gen_id(char *counter)
 	do
 	{
 		counter[i++]++;
-	} while ((counter[i]!='\0') &&(counter[i]==MAX_CHAR));	
+	} while ((counter[i]!='\0') &&(counter[i]==CHAR_MAX));	
 	return(counter);	
 }
 
 // deklarace nebo prirazeni promene
 void defVar(tokenValue value){
-	var_name = value;
+	tokenValue var_name = value;
 	if(gettoken(*token) != PRIRAZENI){
-		print_error(E_SYN);
+		print_error(E_SYN,"chyba v syntaxi ocekavano = pri prirazeni promene");
 	}else{
 		ExEx(0,var_name);
 	}

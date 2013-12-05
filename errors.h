@@ -1,9 +1,6 @@
 #ifndef ERRORS_H
 #define ERRORS_H
-#include "ilist.h"
-#include "ial.h"
-#include "scaner.h"
-#include "adt.h"
+
 
 
 // Error kody
@@ -20,28 +17,13 @@
 #define E_INTERN 99 // Interni chyba interpretu 
 // meine chyby
  
-// struktura pro dealokaci a errory
-// vsechno co se naalokuje a vyuziva se mezi jednotlivimi moduly se ulozi sem
-typedef struct tPointers{
-	Ttoken *token;	//predavany token
-	struct tHashTbl *main_symobol_tbl;	//hlavni tabulka symbolu
-	struct tHashTblStack *function_stack;	//zasobnik tabulek symbolu pro funkce
-	struct TList *list_instr;	//Ukazatel List main instrukci 
-	struct TList *act_list_inst; //Ukazatel na aktulani instruction list
-	FILE *source;	//ukazatel na v vstupni soubor
-	int const_counter;
-}tPointers;
-
-extern tPointers *ptrs;
 
 // Funkce pro obsluhu error kodu
 void print_error(int err_code,char* err_msg);
-// Funkce pro alokaci, inicializaci a dealokaci globalnich promenych
-void init_global(tPointers *ptrs);
-void dealloc_global(tPointers *ptrs);
-// Pole pro alokacni funkce
-typedef void (*ptrDealoc) (tPointers *ptrs);
-// Pole pro dealokacni funkce 
+
+struct tPointers;
+// typedef tPointers tPointers;
+
 #endif
 
 

@@ -16,6 +16,7 @@
 #include "scaner.h"
 #include "ilist.h"
 #include "errors.h"
+#include "memory.h"
 /**
 * Hlavickovy soubor pro syntakticky analyzator
 */

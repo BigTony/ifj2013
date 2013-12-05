@@ -1,15 +1,17 @@
 #include <limits.h>
 #include <ctype.h>
+#include <math.h>
 #include "vestavenefunkce.h"
 
 // pretypovani
 void tovarint(item *item){
 	switch(item->type){
-		case BOOL:
+		case VARBOOL:
 			item->type = VARINT;
 			break;
 		case VARDOUBLE:
-			item->data = (int)item->data;
+			tokenValue.varInt kokot;
+			item->data = kokot;
 			item->type = VARINT;
 			break;
 		case STRING:
@@ -41,13 +43,13 @@ void tovarint(item *item){
 	}
 }
 
-void tobool(item *item){
+void toVARBOOL(item *item){
 	switch(item->type){
 		case VARINT:
 			if(item->data != 0){
 				item->data = 1;
 			}
-			item->type = BOOL;
+			item->type = VARBOOL;
 			break;
 		case VARDOUBLE:
 			if(item->data == 0.0){
@@ -55,7 +57,7 @@ void tobool(item *item){
 			}else{
 				item->data = 1;
 			}
-			item->type = BOOL;
+			item->type = VARBOOL;
 			break;
 		case STRING:
 			if(strcmp (item->data,"") == 0){
@@ -65,9 +67,9 @@ void tobool(item *item){
 				free(item->data);
 				item->data = 1;
 			}
-			item->type = BOOL;
+			item->type = VARBOOL;
 			break;
-		case BOOL:
+		case VARBOOL:
 			break;
 		default:
 			print_error(E_INT,"chyba pri pretypovani");
@@ -115,7 +117,7 @@ void todouble(item *item){
   				item->data = 0.0;
 			item->type = VARDOUBLE;
 			break;
-		case BOOL:
+		case VARBOOL:
 			if(item->data == 0){
 				item->data = 0.0;
 			}else{
@@ -155,7 +157,7 @@ void tostring(item *item){
 			item->data = vysledek;
 			item->type = VARDOUBLE;
 			break;
-		case BOOL:
+		case VARBOOL:
 			if(item->data == 0){
 				item->data = "";
 			}else{
@@ -176,8 +178,8 @@ void pretypovani(item *item,int to){
 		case VARINT:
 			tovarint(item);
 			break;
-		case BOOL:
-			tobool(item);
+		case VARBOOL:
+			toVARBOOL(item);
 			break;
 		case VARDOUBLE:
 			todouble(item);
@@ -194,7 +196,7 @@ void pretypovani(item *item,int to){
 
 
 // vestavene funkce 
-void boolval(item *item){
+void VARBOOLval(item *item){
 	switch(item->type){
 		case VARINT:
 
@@ -203,7 +205,7 @@ void boolval(item *item){
 			break;
 		case STRING:
 			break;
-		case VARBOOL:
+		case VARVARBOOL:
 			break;
 		case NIL:
 			break;
