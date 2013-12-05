@@ -23,7 +23,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
-
 /*  INTERPRET - vykona intepretaci jazyka IFJ13
  *  @param1: globalni TS
  *  @param2: Instrukcni seznam MAINU
@@ -116,6 +115,7 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
          }
 	 break;
 
+//---------------------------- ARITMETICKE OPERACE -----------------------------------------------------
 
 	 /*========================I_ADD===================================================*/
 	 case I_ADD:
@@ -324,6 +324,7 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
 	       }
 	 break;
 
+//---------------------------- KONKATENACE --------------------------------------------------------------
 
 	 /*========================I_CON===============================================================*/ 
 	 case I_CON:
@@ -397,6 +398,7 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
         }item;
       */
 
+//---------------------------- POROVNAVANI ----------------------------------------------------------------
 
 	 /*========================I_G=================================================================*/ 
 	 case I_G:
@@ -667,7 +669,7 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
          } 
          else 
          {
-             return E_SEM_TYPE; // nejsou stejny typy vole!
+             datTyp = 0;
          }
 
             // pokud result exituje, prepisu data
@@ -683,7 +685,61 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
 
 	 /*========================I_NET=========================*/
 	 case I_NET:
+        // nactu id src1,src2 & result z INSTRUKCE
+         src1   = instr->src1;
+         src2   = instr->src2;
+         result = instr->result;
+
+         // nactu id src1,src2 & result z HASH tabulky
+         tHsrc1   = (TblSearch (lokal_htable_main, src1));
+         tHsrc2   = (TblSearch (lokal_htable_main, src2));
+         tHresult = (TblSearch (lokal_htable_main, result));
+
+         // typ: tHsrc1->type   data:   tHsrc1->data   item:  tHsrc1 , tHsrc2 , tHresult
+
+         int datTyp=0;
+
+         if (tHsrc1!=NULL || tHsrc2!=NULL) return E_SEM_OTHER;
+
+         if (tHsrc1->type!=tHsrc2->type) 
+         {
+              TypeOF = VARBOLEAN;
+
+              if (tHsrc1->type!=VARINT) 
+              {
+                 if (tHsrc1->data->varInt != tHsrc2->data->varInt)  datTyp = 1;
+                 else datTyp = 0;
+              }
+
+	      else if (tHsrc1->type!=VARDOUBLE) 
+              {
+                 if (tHsrc1->data->varDouble != tHsrc2->data->varDouble)  datTyp = 1;
+                 else datTyp = 0;
+              }
+
+              else if (tHsrc1->type==VARSTRING) 
+              {
+                 if (strcmp(tHsrc1->data->varString,tHsrc2->data->varString)!=0)  datTyp = 1;
+                 else datTyp = 0;
+              }
+
+         } 
+         else 
+         {
+             datTyp = 0;
+         }
+
+            // pokud result exituje, prepisu data
+            if (tHresult!=NULL) 
+	      {
+                 tHresult->data->varInt = datTyp; // uloim soucet do te exitusjici
+	      } else {
+                   // polozka result neexistovala, pridam to nove vytvorene
+                   TblInsert (lokal_htable_main, result, datTyp, TypeOF); 
+	       }
 	 break;
+
+//----------------------------  FUNKCE  --------------------------------------------------------------
 
 	 /*========================I_CALL=========================*/ 
 	 case I_CALL:
@@ -692,6 +748,19 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
 	 /*========================I_RETURN=========================*/ 
 	 case I_RETURN:
 	 break;
+
+//----------------------------  PREPNUTI KONTEXTU  --------------------------------------------------------------
+
+
+/**********************************************
+*
+*     PREPNUTI KONTEXTU & DALSI INSTRUKCE
+*
+**************************************************/
+
+
+//---------------------------- INTERNI FUNKCE --------------------------------------------------------------
+
 
 	 /*========================I_SORT=========================*/
 	 case I_SORT:
@@ -721,6 +790,9 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
 	 break;
 
 
+//---------------------------- SKOKYY --------------------------------------------------------------
+
+
 	 /*========================I_JMP=========================*/ 
 	 case I_JMP:
 	 break;
@@ -748,4 +820,3 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
   }
 
 }
-
