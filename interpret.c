@@ -18,8 +18,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
-
-
 /*  INTERPRET - vykona intepretaci jazyka IFJ13
  *  @param1: globalni TS
  *  @param2: Instrukcni seznam MAINU
@@ -40,9 +38,9 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
    tokenValue *result;
 
    // data aktualni instrukce z HASH table          
-   tokenValue *tHsrc1;
-   tokenValue *tHsrc2;
-   tokenValue *tHresult;
+   item *tHsrc1;
+   item *tHsrc2;
+   item *tHresult;
 
    // POMOCNE PROMENNE
    tokenValue *tmp;
@@ -112,6 +110,7 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
          }
 	 break;
 
+//---------------------------- ARITMETICKE OPERACE -----------------------------------------------------
 
 	 /*========================I_ADD===================================================*/
 	 case I_ADD:
@@ -234,13 +233,8 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
          dataType1 = tHsrc1->type;
          dataType2 = tHsrc2->type;
 
-         // nactu data src1 & src2
-         src1Data   = tHsrc1->data;
-         src2Data   = tHsrc2->data;
-         resultData = tHresult->data;
-
           // pokud src1 nebo src2 nebudou mit prirazenou hodnotu -> syntax error
-          if (src1Data==NULL || src2Data==NULL) 
+          if (tHsrc1->data==NULL || tHsrc2->data==NULL) 
            { 
              return E_SEM_OTHER;
            }
@@ -249,7 +243,7 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
                {
                    // vysledek bude int
                    TypeOF = VARINT;
-                   tmp = src1Data * src2Data; 
+                   tmp->varInt = (src1Data->varInt * src2Data->varInt); 
                }
               else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
                {
@@ -257,7 +251,7 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
                    TypeOF = VARDOUBLE;
                    todouble(tHsrc1);
                    todouble(tHsrc2);
-                   tmp = (tHsrc1->data * tHsrc2->data);
+                   tmp->varInt = (tHsrc1->data->varInt * tHsrc2->data->varInt);
                }
                else {
                   return E_SEM_TYPE; // bude chyba!?
@@ -266,7 +260,7 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
             // pokud result exituje, prepisu data
             if (tHresult!=NULL) 
 	      {
-                 resultData = tmp; // uloim soucet do te exitusjici
+                 tHresult->data->varInt = tmp->varInt; // uloim soucet do te exitusjici
 	      } else {
                    // polozka result neexistovala, pridam to nove vytvorene
                    TblInsert (lokal_htable_main, result, tmp, TypeOF); 
@@ -291,13 +285,8 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
          dataType1 = tHsrc1->type;
          dataType2 = tHsrc2->type;
 
-         //  nactu data src1, src2 & result
-         src1Data   = tHsrc1->data;
-         src2Data   = tHsrc2->data;
-         resultData = tHresult->data;
-
           // pokud src1 nebo src2 nebudou mit prirazenou hodnotu -> syntax error
-          if (src1Data==NULL || src2Data==NULL) 
+          if (tHsrc1->data==NULL || tHsrc2->data==NULL) 
            { 
              return E_SEM_OTHER;
            }
@@ -306,7 +295,7 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
                {
                    // vysledek bude int
                    TypeOF = VARINT;
-                   tmp = src1Data / src2Data; 
+                   tmp->varInt = (src1Data->varInt / src2Data->varInt); 
                }
               else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
                {
@@ -314,7 +303,7 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
                    TypeOF = VARDOUBLE;
                    todouble(tHsrc1);
                    todouble(tHsrc2);
-                   tmp = (tHsrc1->data / tHsrc2->data);
+                   tmp->varInt = (tHsrc1->data->varInt / tHsrc2->data->varInt);
                }
                else {
                   return E_SEM_TYPE; // bude chyba!?
@@ -323,13 +312,14 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
             // pokud result exituje, prepisu data
             if (tHresult!=NULL) 
 	      {
-                 resultData = tmp; // uloim soucet do te exitusjici
+                 tHresult->data->varInt = tmp->varInt; // uloim soucet do te exitusjici
 	      } else {
                    // polozka result neexistovala, pridam to nove vytvorene
                    TblInsert (lokal_htable_main, result, tmp, TypeOF); 
 	       }
 	 break;
 
+//---------------------------- KONKATENACE --------------------------------------------------------------
 
 	 /*========================I_CON===============================================================*/ 
 	 case I_CON:
@@ -403,6 +393,7 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
         }item;
       */
 
+//---------------------------- POROVNAVANI ----------------------------------------------------------------
 
 	 /*========================I_G=================================================================*/ 
 	 case I_G:
@@ -629,118 +620,6 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
 	       }
 	 break;
 
-	 /*========================I_E================================================================*/ 
-	 case I_E:
-         // nactu id src1,src2 & result z INSTRUKCE
-         src1   = instr->src1;
-         src2   = instr->src2;
-         result = instr->result;
-
-         // nactu id src1,src2 & result z HASH tabulky
-         tHsrc1   = (TblSearch (lokal_htable_main, src1));
-         tHsrc2   = (TblSearch (lokal_htable_main, src2));
-         tHresult = (TblSearch (lokal_htable_main, result));
-
-         // typ: tHsrc1->type   data:   tHsrc1->data   item:  tHsrc1 , tHsrc2 , tHresult
-
-         int datTyp=0;
-
-         if (tHsrc1!=NULL || tHsrc2!=NULL) return E_SEM_OTHER;
-
-         if (tHsrc1->type==tHsrc2->type) 
-         {
-              TypeOF = VARBOLEAN;
-
-              if (tHsrc1->type==VARINT) 
-              {
-                 if (tHsrc1->data->varInt == tHsrc2->data->varInt)  datTyp = 1;
-                 else datTyp = 0;
-              }
-
-	      else if (tHsrc1->type==VARDOUBLE) 
-              {
-                 if (tHsrc1->data->varDouble == tHsrc2->data->varDouble)  datTyp = 1;
-                 else datTyp = 0;
-              }
-
-              else if (tHsrc1->type==VARSTRING) 
-              {
-                 if (strcmp(tHsrc1->data->varString,tHsrc2->data->varString)==0)  datTyp = 1;
-                 else datTyp = 0;
-              }
-
-         } 
-         else 
-         {
-             return E_SEM_TYPE; // nejsou stejny typy vole!
-         }
-
-            // pokud result exituje, prepisu data
-            if (tHresult!=NULL) 
-	      {
-                 tHresult->data->varInt = datTyp; // uloim soucet do te exitusjici
-	      } else {
-                   // polozka result neexistovala, pridam to nove vytvorene
-                   TblInsert (lokal_htable_main, result, datTyp, TypeOF); 
-	       }
-	 break;
-
-	 /*========================I_NE=========================*/ 
-	 case I_NE:
-
-	 break         // nactu id src1,src2 & result z INSTRUKCE
-         src1   = instr->src1;
-         src2   = instr->src2;
-         result = instr->result;
-
-         // nactu id src1,src2 & result z HASH tabulky
-         tHsrc1   = (TblSearch (lokal_htable_main, src1));
-         tHsrc2   = (TblSearch (lokal_htable_main, src2));
-         tHresult = (TblSearch (lokal_htable_main, result));
-
-         // typ: tHsrc1->type   data:   tHsrc1->data   item:  tHsrc1 , tHsrc2 , tHresult
-
-         int datTyp=0;
-
-         if (tHsrc1!=NULL || tHsrc2!=NULL) return E_SEM_OTHER;
-
-         if (tHsrc1->type==tHsrc2->type) 
-         {
-              TypeOF = VARBOLEAN;
-
-              if (tHsrc1->type==VARINT) 
-              {
-                 if (tHsrc1->data->varInt != tHsrc2->data->varInt)  datTyp = 1;
-                 else datTyp = 0;
-              }
-
-	      else if (tHsrc1->type==VARDOUBLE) 
-              {
-                 if (tHsrc1->data->varDouble != tHsrc2->data->varDouble)  datTyp = 1;
-                 else datTyp = 0;
-              }
-
-              else if (tHsrc1->type==VARSTRING) 
-              {
-                 if (strcmp(tHsrc1->data->varString,tHsrc2->data->varString)!=0)  datTyp = 1;
-                 else datTyp = 0;
-              }
-
-         } 
-         else 
-         {
-             return E_SEM_TYPE; // nejsou stejny typy vole!
-         }
-
-            // pokud result exituje, prepisu data
-            if (tHresult!=NULL) 
-	      {
-                 tHresult->data->varInt = datTyp; // uloim soucet do te exitusjici
-	      } else {
-                   // polozka result neexistovala, pridam to nove vytvorene
-                   TblInsert (lokal_htable_main, result, datTyp, TypeOF); 
-	       };
-
 
 	 /*========================I_ET=========================*/ 
 	 case I_ET:
@@ -785,7 +664,7 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
          } 
          else 
          {
-             return E_SEM_TYPE; // nejsou stejny typy vole!
+             datTyp = 0;
          }
 
             // pokud result exituje, prepisu data
@@ -801,7 +680,61 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
 
 	 /*========================I_NET=========================*/
 	 case I_NET:
+        // nactu id src1,src2 & result z INSTRUKCE
+         src1   = instr->src1;
+         src2   = instr->src2;
+         result = instr->result;
+
+         // nactu id src1,src2 & result z HASH tabulky
+         tHsrc1   = (TblSearch (lokal_htable_main, src1));
+         tHsrc2   = (TblSearch (lokal_htable_main, src2));
+         tHresult = (TblSearch (lokal_htable_main, result));
+
+         // typ: tHsrc1->type   data:   tHsrc1->data   item:  tHsrc1 , tHsrc2 , tHresult
+
+         int datTyp=0;
+
+         if (tHsrc1!=NULL || tHsrc2!=NULL) return E_SEM_OTHER;
+
+         if (tHsrc1->type!=tHsrc2->type) 
+         {
+              TypeOF = VARBOLEAN;
+
+              if (tHsrc1->type!=VARINT) 
+              {
+                 if (tHsrc1->data->varInt != tHsrc2->data->varInt)  datTyp = 1;
+                 else datTyp = 0;
+              }
+
+	      else if (tHsrc1->type!=VARDOUBLE) 
+              {
+                 if (tHsrc1->data->varDouble != tHsrc2->data->varDouble)  datTyp = 1;
+                 else datTyp = 0;
+              }
+
+              else if (tHsrc1->type==VARSTRING) 
+              {
+                 if (strcmp(tHsrc1->data->varString,tHsrc2->data->varString)!=0)  datTyp = 1;
+                 else datTyp = 0;
+              }
+
+         } 
+         else 
+         {
+             datTyp = 0;
+         }
+
+            // pokud result exituje, prepisu data
+            if (tHresult!=NULL) 
+	      {
+                 tHresult->data->varInt = datTyp; // uloim soucet do te exitusjici
+	      } else {
+                   // polozka result neexistovala, pridam to nove vytvorene
+                   TblInsert (lokal_htable_main, result, datTyp, TypeOF); 
+	       }
 	 break;
+
+//----------------------------  FUNKCE  --------------------------------------------------------------
 
 	 /*========================I_CALL=========================*/ 
 	 case I_CALL:
@@ -811,9 +744,18 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
 	 case I_RETURN:
 	 break;
 
-	 /*========================I_CON=========================*/ 
-	 case I_TYPE:
-	 break;
+//----------------------------  PREPNUTI KONTEXTU  --------------------------------------------------------------
+
+
+/**********************************************
+*
+*     PREPNUTI KONTEXTU & DALSI INSTRUKCE
+*
+**************************************************/
+
+
+//---------------------------- INTERNI FUNKCE --------------------------------------------------------------
+
 
 	 /*========================I_SORT=========================*/
 	 case I_SORT:
@@ -843,6 +785,9 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
 	 break;
 
 
+//---------------------------- SKOKYY --------------------------------------------------------------
+
+
 	 /*========================I_JMP=========================*/ 
 	 case I_JMP:
 	 break;
@@ -870,4 +815,3 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
   }
 
 }
-
