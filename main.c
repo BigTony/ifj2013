@@ -24,11 +24,11 @@ int main(int argc,char** argv){
 
   // Testovani parametru
   if (argc != 2){
-  	print_error(E_WRONG_PARAM);
+  	print_error(E_INTERN,"spatny parametr pri spousteni");
   }
   // Testovani otevreni souboru
   if ((ptrs->source = fopen(argv[1], "r")) == NULL){
-    print_error(E_FILE);
+    print_error(E_INTERN,"nelze otevrit soubor");
   } 
 
   // Provedeni syntakticke analyzy

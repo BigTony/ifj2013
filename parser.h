@@ -17,6 +17,7 @@
 #include "ilist.h"
 #include "errors.h"
 #include "memory.h"
+#include "vyrazy.h"
 /**
 * Hlavickovy soubor pro syntakticky analyzator
 */

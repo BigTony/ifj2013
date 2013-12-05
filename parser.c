@@ -37,8 +37,8 @@ char* gen_id(char *counter)
 
 // deklarace nebo prirazeni promene
 void defVar(tokenValue value){
-	tokenValue var_name = value;
-	if(gettoken(*token) != PRIRAZENI){
+	char * var_name = value;
+	if(getToken(ptrs->source,ptrs->token) != PRIRAZENI){
 		print_error(E_SYN,"chyba v syntaxi ocekavano = pri prirazeni promene");
 	}else{
 		ExEx(0,var_name);
@@ -49,12 +49,12 @@ void defVar(tokenValue value){
 void defIf(){
 	char* TmpExp=gen_id(ptrs->counter);
 	char* TmpJmp=gen_id(ptrs->counter);
-	ExEx(IF,tmpExp); // vyhodnoceni vyrazu	
+	ExEx(IF,TmpExp); // vyhodnoceni vyrazu	
 	InsertInstLast (ptrs->act_list_inst,TmpExp,NULL,TmpJmp,I_JZ);
 	TLItem *tmpItem;
 	// vytvoreni 3AC
 	// vytvoreni 3AC podmineneho skoku1
-	if(gettoken(*token) != ZAV_SLOZ_L){
+	if(getToken(*token) != ZAV_SLOZ_L){
 		print_error(E_SYN);
 	}else{
 		// { ulozym na zasobnik
@@ -62,8 +62,8 @@ void defIf(){
 		InsertInstLast (ptrs->act_list_inst,NULL,NULL,NULL,I_LAB);
 		add_const_hashtbl(ptrs->main_symobol_tbl, IDENTIFIKATOR, ptrs->act_list_inst->Last, TmpJmp);
 		//ulozeni nazvu a odkazu navesti do globalni tabulky
-		if(gettoken(*token)) == ELSE){
-			if(gettoken(*token) != ZAV_SLOZ_L){
+		if(getToken(*token)) == ELSE){
+			if(getToken(*token) != ZAV_SLOZ_L){
 				print_error(E_SYN);
 			}else{
 				// { ulozym na zasobnik
@@ -77,12 +77,12 @@ void defIf(){
 
 // cyklus while
 void defWhile(){
-	if(gettoken(*token) != ZAV_JEDN_L){
+	if(getToken(*token) != ZAV_JEDN_L){
 		print_error(E_SYN);
 	}else{
 		// vyhodnoceni vyrazu
 		// vytvoreni 3AC
-		if(gettoken(*token) != ZAV_SLOZ_L){
+		if(getToken(*token) != ZAV_SLOZ_L){
 			print_error(E_SYN);
 		}else{
 			// { ulozym na zasobnik
@@ -95,10 +95,10 @@ void defWhile(){
 
 // retuuurn
 void defReturn(){
-	if(gettoken(*token) != VARIABLE){
+	if(getToken(*token) != VARIABLE){
 		print_error(E_SYN);
 	}else{
-		if(gettoken(*token) != STREDNIK){
+		if(getToken(*token) != STREDNIK){
 			print_error(E_SYN);
 		}else{
 			// vygeneruje 3AC
@@ -107,17 +107,17 @@ void defReturn(){
 	}
 }
 
-// volani funkce
+// deklarace funkce
 void defFunction(tokenValue value){
-	if(gettoken(*token) != FUNCTION_CALL){
+	if(getToken(*token) != FUNCTION_CALL){
 		print_error(E_SYN);
 	}else{
-		if(gettoken(*token) != ZAV_JEDN_L){
+		if(getToken(*token) != ZAV_JEDN_L){
 			print_error(E_SYN);
 		}else{
 			// vyhodnoceni vyrazu
 			// vytvoreni 3AC
-			if(gettoken(*token) != ZAV_SLOZ_L){
+			if(getToken(*token) != ZAV_SLOZ_L){
 				print_error(E_SYN);
 			}else{
 				// { ulozym na zasobnik
@@ -132,16 +132,16 @@ void defFunction(tokenValue value){
 // volani funkce
 void callFunction(tokenValue value){
 	// vygenerujeme 3AC pro nazev funkce
-	if(gettoken(*token) != ZAV_JEDN_L){
+	if(getToken(*token) != ZAV_JEDN_L){
 		print_error(E_SYN);
 	}else{
-		while(gettoken(*token) != ZAV_JEDN_P){
+		while(getToken(*token) != ZAV_JEDN_P){
 			if(*token.id != VARIABLE){
 				print_error(E_SYN);
 			}else{
 				// generujeme 3AC
 			}
-			if(gettoken(*token) != CARKA){
+			if(getToken(*token) != CARKA){
 				print_error(E_SYN);
 			}
 		}
@@ -150,7 +150,7 @@ void callFunction(tokenValue value){
 
 // vyber spravnej postup pro token
 void classify(){
-	while(gettoken(*token)){
+	while(getToken(*token)){
 		if(*token.id == KONEC){
 			return; // kdyz je token konec analyzy
 		}
@@ -176,7 +176,7 @@ void classify(){
 }
 
 void parser(tPointers *ptrs){
-	gettoken(ptrs->token);
+	getToken(ptrs->token);
 	if (*token.id == START){
 			classify();
 		}

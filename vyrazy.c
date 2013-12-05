@@ -59,6 +59,7 @@ TExpType STop(TStack *stack){
 	if(stack->top != NULL){
 		return stack->top->item;		
 	}
+	return ERROR;
 }
 // bool prazdny zasobnik
 int SEmpty(TStack *stack){
@@ -72,7 +73,6 @@ void SPopAll(TStack *stack){
 	while(!SEmpty(stack)){
 		SPop(stack);
 	}        
-	free(stack);
 }
 
 /* HLAVNI FUNKCE PRO PSA */
@@ -142,6 +142,8 @@ void printstack(TStack *stack){
 			case VALUE:
 				printf("i\n");
 				break;
+			default:
+				break;
 			// case FUNC:
 			// 	printf("FUNC\n");
 			// 	break;
@@ -159,7 +161,7 @@ void ExEqual(TStack *stack,TExpType input){
 
 void ExLess(TStack *stack,TExpType input){
 	TStack *cur_ptr = stack;
-	TSItemPtr prev_ptr;	
+	TSItemPtr prev_ptr = NULL;	
 	tokenValue value;
 	// kdyz je hned nahore
 	if(STop(cur_ptr) <= END){
@@ -260,7 +262,7 @@ void ExGreater(TStack *stack){
 					if(STop(&temp) != NONTERM){
 						SPopAll(&temp);
 						SPopAll(stack);
-						print_error(E_SYN,"chyba pri E->E op E , chyby operand 1");
+						print_error(E_SYN,"chyba pri E->E op E , chyby operator 1");
 					}
 					tokenValue value1 = temp.top->var;
 					SPop(&temp);
@@ -269,10 +271,10 @@ void ExGreater(TStack *stack){
 						if(STop(&temp) != KONK){
 							SPopAll(&temp);
 							SPopAll(stack);
-							print_error(E_SYN,"chyba pri E->E op E , spatny operand");
+							print_error(E_SYN,"chyba pri E->E op E , spatny operator2");
 						}
 					}
-					TIType op;
+					TIType op = I_LAB;
 					switch(STop(&temp)){
 						case PLUS_:
 							op = I_ADD;
@@ -303,6 +305,9 @@ void ExGreater(TStack *stack){
 							break;
 						case LTH:
 							op = I_L;
+							break;
+						default:
+							print_error(E_SYN,"chyba spatny operand E op E");
 							break;
 					}
 					SPop(&temp);
@@ -361,14 +366,14 @@ TExpType skipNonTerm(TStack *stack){
 	return b;
 }
 
-void ExEx(int ifYes,char *result){
+void ExEx(int ifYes,char * result){
 	tokenValue value;
 	if(ifYes == IF){
-		if(gettoken(ptrs->token) != ZAV_JEDN_L){
+		if(getToken(ptrs->source,ptrs->token) != ZAV_JEDN_L){
 			print_error(E_SYN,"chyby ( v ifu");
 		}
 	}else{
-		gettoken(ptrs->token);
+		getToken(ptrs->source,ptrs->token);
 	}
 
 	TStack stack;
@@ -418,7 +423,7 @@ void ExEx(int ifYes,char *result){
 		}else{
 			redukce = 0;
 		}
-	}while(gettoken(ptrs->token));
+	}while(getToken(ptrs->source,ptrs->token));
 
 
 	// po nalezeni ; dokonceni vyrazu 
@@ -444,12 +449,6 @@ void ExEx(int ifYes,char *result){
 		}
 	}
 
-}
-
-
-
-int main(){
-	return 0;
 }
 
 // // git ls-files | xargs wc -l

@@ -12,5 +12,9 @@
 #ifndef STRINGS_H
 #define STRINGS_H
 #include "errors.h"
+char * allocString();
+void freeString(char *s);
+char * reallocString(char *s,int length);
+char * konkatenace(char*prvni,char*druhy);
 #endif
 

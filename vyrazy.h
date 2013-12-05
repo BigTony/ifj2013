@@ -6,6 +6,7 @@
 #include "scaner.h"
 #include "ilist.h"
 #include "errors.h"
+#include "memory.h"
 // hodnoty ktere jsou mozne ulozit na zasobnik
 typedef enum{
 	VALUE, // promena 0F
@@ -67,6 +68,8 @@ TExpType STop(TStack *stack);
 int SEmpty(TStack *stack);
 // odstran vsechny prvky
 void SPopAll(TStack *stack);
+
+void ExEx(int ifYes,char * result);
 #endif
 
 

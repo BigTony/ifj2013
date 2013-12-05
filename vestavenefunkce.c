@@ -1,44 +1,65 @@
 #include <limits.h>
 #include <ctype.h>
 #include <math.h>
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "vestavenefunkce.h"
+/*
+typedef union {
+    int varInt;
+    double varDouble;
+    char *varString;
+}tokenValue
+*/
 
 // pretypovani
 void tovarint(item *item){
 	switch(item->type){
-		case VARBOOL:
+		case VARBOOL:{
 			item->type = VARINT;
 			break;
-		case VARDOUBLE:
-			tokenValue.varInt kokot;
-			item->data = kokot;
+		}
+		case VARDOUBLE:{
+			tokenValue pretyp;
+			pretyp.varInt = (int) item->data.varDouble;
+			item->data = pretyp;
 			item->type = VARINT;
 			break;
-		case STRING:
+		}
+		case STRING:{
 			int i = 0;
 			int cislo = 0;
-			while ((item->data[i]!='\0')){
-				if((isspace(item->data[i]))&&(blank)&&(cislo==0)) {
+			char *zpracuj = item->data.varString;
+			int blank= 0;
+			while ((zpracuj[i]!='\0')){
+				if((isspace(zpracuj[i]))&&(cislo==0)) {
 					continue;
 				}
-  				if (isdigit(item->data[i]) && (cislo<=INT_MAX)){
-  					cislo=cislo*10+(item->data[i]-'0');
+  				if (isdigit(zpracuj[i]) && (cislo<=INT_MAX)){
+  					blank = 1;
+  					cislo=cislo*10+(zpracuj[i]-'0');
   					i++;
   				}else{
   					break;
   				}
   			}
-  			free(item->data);
+  			free(zpracuj);
+  			// free(item->data);
+  			// podle me to nemusime freeovat
+  			// bo union zabira v pameti kolik jeho maximalni polozka takze by to melo bejt cajk
   			if(blank == 0)
-  				item->data = cislo;
+  				item->data.varInt = cislo;
   			else
-  				item->data = 0;
+  				item->data.varInt = 0;
 			item->type = VARINT;
 			break;
+		}
 		case VARINT:
 			break;
 		default:
-			print_error(E_INT,"chyba pri pretypovani");
+			print_error(E_INTERN,"chyba pri pretypovani");
 			break;
 	}
 }
@@ -46,33 +67,33 @@ void tovarint(item *item){
 void toVARBOOL(item *item){
 	switch(item->type){
 		case VARINT:
-			if(item->data != 0){
-				item->data = 1;
+			if(item->data.varInt != 0){
+				item->data.varInt = 1;
 			}
 			item->type = VARBOOL;
 			break;
 		case VARDOUBLE:
-			if(item->data == 0.0){
-				item->data = 0;
+			if(item->data.varDouble == 0.0){
+				item->data.varInt = 0;
 			}else{
-				item->data = 1;
+				item->data.varInt = 1;
 			}
 			item->type = VARBOOL;
 			break;
 		case STRING:
-			if(strcmp (item->data,"") == 0){
-				free(item->data);
-				item->data = 0;
+			if(strcmp (item->data.varString,"") == 0){
+				// free(item->data);
+				item->data.varInt = 0;
 			}else{
-				free(item->data);
-				item->data = 1;
+				// free(item->data);
+				item->data.varInt = 1;
 			}
 			item->type = VARBOOL;
 			break;
 		case VARBOOL:
 			break;
 		default:
-			print_error(E_INT,"chyba pri pretypovani");
+			print_error(E_INTERN,"chyba pri pretypovani");
 			break;
 	}
 }
@@ -82,24 +103,25 @@ void todouble(item *item){
 		case VARINT:
 			item->type = VARDOUBLE;
 			break;
-		case STRING:
+		case STRING:{
 			int i = 0;
-			int c = 0;
 			int cislo = 0;
 			int desetiny_cislo = 0;
 			int carka = 0;
-			while ((item->data[i]!='\0')){
-				if((isspace(item->data[i]))&&(blank)&&(cislo==0)&&(desetiny_cislo==0)) {
+			int blank = 0;
+			char *zpracuj = item->data.varString;
+			while ((zpracuj[i]!='\0')){
+				if((isspace(zpracuj[i]))&&(cislo==0)&&(desetiny_cislo==0)) {
 					continue;
 				}
-  				if (isdigit(item->data[i]) && (cislo<=INT_MAX)&&(desetiny_cislo==0)){
+  				if (isdigit(zpracuj[i]) && (cislo<=INT_MAX)&&(desetiny_cislo==0)){
   					if(carka == 1){
-  						desetiny_cislo=desetiny_cislo+(item->data[i]-'0')/10;	
+  						desetiny_cislo=desetiny_cislo+(zpracuj[i]-'0')/10;	
   					}else{
-  						cislo=cislo*10+(item->data[i]-'0');
+  						cislo=cislo*10+(zpracuj[i]-'0');
   					}
   					i++;
-  				}else if((item->data[i] == '.')){
+  				}else if((zpracuj[i] == '.')){
   					if(carka == 0){
   						carka = 1;
   					}else{
@@ -110,25 +132,27 @@ void todouble(item *item){
   					break;
   				}
   			}
-  			free(item->data);
+  			// free(item->data);
+  			free(zpracuj);
   			if(blank == 0)
-  				item->data = cislo+desetiny_cislo;
+  				item->data.varDouble = cislo+desetiny_cislo;
   			else
-  				item->data = 0.0;
+  				item->data.varDouble = 0.0;
 			item->type = VARDOUBLE;
 			break;
+		}
 		case VARBOOL:
-			if(item->data == 0){
-				item->data = 0.0;
+			if(item->data.varInt == 0){
+				item->data.varDouble = 0.0;
 			}else{
-				item->data = 1.0;
+				item->data.varDouble = 1.0;
 			}
 			item->type = VARDOUBLE;
 			break;
 		case VARDOUBLE:
 			break;
 		default:
-			print_error(E_INT,"chyba pri pretypovani");
+			print_error(E_INTERN,"chyba pri pretypovani");
 			break;
 	}
 }
@@ -143,32 +167,34 @@ int get_int_len (int value){
 
 void tostring(item *item){
 	switch(item->type){
-		case VARINT:
-			int delka = get_int_len(item->data);
-			char *vysledek[delka+1];
-			itoa(item->data,vysledek,10);
-			item->data = vysledek;
+		case VARINT:{
+			int delka = get_int_len(item->data.varInt);
+			char vysledek[delka+1];
+			sprintf(vysledek, "%d", item->data.varInt);
+			item->data.varString = vysledek;
 			item->type = VARINT;
 			break;
-		case VARDOUBLE:
+		}
+		case VARDOUBLE:{
 			// delka double cisla?
-			char *vysledek[100];
-			sprintf(vysledek, "%g", item->data);
-			item->data = vysledek;
+			char vysledek[100];
+			sprintf(vysledek, "%g", item->data.varDouble);
+			item->data.varString = vysledek;
 			item->type = VARDOUBLE;
 			break;
+		}
 		case VARBOOL:
-			if(item->data == 0){
-				item->data = "";
+			if(item->data.varInt == 0){
+				item->data.varString = "";
 			}else{
-				item->data = "1";
+				item->data.varString = "1";
 			}
 			item->type = STRING;	
 			break;
 		case STRING:
 			break;
 		default:
-			print_error(E_INT,"chyba pri pretypovani");
+			print_error(E_INTERN,"chyba pri pretypovani");
 			break;
 	}
 }
@@ -205,7 +231,7 @@ void VARBOOLval(item *item){
 			break;
 		case STRING:
 			break;
-		case VARVARBOOL:
+		case VARBOOL:
 			break;
 		case NIL:
 			break;
@@ -216,14 +242,3 @@ void VARBOOLval(item *item){
 }
 
 
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
-
-int main(){
-	double a=2.132;
-	char arr[23];
-	sprintf(arr, "%g", a);
-	printf("%s\n",arr);
-	return 0;
-}

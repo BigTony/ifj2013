@@ -42,7 +42,7 @@ void freeString(char *s){
 	}
 }
 
-char * reallocString(char *s,int length){
+char * reAllocString(char *s,int length){
 	char *temp = NULL;
 	temp = (char *) realloc(s, length+1);
 	if ((temp == NULL) && (s)){
@@ -65,13 +65,3 @@ char * konkatenace(char*prvni,char*druhy){
 	return vysledek;
 }
 
-// int main(){
-// 	char *mujstring = allocString();
-// 	strcpy(mujstring,"kokot");
-// 	mujstring = reallocString(mujstring,20);
-// 	printf("%s\n",mujstring);
-// 	strcpy(mujstring,"mrdat psa do prdele");
-// 	printf("%s\n",mujstring);
-// 	freeString(mujstring);
-// 	return 0;
-// }

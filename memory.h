@@ -4,6 +4,7 @@
 #include "ial.h"
 #include "scaner.h"
 #include "adt.h"
+#include "strings.h"
 // struktura pro dealokaci a errory
 // vsechno co se naalokuje a vyuziva se mezi jednotlivimi moduly se ulozi sem
 typedef struct tPointers{
