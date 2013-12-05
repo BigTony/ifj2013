@@ -17,24 +17,37 @@
 
 //////
 
+void freeW(char **w)
+{
+    if(*w!=NULL)
+        free(*w);
+}
 int reallocString(char** w)
 {
-    char* wPom;
-    if((wPom = malloc(sizeof(char) * BUFF))==NULL)   //Alokace pro retezec
+    if(*w!=NULL)
     {
-        print_error(E_INTERN,"LexAllocError");
-    }
-    wPom = realloc(*w,strlen(*w)+BUFF);
-    if(wPom==NULL)
-    {
-        print_error(E_INTERN,"LexAllocError");
+        char* wPom;
+        if((wPom = malloc(sizeof(char) * BUFF))==NULL)   //Alokace pro retezec
+        {
+            print_error(E_INTERN,"LexAllocError");
+        }
+        wPom = realloc(*w,strlen(*w)+BUFF);
+        if(wPom==NULL)
+        {
+            print_error(E_INTERN,"LexAllocError");
+        }
+        else
+        {
+            *w=wPom;
+        }
+        return E_OK;
     }
     else
     {
-        *w=wPom;
+        print_error(E_INTERN,"LexAllocError");
+        return E_LEX;
     }
 
-    return E_OK;
 }
 
 void skipSpace(char *c,FILE *fp)
@@ -132,7 +145,6 @@ int getToken(FILE *fp,Ttoken *token){
                 token->id = ZAV_SLOZ_P;
                 w[len]=c; w[len+1]='\0';
                 token->value.varString = w;
-                free(w);
                 return token->id;
             case ';' :
                 token->id = STREDNIK;
@@ -236,7 +248,7 @@ int getToken(FILE *fp,Ttoken *token){
                 }
                 else
                 {
-                    free(w);
+                    freeW(&w);
                     print_error(E_LEX,"LexERROR"); return E_LEX;
                 }
             }
@@ -273,13 +285,13 @@ int getToken(FILE *fp,Ttoken *token){
                 }
                 else
                 {
-                    free(w);
+                    freeW(&w);
                     print_error(E_LEX,"LexERROR"); return E_LEX;
                 }
             }
             else
             {
-                free(w);
+                freeW(&w);
                 print_error(E_LEX,"LexERROR"); return E_LEX;
             }
         }
@@ -328,22 +340,22 @@ int getToken(FILE *fp,Ttoken *token){
                                return token->id;
                             }
                             else{
-                                free(w);
+                                freeW(&w);
                                 print_error(E_LEX,"LexERROR"); return E_LEX;
                             }
                        }
                        else{
-                        free(w);
+                        freeW(&w);
                         print_error(E_LEX,"LexERROR"); return E_LEX;
                         }
                     }
                     else{
-                       free(w);
+                       freeW(&w);
                        print_error(E_LEX,"LexERROR"); return E_LEX;
                     }
                 }
                 else{
-                    free(w);
+                    freeW(&w);
                     print_error(E_LEX,"LexERROR"); return E_LEX;
                 }
             }
@@ -395,13 +407,13 @@ int getToken(FILE *fp,Ttoken *token){
                 len--;
                 token->id=VARIABLE;
                 token->value.varString = w;
-               // free(w);
+               // freeW(&w);
                 return token->id;
 
             }
             else
             {
-                free(w);
+                freeW(&w);
                 print_error(E_LEX,"LexERROR"); return E_LEX;
             }
         }
@@ -435,7 +447,7 @@ int getToken(FILE *fp,Ttoken *token){
            /* if((strcmp(w,"if")==0)||(strcmp(w,"else")==0)||(strcmp(w,"while")==0)||(strcmp(w,"return")==0
                 )||(strcmp(w,"function")==0)||(strcmp(w,"null")==0)||(strcmp(w,"true")==0)||(strcmp(w,"false")==0))
             {
-                free(w);
+                freeW(&w);
                 print_error(E_LEX,"LexERROR"); return E_LEX;
             }*/
             if((strcmp(w,"if")==0))
@@ -490,7 +502,7 @@ int getToken(FILE *fp,Ttoken *token){
             {
                 token->id=IDENTIFIKATOR;
                 token->value.varString = w;
-               // free(w);
+               // freeW(&w);
                 return token->id;
             }
 
@@ -558,12 +570,12 @@ int getToken(FILE *fp,Ttoken *token){
                             ungetc(c,fp);
                             token->id=VARDOUBLE;
                             token->value.varDouble = strtod(w,NULL);
-                            free(w);
+                            freeW(&w);
                             return token->id;
                         }
                         else
                         {
-                            free(w);
+                            freeW(&w);
                             print_error(E_LEX,"LexERROR"); return E_LEX;
                         }
                     }
@@ -573,7 +585,7 @@ int getToken(FILE *fp,Ttoken *token){
                         ungetc(c,fp);
                         token->id=VARDOUBLE;
                         token->value.varDouble = strtod(w,NULL);
-                        free(w);
+                        freeW(&w);
                         return token->id;
                     }
                 }
@@ -583,7 +595,7 @@ int getToken(FILE *fp,Ttoken *token){
                     w[len]='\0';
                     token->id=VARINT;
                     token->value.varInt=atoi(w);
-                    free(w);
+                    freeW(&w);
                     return token->id;
                 }
             }
@@ -602,7 +614,7 @@ int getToken(FILE *fp,Ttoken *token){
                 ungetc(c,fp);
                 token->id=VARDOUBLE;
                 token->value.varDouble = strtod(w,NULL);
-                free(w);
+                freeW(&w);
                 return token->id;
 
             }
@@ -612,7 +624,7 @@ int getToken(FILE *fp,Ttoken *token){
                 w[len]='\0';
                 token->id=VARINT;
                 token->value.varInt=atoi(w);
-                free(w);
+                freeW(&w);
                 return token->id;
             }
 
@@ -641,7 +653,7 @@ int getToken(FILE *fp,Ttoken *token){
                         return E_LEX;
                     }
                 }
-                if(c>31 && c!='"' && c!='$' && c!='t' && c!='\\' && c!='x')
+                if(c>31 && c!='"' && c!='$' && c!='t' && c!='n' && c!='\\' && c!='x')
                 {
 
                     w[len]=c;
@@ -658,6 +670,20 @@ int getToken(FILE *fp,Ttoken *token){
                     }
                     else
                         pom=1;
+                }
+                else if(c=='n')
+                {
+                    if(w[len-1]=='\\')
+                    {
+                        w[len-1]='\n';
+                        c=fgetc(fp);
+                    }
+                    else
+                    {
+                        w[len]=c;
+                        len++;
+                        c=fgetc(fp);
+                    }
                 }
                 else if(c=='$')
                 {
@@ -678,7 +704,11 @@ int getToken(FILE *fp,Ttoken *token){
                         w[len-1]='\t';
                         c=fgetc(fp);
                     }
-                    else{};
+                    else{
+                        w[len]=c;
+                        len++;
+                        c=fgetc(fp);
+                    }
                 }
                 else if(c=='x')
                 {
@@ -734,7 +764,7 @@ int getToken(FILE *fp,Ttoken *token){
         //////////////////
 }
     //k tomuhle by nemelo vubec dojit, jen kvuli warningu
-    free(w);
+    freeW(&w);
     print_error(E_LEX,"LexERROR"); return E_LEX;
     return E_LEX;
 }
