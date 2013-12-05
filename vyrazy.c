@@ -372,11 +372,11 @@ TExpType skipNonTerm(TStack *stack){
 void ExEx(int ifYes,char * result){
 	tokenValue value;
 	if(ifYes == IF){
-		if(getToken(ptrs->source,ptrs->token) != ZAV_JEDN_L){
+		if(getToken(g_ptrs->source,g_ptrs->token) != ZAV_JEDN_L){
 			print_error(E_SYN,"chyby ( v ifu");
 		}
 	}else{
-		getToken(ptrs->source,ptrs->token);
+		getToken(g_ptrs->source,g_ptrs->token);
 	}
 
 	TStack stack;
@@ -393,7 +393,7 @@ void ExEx(int ifYes,char * result){
 
 	do{
 		printf("%i\n",c );
-		a = TokenToExpresion(ptrs->token->id);
+		a = TokenToExpresion(g_ptrs->token->id);
 		b = skipNonTerm(&stack);		
 
 		if(b > END){
@@ -426,7 +426,7 @@ void ExEx(int ifYes,char * result){
 		}else{
 			redukce = 0;
 		}
-	}while(getToken(ptrs->source,ptrs->token));
+	}while(getToken(g_ptrs->source,g_ptrs->token));
 
 
 	// po nalezeni ; dokonceni vyrazu 

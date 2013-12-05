@@ -5,6 +5,7 @@
 #include "scaner.h"
 #include "adt.h"
 #include "strings.h"
+#include <stdio.h>
 // struktura pro dealokaci a errory
 // vsechno co se naalokuje a vyuziva se mezi jednotlivimi moduly se ulozi sem
 typedef struct tPointers{
@@ -17,7 +18,7 @@ typedef struct tPointers{
 	char * counter;
 }tPointers;
 
-extern tPointers *ptrs;
+extern tPointers *g_ptrs;
 
 // Funkce pro alokaci, inicializaci a dealokaci globalnich promenych
 void init_global(tPointers *ptrs);

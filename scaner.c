@@ -13,8 +13,15 @@
 #include <string.h>
 #include <ctype.h>
 #include "scaner.h"
+#include <stdio.h>
 
-
+//test-vypis nacteneho tokenu
+int getToken_test(FILE *fp,Ttoken *token)
+{
+int i= getToken(fp,token);
+printf("Token ID Load:%d/n",i);
+return i;
+}
 //////
 
 void freeW(char **w)
@@ -765,6 +772,6 @@ int getToken(FILE *fp,Ttoken *token){
 }
     //k tomuhle by nemelo vubec dojit, jen kvuli warningu
     freeW(&w);
-    print_error(E_LEX,"LexERROR"); return E_LEX;
+    print_error(E_LEX,"LexERROR");
     return E_LEX;
 }

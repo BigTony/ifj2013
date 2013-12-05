@@ -17,22 +17,24 @@
 #include "parser.h"
 #include "errors.h"
 
+tPointers *g_ptrs=NULL;
 
 int main(int argc,char** argv){
   // inicializace globalni pametove tabulky
-  init_global(ptrs);
+  init_global(g_ptrs);
 
   // Testovani parametru
   if (argc != 2){
   	print_error(E_INTERN,"spatny parametr pri spousteni");
   }
+  printf ("%d/n",g_ptrs.source);
   // Testovani otevreni souboru
-  if ((ptrs->source = fopen(argv[1], "r")) == NULL){
+  if ((g_ptrs->source = fopen(argv[1], "r")) == NULL){
     print_error(E_INTERN,"nelze otevrit soubor");
   } 
 
   // Provedeni syntakticke analyzy
-  parser(ptrs);
+  parser(g_ptrs);
 
 	//all ok
   return E_OK;
