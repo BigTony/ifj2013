@@ -46,6 +46,11 @@ void defVar(tokenValue value){
 	}
 }
 
+void callCreateINstruction(tokenValue value1,tokenValue value2,int op)
+{    
+return;
+}
+
 // podminka if
 void defIf(){
 	char* TmpExp=gen_id(ptrs->counter);
@@ -168,7 +173,7 @@ void classify(Ttoken token){
 			defWhile();
 			break;
 		}else if(token.id == RETURN){
-			defRetrun();
+			defReturn();
 		}else if(token.id == ZAV_SLOZ_P){
 			// zkontroluje jestli je na zasobniku }
 			break;
