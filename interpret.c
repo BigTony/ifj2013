@@ -27,15 +27,16 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
 {
 
 //------------------- INIT -------------------------------------------------------------
+ 
+ 
+ 
+// => PROMENNE_______________________________
 
-   // aktivuju seznam MAINU
-   TList *ActiveList = L; 
-     
-   // data aktualni instrukce
+   // data aktualni instrukce [operandy]
    TInstr     *instr;           
-   tokenValue *src1;
-   tokenValue *src2;
-   tokenValue *result;
+   itemKey *src1;
+   itemKey *src2;
+   itemKey *result;
 
    // data aktualni instrukce z HASH table          
    item *tHsrc1;
@@ -43,25 +44,37 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
    item *tHresult;
 
    // POMOCNE PROMENNE
-   tokenValue *tmp;
-   tokenValue *dataType,*dataType1,*dataType2;
-   tokenValue *src1Data,*src2Data,*resultData;
+   void *tmp;
+   int dataType,dataType1,dataType2;
+   itemKey *src1Data,*src2Data,*resultData;
    int TypeOF;
 
-   // navratva dresa instrukcniho seznamu MAINU
+   // navratova dresa instrukcniho seznamu MAINU
    TLItem *nil = NULL;
+   
+// => LOKALNI TS_______________________________
 
    // Lokalni TS
-   tHashTbl *lokal_htable_main;
+   tHashTbl *local_htable_main;
 
    // naalokovani a inicializaci LOKALNI TS
-   tableInit(lokal_htable_main);
+   tableInit(local_htable_main);
 
    // push adresy lokalni TS na stack
-   pushStack(stack,lokal_htable_main,nil);
+   pushStack(stack,local_htable_main,nil);
+
+// => AKTIVACE TS a INSTRUKCE___________________
+
+   // ukazuje na aktivni LOKALNI TS, coz bude po inicializace ta jiz naalokovana
+   tHashTbl *active_htable = local_htable_main;
+
+   // aktivuju seznam MAINU
+   TList *ActiveList = L; 
 
    // aktivace prvni instrukce z prave provadenyho instrukcniho listu
    ActiveFirstItem (ActiveList);
+
+
 
 //------------------- EXECUTE -------------------------------------------------------------
 
@@ -76,7 +89,6 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
       *  semantic controll 
       *
       * ------------------------------------------------------------ */
-
 
       /// item* TblSearch (tHashTbl *tab, itemKey key);
       /// void  TblInsert (tHashTbl *tab, itemKey key, tokenValue data, int type); 
@@ -95,13 +107,13 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
          dataType = (TblSearch (lokal_htable_main, src1))->type;
 
          // POKUD operand do ktereho prirazuju jiz exituje, tak jeho data prepisu
-         if (TblSearch (lokal_htable_main, result)!=NULL) 
+         if (TblSearch (active_htable, result)!=NULL) 
          {
             // prepisu data operandu result daty operandu src1
-            (TblSearch (lokal_htable_main, result))->data = (TblSearch (lokal_htable_main, src1))->data;
+            (TblSearch (active_htable, result))->data = (TblSearch (active_htable, src1))->data;
 
             // prepisu datovy typ operandu result datovym typem operandu src1
-            (TblSearch (lokal_htable_main, result))->type = (TblSearch (lokal_htable_main, src1))->type;
+            (TblSearch (active_htable result))->type = (TblSearch (active_htable, src1))->type;
          } 
          else 
          {
@@ -121,9 +133,9 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
          result = instr->result;
 
          // nactu id src1,src2 & result z HASH tabulky
-         tHsrc1   = (TblSearch (lokal_htable_main, src1));
-         tHsrc2   = (TblSearch (lokal_htable_main, src2));
-         tHresult = (TblSearch (lokal_htable_main, result));
+         tHsrc1   = (TblSearch (active_htable, src1));
+         tHsrc2   = (TblSearch (active_htable, src2));
+         tHresult = (TblSearch (active_htable, result));
 
          // nactu typ dat src1 & src2
          dataType1 = tHsrc1->type;
