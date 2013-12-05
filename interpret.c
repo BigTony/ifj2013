@@ -49,7 +49,7 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
    int TypeOF;
 
    // navratva dresa instrukcniho seznamu MAINU
-   TLItem nil = NULL;
+   TLItem *nil = NULL;
 
    // Lokalni TS
    tHashTbl *lokal_htable_main;

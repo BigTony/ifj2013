@@ -154,11 +154,13 @@ void printstack(TStack *stack){
 	printf("$\n");
 }
 
+// =
 void ExEqual(TStack *stack,TExpType input){
 	tokenValue value;
 	SPush(stack,input,value);
 }
 
+// <
 void ExLess(TStack *stack,TExpType input){
 	TStack *cur_ptr = stack;
 	TSItemPtr prev_ptr = NULL;	
@@ -196,7 +198,8 @@ void ExLess(TStack *stack,TExpType input){
 	print_error(E_SYN,"chyby zavorka pri ExLess");
 }
 
-// $ < ( E
+
+// >
 void ExGreater(TStack *stack){
 	tokenValue value;
 	TStack *cur_ptr = stack;

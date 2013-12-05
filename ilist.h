@@ -86,4 +86,19 @@ typedef struct TList
   TLItem *Last;   // ukazatel na posledni prvek
 } TList;
 
+void InitList (TList *L);
+TList *CreateList ();
+void DisposeList (TList *L) ;
+void InsertFirst (TList *L,TInstr *Instr) ;
+void InsertLast (TList *L,TInstr *Instr);
+void InsertInstLast (TList *L,char *src1,char* src2,char* dest,TIType type) ;
+
+int IsActiveItem (TList *L) ;
+void ActiveFirstItem(TList *L);
+void ActiveLastItem (TList *L) ;
+void ActiveNextItem (TList *L) ;
+void ActivePtrItem (TList *L,TLItem *Item) ;
+TLItem * ReturnActiveItem (TList *L);
+TInstr * ReturnActiveInstr (TList *L) ;
+
 #endif

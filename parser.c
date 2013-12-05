@@ -37,7 +37,7 @@ char* gen_id(char *counter)
 
 // deklarace nebo prirazeni promene
 void defVar(tokenValue value){
-	char * var_name = value;
+	char * var_name = value.varString;
 	if(getToken(ptrs->source,ptrs->token) != PRIRAZENI){
 		print_error(E_SYN,"chyba v syntaxi ocekavano = pri prirazeni promene");
 	}else{
