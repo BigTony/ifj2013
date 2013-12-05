@@ -13,7 +13,7 @@
 #include <limits.h>
 #include "parser.h"
 
-void classify();
+
 
 /**Funkce pro vlozeni constanty do hashTbl
  * @param hashTbl: tabulka kam vkladas
@@ -21,7 +21,7 @@ void classify();
  * @param tokenValue: hodnota vlozene hodnoty
  * @param counter: ukazatel na pocitadlo constant string  
  */     
-void add_const_hashtbl(tHashTbl *hashTbl, int type, tokenValue value, char *id)
+void add_const_hashtbl(tHashTbl *hashTbl, int type,tokenValue value, char *id)
 {
 	TblInsert (hashTbl, id, value, type);	
 }
@@ -61,7 +61,7 @@ void defIf(){
 		// { ulozym na zasobnik
 		classify();
 		InsertInstLast (ptrs->act_list_inst,NULL,NULL,NULL,I_LAB);
-		add_const_hashtbl(ptrs->main_symobol_tbl, IDENTIFIKATOR, ptrs->act_list_inst->Last, TmpJmp);
+		add_const_hashtbl(ptrs->main_symobol_tbl, IDENTIFIKATOR, (tokenValue)(void*)ptrs->act_list_inst->Last, TmpJmp);
 		//ulozeni nazvu a odkazu navesti do globalni tabulky
 		if(getToken(ptrs->source,ptrs->token) == ELSE){
 			if(getToken(ptrs->source,ptrs->token) != ZAV_SLOZ_L){
@@ -110,7 +110,7 @@ void defReturn(){
 
 // deklarace funkce
 void defFunction(tokenValue value){
-	if(getToken(ptrs->source,ptrs->token) != FUNCTION_CALL){
+	if(getToken(ptrs->source,ptrs->token) != IDENTIFIKATOR){
 		print_error(E_SYN,"pri deklarace funkce chyby jeji nazev");
 	}else{
 		if(getToken(ptrs->source,ptrs->token) != ZAV_JEDN_L){
@@ -137,7 +137,7 @@ void callFunction(tokenValue value){
 		print_error(E_SYN,"pri volani funkce chyby (");
 	}else{
 		while(getToken(ptrs->source,ptrs->token) != ZAV_JEDN_P){
-			if(*token.id != VARIABLE){
+			if(ptrs->token->id != VARIABLE){
 				print_error(E_SYN,"pri volani funkce jsou parametry jine symboly");
 			}else{
 				// generujeme 3AC
@@ -150,26 +150,26 @@ void callFunction(tokenValue value){
 }
 
 // vyber spravnej postup pro token
-void classify(){
+void classify(Ttoken token){
 	while(getToken(ptrs->source,ptrs->token)){
-		if(*token.id == KONEC){
+		if(token.id == KONEC){
 			return; // kdyz je token konec analyzy
 		}
 		// token je bud promena nebo volani fce
-		if(*token.id == VARIABLE){
-			defVar(*temp_token.value);	
-		}else if(*token.id == FUNCTION_CALL){
-			callFunction(*temp_token.value);
-		}else if(*token.id == FUNCTION){
-			defFunction();
-		}else if(*token.id == IF){
+		if(token.id == VARIABLE){
+			defVar(ptrs->token->value);	
+		}else if(token.id == IDENTIFIKATOR){
+			callFunction(token.value);
+		}else if(token.id == FUNCTION){
+			defFunction(token.value);
+		}else if(token.id == IF){
 			defIf();
-		}else if(*token.id == WHILE){
+		}else if(token.id == WHILE){
 			defWhile();
 			break;
-		}else if(*token.id == RETURN){
+		}else if(token.id == RETURN){
 			defRetrun();
-		}else if(*token.id == ZAV_SLOZ_P){
+		}else if(token.id == ZAV_SLOZ_P){
 			// zkontroluje jestli je na zasobniku }
 			break;
 		}
@@ -178,8 +178,8 @@ void classify(){
 
 void parser(tPointers *ptrs){
 	getToken(ptrs->source,ptrs->token);
-	if (*token.id == START){
-			classify();
+	if (ptrs->token->id == START){
+			classify(*(ptrs->token));
 		}
 	else{
 		print_error(E_SYN,"nazacatku neni <php");

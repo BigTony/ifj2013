@@ -30,6 +30,7 @@
 #define STRING 5
 #define VARBOOL 6
 #define NIL 7   //null
+#define JUMP // pro rozliseni skoku
 // Znaky
 #define ZAV_JEDN_L  10 // (
 #define ZAV_JEDN_P  11 // )
@@ -87,6 +88,7 @@ typedef union {
     int varInt;
     double varDouble;
     char *varString;
+    void *pointer;
 }tokenValue;
 
 typedef struct{

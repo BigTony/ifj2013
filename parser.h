@@ -25,4 +25,6 @@
 void parser(tPointers *ptrs);
 //funkce na pridani do hashTbl
 void add_hash_tbl(tHashTbl *hashTbl, int type, tokenValue value);
+//hlavni funkce parseru
+void classify();
 #endif
