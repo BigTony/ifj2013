@@ -13,6 +13,7 @@
 #include <limits.h>
 #include "parser.h"
 
+void classify();
 
 /**Funkce pro vlozeni constanty do hashTbl
  * @param hashTbl: tabulka kam vkladas
@@ -54,17 +55,17 @@ void defIf(){
 	TLItem *tmpItem;
 	// vytvoreni 3AC
 	// vytvoreni 3AC podmineneho skoku1
-	if(getToken(*token) != ZAV_SLOZ_L){
-		print_error(E_SYN);
+	if(getToken(ptrs->source,ptrs->token) != ZAV_SLOZ_L){
+		print_error(E_SYN,"chyby leva slozena zavorka u if {");
 	}else{
 		// { ulozym na zasobnik
 		classify();
 		InsertInstLast (ptrs->act_list_inst,NULL,NULL,NULL,I_LAB);
 		add_const_hashtbl(ptrs->main_symobol_tbl, IDENTIFIKATOR, ptrs->act_list_inst->Last, TmpJmp);
 		//ulozeni nazvu a odkazu navesti do globalni tabulky
-		if(getToken(*token)) == ELSE){
-			if(getToken(*token) != ZAV_SLOZ_L){
-				print_error(E_SYN);
+		if(getToken(ptrs->source,ptrs->token) == ELSE){
+			if(getToken(ptrs->source,ptrs->token) != ZAV_SLOZ_L){
+				print_error(E_SYN,"chyby leva slozena zavorka u else {");
 			}else{
 				// { ulozym na zasobnik
 				classify();
@@ -77,13 +78,13 @@ void defIf(){
 
 // cyklus while
 void defWhile(){
-	if(getToken(*token) != ZAV_JEDN_L){
-		print_error(E_SYN);
+	if(getToken(ptrs->source,ptrs->token) != ZAV_JEDN_L){
+		print_error(E_SYN,"chyba leva zavorka u while");
 	}else{
 		// vyhodnoceni vyrazu
 		// vytvoreni 3AC
-		if(getToken(*token) != ZAV_SLOZ_L){
-			print_error(E_SYN);
+		if(getToken(ptrs->source,ptrs->token) != ZAV_SLOZ_L){
+			print_error(E_SYN,"chyby slozena leva zavorka u while");
 		}else{
 			// { ulozym na zasobnik
 			classify();
@@ -95,11 +96,11 @@ void defWhile(){
 
 // retuuurn
 void defReturn(){
-	if(getToken(*token) != VARIABLE){
-		print_error(E_SYN);
+	if(getToken(ptrs->source,ptrs->token) != VARIABLE){
+		print_error(E_SYN,"pri returnu neni zadna returnova hodnota");
 	}else{
-		if(getToken(*token) != STREDNIK){
-			print_error(E_SYN);
+		if(getToken(ptrs->source,ptrs->token) != STREDNIK){
+			print_error(E_SYN,"za returnem neni strednik");
 		}else{
 			// vygeneruje 3AC
 			return;
@@ -109,16 +110,16 @@ void defReturn(){
 
 // deklarace funkce
 void defFunction(tokenValue value){
-	if(getToken(*token) != FUNCTION_CALL){
-		print_error(E_SYN);
+	if(getToken(ptrs->source,ptrs->token) != FUNCTION_CALL){
+		print_error(E_SYN,"pri deklarace funkce chyby jeji nazev");
 	}else{
-		if(getToken(*token) != ZAV_JEDN_L){
-			print_error(E_SYN);
+		if(getToken(ptrs->source,ptrs->token) != ZAV_JEDN_L){
+			print_error(E_SYN,"pri deklaraci funkce chyby ( ");
 		}else{
 			// vyhodnoceni vyrazu
 			// vytvoreni 3AC
-			if(getToken(*token) != ZAV_SLOZ_L){
-				print_error(E_SYN);
+			if(getToken(ptrs->source,ptrs->token) != ZAV_SLOZ_L){
+				print_error(E_SYN,"pri deklaraci funkce chyby {");
 			}else{
 				// { ulozym na zasobnik
 				classify();
@@ -132,17 +133,17 @@ void defFunction(tokenValue value){
 // volani funkce
 void callFunction(tokenValue value){
 	// vygenerujeme 3AC pro nazev funkce
-	if(getToken(*token) != ZAV_JEDN_L){
-		print_error(E_SYN);
+	if(getToken(ptrs->source,ptrs->token) != ZAV_JEDN_L){
+		print_error(E_SYN,"pri volani funkce chyby (");
 	}else{
-		while(getToken(*token) != ZAV_JEDN_P){
+		while(getToken(ptrs->source,ptrs->token) != ZAV_JEDN_P){
 			if(*token.id != VARIABLE){
-				print_error(E_SYN);
+				print_error(E_SYN,"pri volani funkce jsou parametry jine symboly");
 			}else{
 				// generujeme 3AC
 			}
-			if(getToken(*token) != CARKA){
-				print_error(E_SYN);
+			if(getToken(ptrs->source,ptrs->token) != CARKA){
+				print_error(E_SYN,"za parametrem neni carka");
 			}
 		}
 	}
@@ -150,7 +151,7 @@ void callFunction(tokenValue value){
 
 // vyber spravnej postup pro token
 void classify(){
-	while(getToken(*token)){
+	while(getToken(ptrs->source,ptrs->token)){
 		if(*token.id == KONEC){
 			return; // kdyz je token konec analyzy
 		}
@@ -176,12 +177,12 @@ void classify(){
 }
 
 void parser(tPointers *ptrs){
-	getToken(ptrs->token);
+	getToken(ptrs->source,ptrs->token);
 	if (*token.id == START){
 			classify();
 		}
 	else{
-		print_error(E_SYN);
+		print_error(E_SYN,"nazacatku neni <php");
 		return;
 	}
 	
