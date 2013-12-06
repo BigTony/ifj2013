@@ -8,24 +8,25 @@ tPointers* g_ptrs;
 /**Inicializace globalni tabulky pointru
  * @param tPointers: ukazatel na globalni tabuku pointru   
  */  
-void init_global(tPointers *ptrs)
+void init_global()
 {
-	if ((ptrs=(tPointers*)malloc(sizeof(tPointers))) == NULL)
+	if ((g_ptrs=(tPointers*)malloc(sizeof(tPointers))) == NULL)
 	{
 		print_error(E_INTERN,"Chyba alokace pameti: init_global");
 	}
-	ptrs->counter=allocString();
+	g_ptrs->counter=allocString();
 	//nastavit na $$\0
-	if (NULL == (ptrs->token=(Ttoken*)malloc(sizeof(Ttoken))))
+	if (NULL == (g_ptrs->token=(Ttoken*)malloc(sizeof(Ttoken))))
 	{
 		print_error(E_INTERN,"Chyba alokace pameti: init_global->token");
 	}
-	ptrs->main_symobol_tbl=NULL;
-	ptrs->function_stack=NULL;
-	ptrs->list_instr=NULL;
-	ptrs->act_list_inst=NULL;
-	ptrs->source=NULL;
-	printf("%i memory.c %i\n",&(g_ptrs->source),&g_ptrs );		
+	g_ptrs->main_symobol_tbl=NULL;
+	g_ptrs->function_stack=NULL;
+	g_ptrs->list_instr=NULL;
+	g_ptrs->act_list_inst=NULL;
+	g_ptrs->source=NULL;
+	g_ptrs->kokot=NULL;
+	printf("%d memory.c %d\n",&(g_ptrs->source),&g_ptrs );		
 }
 /**Dealokace globalni tabulky pointru
  *@param tPointers: ukazatel na globalni tabuku pointru   

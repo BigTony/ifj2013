@@ -16,12 +16,13 @@ typedef struct tPointers{
 	struct TList *act_list_inst; //Ukazatel na aktulani instruction list
 	FILE *source;	//ukazatel na v vstupni soubor
 	char * counter;
+	int kokot;
 }tPointers;
 
 extern tPointers* g_ptrs;
 
 // Funkce pro alokaci, inicializaci a dealokaci globalnich promenych
-void init_global(tPointers *ptrs);
+void init_global();
 void dealloc_global(tPointers *ptrs);
 // Pole pro alokacni funkce
 typedef void (*ptrDealoc) (tPointers *ptrs);

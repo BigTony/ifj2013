@@ -21,8 +21,8 @@
 int main(int argc,char** argv){
   // inicializace globalni pametove tabulky
   // printf("%i main.c1 %i\n",&(g_ptrs->source),&(g_ptrs));
-  init_global(g_ptrs);
-  printf("%i main.c2 %i\n",&(g_ptrs->source),&(g_ptrs));
+  init_global();
+  printf("%d main.c2 %d\n",&(g_ptrs->source),&(g_ptrs));
   printf("-----------\n");
   // Testovani parametru
   printf("-------end-------\n");
@@ -32,12 +32,11 @@ int main(int argc,char** argv){
   }
   // Testovani otevreni souboru
   printf("wtf\n");
-  g_ptrs->source = 10;
   printf("spadni!\n");
   if ((g_ptrs->source = fopen(argv[1], "r")) == NULL){
     print_error(E_INTERN,"nelze otevrit soubor");
   } 
-
+  printf("lezu do parseru\n");
   // Provedeni syntakticke analyzy
   parser(g_ptrs);
 

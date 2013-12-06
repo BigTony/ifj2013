@@ -181,9 +181,13 @@ void classify(Ttoken token){
 }
 
 void parser(tPointers *ptrs){
+	printf("ziskavam token\n");
 	getToken(g_ptrs->source,g_ptrs->token);
+	printf("mam token\n");
 	if (g_ptrs->token->id == START){
+			printf("clasify?\n");
 			classify(*(g_ptrs->token));
+			printf("clasify end?\n");
 		}
 	else{
 		print_error(E_SYN,"nazacatku neni <php");
