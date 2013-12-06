@@ -106,19 +106,19 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
          // POKUD operand do ktereho prirazuju jiz exituje, tak jeho data prepisu
          if (TblSearch (active_htable, result)!=NULL) 
          {
-			 if (dataType==VARINT)
-			 { 
-			    // prepisu data operandu result daty operandu src1
-				(TblSearch (active_htable, result))->data.varInt = (TblSearch (active_htable, src1))->data.varInt;
-		     }
-		     else if (dataType==VARDOUBLE) 
-		      {
-				(TblSearch (active_htable, result))->data.varDouble = (TblSearch (active_htable, src1))->data.varDouble;
-			  }
-			 else if (dataType==VARSTRING) 
-			   {
-				  (TblSearch (active_htable, result))->data.varString = (TblSearch (active_htable, src1))->data.varString;
-			   }
+	     if (dataType==VARINT)
+	     { 
+		 // prepisu data operandu result daty operandu src1
+		 (TblSearch (active_htable, result))->data.varInt = (TblSearch (active_htable, src1))->data.varInt;
+	     }
+	      else if (dataType==VARDOUBLE) 
+	       {
+		    (TblSearch (active_htable, result))->data.varDouble = (TblSearch (active_htable, src1))->data.varDouble;
+	       }
+	       else if (dataType==VARSTRING) 
+		{
+		     (TblSearch (active_htable, result))->data.varString = (TblSearch (active_htable, src1))->data.varString;
+		}
            
             // prepisu datovy typ operandu result datovym typem operandu src1
             (TblSearch (active_htable result))->type = (TblSearch (active_htable, src1))->type;
@@ -183,30 +183,30 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
             ///-----------pokud result exituje, prepisu data
             if (tHresult!=NULL) 
 	        {
-				 if (dataType1==VARINT && dataType2==VARINT) 
-				 {
+		   if (dataType1==VARINT && dataType2==VARINT) 
+		   {
                      tHresult->data.varInt = tmp.varInt; // uloim soucet do te exitusjici
                      tHresult->type=TypeOF;
-				 } 
-				 else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
-				  {
-					   tHresult->data.varDouble = tmp.varDouble; // uloim soucet do te exitusjici
+		    } 
+		   else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
+		   {
+		       tHresult->data.varDouble = tmp.varDouble; // uloim soucet do te exitusjici
                        tHresult->type=TypeOF;
-				  }
-	        } 
-	         else 
-	         {
-				 if (dataType1==VARINT && dataType2==VARINT) 
-				 {
+		   }
+	     } 
+	      else 
+	       {
+		  if (dataType1==VARINT && dataType2==VARINT) 
+		  {
                       // polozka result neexistovala, pridam to nove vytvorene
                       TblInsert (active_htable, result, tmp, TypeOF); 
-				 } 
-				 else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
-				  {
+		  } 
+		  else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
+		  {
                       // polozka result neexistovala, pridam to nove vytvorene
                       TblInsert (active_htable, result, tmp, TypeOF); 
-				  }
-	         }
+		  }
+	       }
 	 break;
 
 
@@ -261,30 +261,30 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
             ///-----------pokud result exituje, prepisu data
             if (tHresult!=NULL) 
 	        {
-				 if (dataType1==VARINT && dataType2==VARINT) 
-				 {
+		   if (dataType1==VARINT && dataType2==VARINT) 
+		   {
                      tHresult->data.varInt = tmp.varInt; // uloim soucet do te exitusjici
                      tHresult->type=TypeOF;
-				 } 
-				 else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
-				  {
-					   tHresult->data.varDouble = tmp.varDouble; // uloim soucet do te exitusjici
+		    } 
+		   else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
+		   {
+		       tHresult->data.varDouble = tmp.varDouble; // uloim soucet do te exitusjici
                        tHresult->type=TypeOF;
-				  }
-	        } 
-	         else 
-	         {
-				 if (dataType1==VARINT && dataType2==VARINT) 
-				 {
+		   }
+	     } 
+	      else 
+	       {
+		  if (dataType1==VARINT && dataType2==VARINT) 
+		  {
                       // polozka result neexistovala, pridam to nove vytvorene
                       TblInsert (active_htable, result, tmp, TypeOF); 
-				 } 
-				 else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
-				  {
+		  } 
+		  else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
+		  {
                       // polozka result neexistovala, pridam to nove vytvorene
                       TblInsert (active_htable, result, tmp, TypeOF); 
-				  }
-	         }
+		  }
+	       }
 	 break;
 
 
@@ -339,30 +339,30 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
             ///-----------pokud result exituje, prepisu data
             if (tHresult!=NULL) 
 	        {
-				 if (dataType1==VARINT && dataType2==VARINT) 
-				 {
+		   if (dataType1==VARINT && dataType2==VARINT) 
+		   {
                      tHresult->data.varInt = tmp.varInt; // uloim soucet do te exitusjici
                      tHresult->type=TypeOF;
-				 } 
-				 else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
-				  {
-					   tHresult->data.varDouble = tmp.varDouble; // uloim soucet do te exitusjici
+		    } 
+		   else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
+		   {
+		       tHresult->data.varDouble = tmp.varDouble; // uloim soucet do te exitusjici
                        tHresult->type=TypeOF;
-				  }
-	        } 
-	         else 
-	         {
-				 if (dataType1==VARINT && dataType2==VARINT) 
-				 {
+		   }
+	     } 
+	      else 
+	       {
+		  if (dataType1==VARINT && dataType2==VARINT) 
+		  {
                       // polozka result neexistovala, pridam to nove vytvorene
                       TblInsert (active_htable, result, tmp, TypeOF); 
-				 } 
-				 else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
-				  {
+		  } 
+		  else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
+		  {
                       // polozka result neexistovala, pridam to nove vytvorene
                       TblInsert (active_htable, result, tmp, TypeOF); 
-				  }
-	         }
+		  }
+	       }
 	 break;
 
 
@@ -417,30 +417,30 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
             ///-----------pokud result exituje, prepisu data
             if (tHresult!=NULL) 
 	        {
-				 if (dataType1==VARINT && dataType2==VARINT) 
-				 {
+		   if (dataType1==VARINT && dataType2==VARINT) 
+		   {
                      tHresult->data.varInt = tmp.varInt; // uloim soucet do te exitusjici
                      tHresult->type=TypeOF;
-				 } 
-				 else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
-				  {
-					   tHresult->data.varDouble = tmp.varDouble; // uloim soucet do te exitusjici
+		    } 
+		   else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
+		   {
+		       tHresult->data.varDouble = tmp.varDouble; // uloim soucet do te exitusjici
                        tHresult->type=TypeOF;
-				  }
-	        } 
-	         else 
-	         {
-				 if (dataType1==VARINT && dataType2==VARINT) 
-				 {
+		   }
+	     } 
+	      else 
+	       {
+		  if (dataType1==VARINT && dataType2==VARINT) 
+		  {
                       // polozka result neexistovala, pridam to nove vytvorene
                       TblInsert (active_htable, result, tmp, TypeOF); 
-				 } 
-				 else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
-				  {
+		  } 
+		  else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
+		  {
                       // polozka result neexistovala, pridam to nove vytvorene
                       TblInsert (active_htable, result, tmp, TypeOF); 
-				  }
-	         }
+		  }
+	       }
 	 break;
 
 //---------------------------- KONKATENACE --------------------------------------------------------------
