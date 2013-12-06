@@ -461,33 +461,43 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
          dataType1 = tHsrc1->type;
          dataType2 = tHsrc2->type;
 
-         // nactu data src1, src2 & result
-         src1Data   = tHsrc1->data;
-         src2Data   = tHsrc2->data;
-         resultData = tHresult->data;
+         // tmp
+         tokenValue tmp;
 
+         // overeni jestli data ubec existuji
          if (tHsrc1!=NULL || tHsrc2!=NULL) return E_SEM_OTHER;
 
-         ///char * konkatenace(char*prvni,char*druhy)
+         /// cekni typ pro konkatenaci
          if (dataType1==VARSTRING && dataType2==VARSTRING) 
          {
                 TypeOF = VARSTRING;
-		tmp = (tokenValue) konkatenace((char *)src1Data,(char *)src2Data);
-         } else 
-          {
+		tmp.varString = konkatenace(tHsrc1->data.varString, tHsrc2->data.varString);
+         } 
+
+         else if (dataType1==VARSTRING && dataType2!=VARSTRING)
+         {
+              TypeOF = VARSTRING;
+              tostring(tHsrc2);
+              tHsrc2->type=VARSTRING;
+              tmp.varString = konkatenace(tHsrc1->data.varString, tHsrc2->data.varString);
+         }
+
+         else if (dataType1!=VARSTRING && dataType2==VARSTRING)
+         {
               TypeOF = VARSTRING;
               tostring(tHsrc1);
-              tostring(tHsrc2);
-              tmp = (tokenValue) konkatenace((char *)tHsrc1->data,(char *)tHsrc2->data);
-          }
+              tHsrc1->type=VARSTRING;
+              tmp.varString = konkatenace(tHsrc1->data.varString, tHsrc2->data.varString);
+         }
+         else return E_SEM_OTHER;
 
             // pokud result exituje, prepisu data
             if (tHresult!=NULL) 
 	      {
-                 resultData = tmp; // uloim do te exitusjici
+                 tHresult->data.varString = tmp.varString; // uloim do te exitusjici
 	      } else {
                    // polozka result neexistovala, pridam 
-                   TblInsert (lokal_htable_main, result, tmp, TypeOF); 
+                   TblInsert (active_htable, result, tmp, TypeOF); 
 	      }
 
 	 break;
