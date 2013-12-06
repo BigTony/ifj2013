@@ -215,6 +215,7 @@ void ExGreater(TStack *stack){
 			switch(STop(&temp)){
 				// E->VALUE
 				case VALUE:
+					printf("sem1\n");
 					if(STop(&temp) != VALUE){
 						SPopAll(&temp);
 						SPopAll(stack);
@@ -223,12 +224,14 @@ void ExGreater(TStack *stack){
 					tokenValue value_i = temp.top->var;
 					SPop(&temp);
 					// zasobnik musi byt prazdny => nic za E->VALUE
+					printf("sem2\n");
 					if(!SEmpty(&temp)){
 						SPopAll(&temp);
 						SPopAll(stack);
 						print_error(E_SYN,"chyba pri E->VALUE neco za value");
 					}
 					SPush(cur_ptr,NONTERM,value_i);
+					printf("breakuju?\n");
 					break;
 				// E->(E)
 				case BRACE_L:
@@ -392,6 +395,7 @@ void ExEx(int ifYes,char * result){
 	int redukce = 0;
 
 	do{
+		printf("volaaam\n");
 		printf("%i\n",c );
 		a = TokenToExpresion(g_ptrs->token->id);
 		b = skipNonTerm(&stack);		
@@ -426,11 +430,12 @@ void ExEx(int ifYes,char * result){
 		}else{
 			redukce = 0;
 		}
-	}while(getToken(g_ptrs->source,g_ptrs->token));
+	}while((getToken(g_ptrs->source,g_ptrs->token)) != STREDNIK);
 
 
 	// po nalezeni ; dokonceni vyrazu 
 	while(1){
+		printf("lezu do konce vyrazu!\n");
 		a = END;
 		b = skipNonTerm(&stack);
 		if(b == END)

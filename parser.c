@@ -41,7 +41,9 @@ void defVar(tokenValue value){
 	if(getToken(g_ptrs->source,g_ptrs->token) != PRIRAZENI){
 		print_error(E_SYN,"chyba v syntaxi ocekavano = pri prirazeni promene");
 	}else{
+		printf("lezu do vyrazu\n");
 		ExEx(0,var_name);
+		printf("jsem zpet z vyrazu\n");
 	}
 }
 
@@ -154,29 +156,37 @@ void callFunction(tokenValue value){
 }
 
 // vyber spravnej postup pro token
-void classify(Ttoken token){
-	while(getToken(g_ptrs->source,g_ptrs->token)){
-		if(token.id == KONEC){
+void classify(){
+	printf("sem v clasify\n");
+	int i = 0;
+	while(getToken_test(g_ptrs->source,g_ptrs->token)){
+		if(i == 10){
+			return;
+		}
+		printf("sem ve whilu clasify\n");
+		if(g_ptrs->token->id == KONEC){
 			return; // kdyz je token konec analyzy
 		}
 		// token je bud promena nebo volani fce
-		if(token.id == VARIABLE){
+		if(g_ptrs->token->id == VARIABLE){
+			printf("VARIABLE\n");
 			defVar(g_ptrs->token->value);	
-		}else if(token.id == IDENTIFIKATOR){
-			callFunction(token.value);
-		}else if(token.id == FUNCTION){
-			defFunction(token.value);
-		}else if(token.id == IF){
+		}else if(g_ptrs->token->id == IDENTIFIKATOR){
+			callFunction(g_ptrs->token->value);
+		}else if(g_ptrs->token->id == FUNCTION){
+			defFunction(g_ptrs->token->value);
+		}else if(g_ptrs->token->id == IF){
 			defIf();
-		}else if(token.id == WHILE){
+		}else if(g_ptrs->token->id == WHILE){
 			defWhile();
 			break;
-		}else if(token.id == RETURN){
+		}else if(g_ptrs->token->id == RETURN){
 			defReturn();
-		}else if(token.id == ZAV_SLOZ_P){
+		}else if(g_ptrs->token->id == ZAV_SLOZ_P){
 			// zkontroluje jestli je na zasobniku }
 			break;
 		}
+		i = i+1;
 	}
 }
 
@@ -186,7 +196,7 @@ void parser(tPointers *ptrs){
 	printf("mam token\n");
 	if (g_ptrs->token->id == START){
 			printf("clasify?\n");
-			classify(*(g_ptrs->token));
+			classify();
 			printf("clasify end?\n");
 		}
 	else{
