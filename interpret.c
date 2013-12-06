@@ -538,10 +538,13 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
          result = instr->result;
 
          // nactu id src1,src2 & result z HASH tabulky
-         tHsrc1   = (TblSearch (lokal_htable_main, src1));
-         tHsrc2   = (TblSearch (lokal_htable_main, src2));
-         tHresult = (TblSearch (lokal_htable_main, result));
+         tHsrc1   = (TblSearch (active_htable, src1));
+         tHsrc2   = (TblSearch (active_htable, src2));
+         tHresult = (TblSearch (active_htable, result));
 
+        // tmp
+        tokenValue tmp;
+        
          // typ: tHsrc1->type   data:   tHsrc1->data   item:  tHsrc1 , tHsrc2 , tHresult
 
          int datTyp=0;
@@ -554,19 +557,19 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
 
               if (tHsrc1->type==VARINT) 
               {
-                 if (tHsrc1->data->varInt > tHsrc2->data->varInt)  datTyp = 1;
+                 if (tHsrc1->data.varInt > tHsrc2->data.varInt)  datTyp = 1;
                  else datTyp = 0;
               }
 
 	      else if (tHsrc1->type==VARDOUBLE) 
               {
-                 if (tHsrc1->data->varDouble > tHsrc2->data->varDouble)  datTyp = 1;
+                 if (tHsrc1->data.varDouble > tHsrc2->data.varDouble)  datTyp = 1;
                  else datTyp = 0;
               }
 
               else if (tHsrc1->type==VARSTRING) 
               {
-                 if (strcmp(tHsrc1->data->varString,tHsrc2->data->varString)>0)  datTyp = 1;
+                 if (strcmp(tHsrc1->data.varString,tHsrc2->data.varString)>0)  datTyp = 1;
                  else datTyp = 0;
               }
 
@@ -579,25 +582,30 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
             // pokud result exituje, prepisu data
             if (tHresult!=NULL) 
 	      {
-                 tHresult->data->varInt = datTyp; // uloim soucet do te exitusjici
+                 tHresult->data.varInt = datTyp; // uloim soucet do te exitusjici
 	      } else {
                    // polozka result neexistovala, pridam to nove vytvorene
-                   TblInsert (lokal_htable_main, result, datTyp, TypeOF); 
+                   tmp.varInt = datTyp;
+                   TblInsert (active_htable, result, tmp, TypeOF); 
 	       }
 	 break;
 
 	 /*========================I_GE===================================================================*/
 	 case I_GE:
+ 
          // nactu id src1,src2 & result z INSTRUKCE
          src1   = instr->src1;
          src2   = instr->src2;
          result = instr->result;
 
          // nactu id src1,src2 & result z HASH tabulky
-         tHsrc1   = (TblSearch (lokal_htable_main, src1));
-         tHsrc2   = (TblSearch (lokal_htable_main, src2));
-         tHresult = (TblSearch (lokal_htable_main, result));
+         tHsrc1   = (TblSearch (active_htable, src1));
+         tHsrc2   = (TblSearch (active_htable, src2));
+         tHresult = (TblSearch (active_htable, result));
 
+        // tmp
+        tokenValue tmp;
+        
          // typ: tHsrc1->type   data:   tHsrc1->data   item:  tHsrc1 , tHsrc2 , tHresult
 
          int datTyp=0;
@@ -610,19 +618,19 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
 
               if (tHsrc1->type==VARINT) 
               {
-                 if (tHsrc1->data->varInt >= tHsrc2->data->varInt)  datTyp = 1;
+                 if (tHsrc1->data.varInt >= tHsrc2->data.varInt)  datTyp = 1;
                  else datTyp = 0;
               }
 
 	      else if (tHsrc1->type==VARDOUBLE) 
               {
-                 if (tHsrc1->data->varDouble >= tHsrc2->data->varDouble)  datTyp = 1;
+                 if (tHsrc1->data.varDouble >= tHsrc2->data.varDouble)  datTyp = 1;
                  else datTyp = 0;
               }
 
               else if (tHsrc1->type==VARSTRING) 
               {
-                 if (strcmp(tHsrc1->data->varString,tHsrc2->data->varString)>=0)  datTyp = 1;
+                 if (strcmp(tHsrc1->data.varString,tHsrc2->data.varString)>=0)  datTyp = 1;
                  else datTyp = 0;
               }
 
@@ -635,25 +643,30 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
             // pokud result exituje, prepisu data
             if (tHresult!=NULL) 
 	      {
-                 tHresult->data->varInt = datTyp; // uloim soucet do te exitusjici
+                 tHresult->data.varInt = datTyp; // uloim soucet do te exitusjici
 	      } else {
                    // polozka result neexistovala, pridam to nove vytvorene
-                   TblInsert (lokal_htable_main, result, datTyp, TypeOF); 
+                   tmp.varInt = datTyp;
+                   TblInsert (active_htable, result, tmp, TypeOF); 
 	       }
 	 break;
 
 	 /*========================I_L=========================*/ 
 	 case I_L:
+
          // nactu id src1,src2 & result z INSTRUKCE
          src1   = instr->src1;
          src2   = instr->src2;
          result = instr->result;
 
          // nactu id src1,src2 & result z HASH tabulky
-         tHsrc1   = (TblSearch (lokal_htable_main, src1));
-         tHsrc2   = (TblSearch (lokal_htable_main, src2));
-         tHresult = (TblSearch (lokal_htable_main, result));
+         tHsrc1   = (TblSearch (active_htable, src1));
+         tHsrc2   = (TblSearch (active_htable, src2));
+         tHresult = (TblSearch (active_htable, result));
 
+        // tmp
+        tokenValue tmp;
+        
          // typ: tHsrc1->type   data:   tHsrc1->data   item:  tHsrc1 , tHsrc2 , tHresult
 
          int datTyp=0;
@@ -666,19 +679,19 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
 
               if (tHsrc1->type==VARINT) 
               {
-                 if (tHsrc1->data->varInt < tHsrc2->data->varInt)  datTyp = 1;
+                 if (tHsrc1->data.varInt < tHsrc2->data.varInt)  datTyp = 1;
                  else datTyp = 0;
               }
 
 	      else if (tHsrc1->type==VARDOUBLE) 
               {
-                 if (tHsrc1->data->varDouble < tHsrc2->data->varDouble)  datTyp = 1;
+                 if (tHsrc1->data.varDouble < tHsrc2->data.varDouble)  datTyp = 1;
                  else datTyp = 0;
               }
 
               else if (tHsrc1->type==VARSTRING) 
               {
-                 if (strcmp(tHsrc1->data->varString,tHsrc2->data->varString)<0)  datTyp = 1;
+                 if (strcmp(tHsrc1->data.varString,tHsrc2->data.varString)<0)  datTyp = 1;
                  else datTyp = 0;
               }
 
@@ -691,25 +704,30 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
             // pokud result exituje, prepisu data
             if (tHresult!=NULL) 
 	      {
-                 tHresult->data->varInt = datTyp; // uloim soucet do te exitusjici
+                 tHresult->data.varInt = datTyp; // uloim soucet do te exitusjici
 	      } else {
                    // polozka result neexistovala, pridam to nove vytvorene
-                   TblInsert (lokal_htable_main, result, datTyp, TypeOF); 
+                   tmp.varInt = datTyp;
+                   TblInsert (active_htable, result, tmp, TypeOF); 
 	       }
 	 break;
 
 	 /*========================I_LE==========================================================*/ 
 	 case I_LE:
+ 
          // nactu id src1,src2 & result z INSTRUKCE
          src1   = instr->src1;
          src2   = instr->src2;
          result = instr->result;
 
          // nactu id src1,src2 & result z HASH tabulky
-         tHsrc1   = (TblSearch (lokal_htable_main, src1));
-         tHsrc2   = (TblSearch (lokal_htable_main, src2));
-         tHresult = (TblSearch (lokal_htable_main, result));
+         tHsrc1   = (TblSearch (active_htable, src1));
+         tHsrc2   = (TblSearch (active_htable, src2));
+         tHresult = (TblSearch (active_htable, result));
 
+        // tmp
+        tokenValue tmp;
+        
          // typ: tHsrc1->type   data:   tHsrc1->data   item:  tHsrc1 , tHsrc2 , tHresult
 
          int datTyp=0;
@@ -722,19 +740,19 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
 
               if (tHsrc1->type==VARINT) 
               {
-                 if (tHsrc1->data->varInt <= tHsrc2->data->varInt)  datTyp = 1;
+                 if (tHsrc1->data.varInt <= tHsrc2->data.varInt)  datTyp = 1;
                  else datTyp = 0;
               }
 
 	      else if (tHsrc1->type==VARDOUBLE) 
               {
-                 if (tHsrc1->data->varDouble <= tHsrc2->data->varDouble)  datTyp = 1;
+                 if (tHsrc1->data.varDouble <= tHsrc2->data.varDouble)  datTyp = 1;
                  else datTyp = 0;
               }
 
               else if (tHsrc1->type==VARSTRING) 
               {
-                 if (strcmp(tHsrc1->data->varString,tHsrc2->data->varString)<=0)  datTyp = 1;
+                 if (strcmp(tHsrc1->data.varString,tHsrc2->data.varString)<=0)  datTyp = 1;
                  else datTyp = 0;
               }
 
@@ -747,26 +765,31 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
             // pokud result exituje, prepisu data
             if (tHresult!=NULL) 
 	      {
-                 tHresult->data->varInt = datTyp; // uloim soucet do te exitusjici
+                 tHresult->data.varInt = datTyp; // uloim soucet do te exitusjici
 	      } else {
                    // polozka result neexistovala, pridam to nove vytvorene
-                   TblInsert (lokal_htable_main, result, datTyp, TypeOF); 
+                   tmp.varInt = datTyp;
+                   TblInsert (active_htable, result, tmp, TypeOF); 
 	       }
 	 break;
 
 
 	 /*========================I_ET=========================*/ 
 	 case I_ET:
+
          // nactu id src1,src2 & result z INSTRUKCE
          src1   = instr->src1;
          src2   = instr->src2;
          result = instr->result;
 
          // nactu id src1,src2 & result z HASH tabulky
-         tHsrc1   = (TblSearch (lokal_htable_main, src1));
-         tHsrc2   = (TblSearch (lokal_htable_main, src2));
-         tHresult = (TblSearch (lokal_htable_main, result));
+         tHsrc1   = (TblSearch (active_htable, src1));
+         tHsrc2   = (TblSearch (active_htable, src2));
+         tHresult = (TblSearch (active_htable, result));
 
+        // tmp
+        tokenValue tmp;
+        
          // typ: tHsrc1->type   data:   tHsrc1->data   item:  tHsrc1 , tHsrc2 , tHresult
 
          int datTyp=0;
@@ -779,19 +802,19 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
 
               if (tHsrc1->type==VARINT) 
               {
-                 if (tHsrc1->data->varInt == tHsrc2->data->varInt)  datTyp = 1;
+                 if (tHsrc1->data.varInt == tHsrc2->data.varInt)  datTyp = 1;
                  else datTyp = 0;
               }
 
 	      else if (tHsrc1->type==VARDOUBLE) 
               {
-                 if (tHsrc1->data->varDouble == tHsrc2->data->varDouble)  datTyp = 1;
+                 if (tHsrc1->data.varDouble == tHsrc2->data.varDouble)  datTyp = 1;
                  else datTyp = 0;
               }
 
               else if (tHsrc1->type==VARSTRING) 
               {
-                 if (strcmp(tHsrc1->data->varString,tHsrc2->data->varString)==0)  datTyp = 1;
+                 if (strcmp(tHsrc1->data.varString,tHsrc2->data.varString)==0)  datTyp = 1;
                  else datTyp = 0;
               }
 
@@ -804,26 +827,31 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
             // pokud result exituje, prepisu data
             if (tHresult!=NULL) 
 	      {
-                 tHresult->data->varInt = datTyp; // uloim soucet do te exitusjici
+                 tHresult->data.varInt = datTyp; // uloim soucet do te exitusjici
 	      } else {
                    // polozka result neexistovala, pridam to nove vytvorene
-                   TblInsert (lokal_htable_main, result, datTyp, TypeOF); 
+                   tmp.varInt = datTyp;
+                   TblInsert (active_htable, result, tmp, TypeOF); 
 	       }
 	 break;
 
 
 	 /*========================I_NET=========================*/
 	 case I_NET:
-        // nactu id src1,src2 & result z INSTRUKCE
+
+         // nactu id src1,src2 & result z INSTRUKCE
          src1   = instr->src1;
          src2   = instr->src2;
          result = instr->result;
 
          // nactu id src1,src2 & result z HASH tabulky
-         tHsrc1   = (TblSearch (lokal_htable_main, src1));
-         tHsrc2   = (TblSearch (lokal_htable_main, src2));
-         tHresult = (TblSearch (lokal_htable_main, result));
+         tHsrc1   = (TblSearch (active_htable, src1));
+         tHsrc2   = (TblSearch (active_htable, src2));
+         tHresult = (TblSearch (active_htable, result));
 
+        // tmp
+        tokenValue tmp;
+        
          // typ: tHsrc1->type   data:   tHsrc1->data   item:  tHsrc1 , tHsrc2 , tHresult
 
          int datTyp=0;
@@ -834,21 +862,21 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
          {
               TypeOF = VARBOLEAN;
 
-              if (tHsrc1->type!=VARINT) 
+              if (tHsrc1->type==VARINT) 
               {
-                 if (tHsrc1->data->varInt != tHsrc2->data->varInt)  datTyp = 1;
+                 if (tHsrc1->data.varInt != tHsrc2->data.varInt)  datTyp = 1;
                  else datTyp = 0;
               }
 
-	      else if (tHsrc1->type!=VARDOUBLE) 
+	      else if (tHsrc1->type==VARDOUBLE) 
               {
-                 if (tHsrc1->data->varDouble != tHsrc2->data->varDouble)  datTyp = 1;
+                 if (tHsrc1->data.varDouble != tHsrc2->data.varDouble)  datTyp = 1;
                  else datTyp = 0;
               }
 
               else if (tHsrc1->type==VARSTRING) 
               {
-                 if (strcmp(tHsrc1->data->varString,tHsrc2->data->varString)!=0)  datTyp = 1;
+                 if (strcmp(tHsrc1->data.varString,tHsrc2->data.varString)!=0)  datTyp = 1;
                  else datTyp = 0;
               }
 
@@ -861,10 +889,11 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
             // pokud result exituje, prepisu data
             if (tHresult!=NULL) 
 	      {
-                 tHresult->data->varInt = datTyp; // uloim soucet do te exitusjici
+                 tHresult->data.varInt = datTyp; // uloim soucet do te exitusjici
 	      } else {
                    // polozka result neexistovala, pridam to nove vytvorene
-                   TblInsert (lokal_htable_main, result, datTyp, TypeOF); 
+                   tmp.varInt = datTyp;
+                   TblInsert (active_htable, result, tmp, TypeOF); 
 	       }
 	 break;
 
