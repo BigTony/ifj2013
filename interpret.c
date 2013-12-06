@@ -1076,6 +1076,7 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
 
          /*========================I_LAB=========================*/
          case I_LAB:
+           // dodela david *joke* :P
          break;
 
 
