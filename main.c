@@ -18,19 +18,22 @@
 #include "errors.h"
 #include "memory.h"
 
-tPointers* g_ptrs;
-
 int main(int argc,char** argv){
   // inicializace globalni pametove tabulky
+  // printf("%i main.c1 %i\n",&(g_ptrs->source),&(g_ptrs));
   init_global(g_ptrs);
-  getchar ();
-  printf("%d DEMENCE %d\n",&(g_ptrs->source),&g_ptrs);
-  getchar ();
+  printf("%i main.c2 %i\n",&(g_ptrs->source),&(g_ptrs));
+  printf("-----------\n");
   // Testovani parametru
+  printf("-------end-------\n");
+
   if (argc != 2){
   	print_error(E_INTERN,"spatny parametr pri spousteni");
   }
   // Testovani otevreni souboru
+  printf("wtf\n");
+  g_ptrs->source = 10;
+  printf("spadni!\n");
   if ((g_ptrs->source = fopen(argv[1], "r")) == NULL){
     print_error(E_INTERN,"nelze otevrit soubor");
   } 

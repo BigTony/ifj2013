@@ -3,14 +3,14 @@
 #include <stdio.h>
 #include "memory.h"
 
-
+tPointers* g_ptrs;
 
 /**Inicializace globalni tabulky pointru
  * @param tPointers: ukazatel na globalni tabuku pointru   
  */  
 void init_global(tPointers *ptrs)
 {
-	if (NULL == (ptrs=(tPointers*)malloc(sizeof(tPointers))))
+	if ((ptrs=(tPointers*)malloc(sizeof(tPointers))) == NULL)
 	{
 		print_error(E_INTERN,"Chyba alokace pameti: init_global");
 	}
@@ -25,7 +25,7 @@ void init_global(tPointers *ptrs)
 	ptrs->list_instr=NULL;
 	ptrs->act_list_inst=NULL;
 	ptrs->source=NULL;
-	printf("%d DEMENCE %d\n",&(ptrs->source),&ptrs );	
+	printf("%i memory.c %i\n",&(g_ptrs->source),&g_ptrs );		
 }
 /**Dealokace globalni tabulky pointru
  *@param tPointers: ukazatel na globalni tabuku pointru   
