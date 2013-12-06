@@ -10,14 +10,14 @@
 //
 //
 
-
-
 #include <strings.h>
 #include "interpret.h"
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
+
+
 /*  INTERPRET - vykona intepretaci jazyka IFJ13
  *  @param1: globalni TS
  *  @param2: Instrukcni seznam MAINU
@@ -43,7 +43,6 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
    item *tHresult;
 
    // POMOCNE PROMENNE
-   void *tmp;
    int dataType,dataType1,dataType2;
    itemKey *src1Data,*src2Data,*resultData;
    int TypeOF;
@@ -127,7 +126,7 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
          else 
          {
             // v pripade ze operand result jeste neexsituje, vlozim novou polozku
-            TblInsert (lokal_htable_main, result,/* src1*/, dataType); //ERROR
+            TblInsert (active_htable, result,/* src1*/, dataType); //ERROR
          }
 	 break;
 
@@ -150,38 +149,64 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
          dataType1 = tHsrc1->type;
          dataType2 = tHsrc2->type;
 
+        // tmp
+        tokenValue tmp;
+        
           // pokud src1 nebo src2 nebudou mit prirazenou hodnotu -> syntax error
           if (tHsrc1->data==NULL || tHsrc2->data==NULL) 
            { 
              return E_SEM_OTHER;
            }
 
+              ///----------- cekuju provadim operace
               if (dataType1==VARINT && dataType2==VARINT)
                {
                    // vysledek bude int
                    TypeOF = VARINT;
-                   tmp->varInt = (src1Data->varInt + src2Data->varInt); 
+                   tmp.varInt = (tHsrc1->data.varInt + tHsrc1->data.varInt); 
                }
               else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
                {
                    // vysledek bude double
                    TypeOF = VARDOUBLE;
-                   todouble(tHsrc1);
-                   todouble(tHsrc2);
-                   tmp->varInt = (tHsrc1->data.varInt + tHsrc2->data.varInt);
+                   
+                   // pokud prvni double a druhy int, int pretypuju a naopak
+                   if (dataType1==VARDOUBLE && dataType2==VARINT)
+                       tmp.varDouble = (tHsrc1->data.varDouble + (double) (tHsrc2->data.varInt));
+                   else 
+                       tmp.varDouble = ( (double) (tHsrc1->data.varInt) + tHsrc2->data.varDouble);
                }
                else {
                   return E_SEM_TYPE; // bude chyba!?
                }
 
-            // pokud result exituje, prepisu data
+            ///-----------pokud result exituje, prepisu data
             if (tHresult!=NULL) 
-	      {
-                 tHresult->data->varInt = tmp->varInt; // uloim soucet do te exitusjici
-	      } else {
-                   // polozka result neexistovala, pridam to nove vytvorene
-                   TblInsert (lokal_htable_main, result, tmp, TypeOF); 
-	       }
+	        {
+				 if (dataType1==VARINT && dataType2==VARINT) 
+				 {
+                     tHresult->data.varInt = tmp.varInt; // uloim soucet do te exitusjici
+                     tHresult->type=TypeOF;
+				 } 
+				 else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
+				  {
+					   tHresult->data.varDouble = tmp.varDouble; // uloim soucet do te exitusjici
+                       tHresult->type=TypeOF;
+				  }
+	        } 
+	         else 
+	         {
+				 if (dataType1==VARINT && dataType2==VARINT) 
+				 {
+                      // polozka result neexistovala, pridam to nove vytvorene
+                      TblInsert (active_htable, result, tmp, TypeOF); 
+				 } 
+				 else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
+				  {
+                      // polozka result neexistovala, pridam to nove vytvorene
+                      TblInsert (active_htable, result, tmp, TypeOF); 
+				  }
+	         }
 	 break;
 
 
@@ -194,46 +219,72 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
          result = instr->result;
 
          // nactu id src1,src2 & result z HASH tabulky
-         tHsrc1   = (TblSearch (lokal_htable_main, src1));
-         tHsrc2   = (TblSearch (lokal_htable_main, src2));
-         tHresult = (TblSearch (lokal_htable_main, result));
+         tHsrc1   = (TblSearch (active_htable, src1));
+         tHsrc2   = (TblSearch (active_htable, src2));
+         tHresult = (TblSearch (active_htable, result));
 
          // nactu typ dat src1 & src2
          dataType1 = tHsrc1->type;
          dataType2 = tHsrc2->type;
 
+        // tmp
+        tokenValue tmp;
+        
           // pokud src1 nebo src2 nebudou mit prirazenou hodnotu -> syntax error
           if (tHsrc1->data==NULL || tHsrc2->data==NULL) 
            { 
              return E_SEM_OTHER;
            }
 
+              ///----------- cekuju provadim operace
               if (dataType1==VARINT && dataType2==VARINT)
                {
                    // vysledek bude int
                    TypeOF = VARINT;
-                   tmp->varInt = (src1Data->varInt - src2Data->varInt); 
+                   tmp.varInt = (tHsrc1->data.varInt - tHsrc1->data.varInt); 
                }
               else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
                {
                    // vysledek bude double
                    TypeOF = VARDOUBLE;
-                   todouble(tHsrc1);
-                   todouble(tHsrc2);
-                   tmp->varInt = (tHsrc1->data->varInt - tHsrc2->data->varInt);
+                   
+                   // pokud prvni double a druhy int, int pretypuju a naopak
+                   if (dataType1==VARDOUBLE && dataType2==VARINT)
+                       tmp.varDouble = (tHsrc1->data.varDouble - (double) (tHsrc2->data.varInt));
+                   else 
+                       tmp.varDouble = ( (double) (tHsrc1->data.varInt) - tHsrc2->data.varDouble);
                }
                else {
                   return E_SEM_TYPE; // bude chyba!?
                }
 
-            // pokud result exituje, prepisu data
+            ///-----------pokud result exituje, prepisu data
             if (tHresult!=NULL) 
-	      {
-                 tHresult->data->varInt = tmp->varInt; // uloim soucet do te exitusjici
-	      } else {
-                   // polozka result neexistovala, pridam to nove vytvorene
-                   TblInsert (lokal_htable_main, result, tmp, TypeOF); 
-	       }
+	        {
+				 if (dataType1==VARINT && dataType2==VARINT) 
+				 {
+                     tHresult->data.varInt = tmp.varInt; // uloim soucet do te exitusjici
+                     tHresult->type=TypeOF;
+				 } 
+				 else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
+				  {
+					   tHresult->data.varDouble = tmp.varDouble; // uloim soucet do te exitusjici
+                       tHresult->type=TypeOF;
+				  }
+	        } 
+	         else 
+	         {
+				 if (dataType1==VARINT && dataType2==VARINT) 
+				 {
+                      // polozka result neexistovala, pridam to nove vytvorene
+                      TblInsert (active_htable, result, tmp, TypeOF); 
+				 } 
+				 else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
+				  {
+                      // polozka result neexistovala, pridam to nove vytvorene
+                      TblInsert (active_htable, result, tmp, TypeOF); 
+				  }
+	         }
 	 break;
 
 
@@ -246,46 +297,72 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
          result = instr->result;
 
          // nactu id src1,src2 & result z HASH tabulky
-         tHsrc1   = (TblSearch (lokal_htable_main, src1));
-         tHsrc2   = (TblSearch (lokal_htable_main, src2));
-         tHresult = (TblSearch (lokal_htable_main, result));
+         tHsrc1   = (TblSearch (active_htable, src1));
+         tHsrc2   = (TblSearch (active_htable, src2));
+         tHresult = (TblSearch (active_htable, result));
 
          // nactu typ dat src1 & src2
          dataType1 = tHsrc1->type;
          dataType2 = tHsrc2->type;
 
+        // tmp
+        tokenValue tmp;
+        
           // pokud src1 nebo src2 nebudou mit prirazenou hodnotu -> syntax error
           if (tHsrc1->data==NULL || tHsrc2->data==NULL) 
            { 
              return E_SEM_OTHER;
            }
 
+              ///----------- cekuju provadim operace
               if (dataType1==VARINT && dataType2==VARINT)
                {
                    // vysledek bude int
                    TypeOF = VARINT;
-                   tmp->varInt = (src1Data->varInt * src2Data->varInt); 
+                   tmp.varInt = (tHsrc1->data.varInt * tHsrc1->data.varInt); 
                }
               else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
                {
                    // vysledek bude double
                    TypeOF = VARDOUBLE;
-                   todouble(tHsrc1);
-                   todouble(tHsrc2);
-                   tmp->varInt = (tHsrc1->data->varInt * tHsrc2->data->varInt);
+                   
+                   // pokud prvni double a druhy int, int pretypuju a naopak
+                   if (dataType1==VARDOUBLE && dataType2==VARINT)
+                       tmp.varDouble = (tHsrc1->data.varDouble * (double) (tHsrc2->data.varInt));
+                   else 
+                       tmp.varDouble = ( (double) (tHsrc1->data.varInt) * tHsrc2->data.varDouble);
                }
                else {
                   return E_SEM_TYPE; // bude chyba!?
                }
 
-            // pokud result exituje, prepisu data
+            ///-----------pokud result exituje, prepisu data
             if (tHresult!=NULL) 
-	      {
-                 tHresult->data->varInt = tmp->varInt; // uloim soucet do te exitusjici
-	      } else {
-                   // polozka result neexistovala, pridam to nove vytvorene
-                   TblInsert (lokal_htable_main, result, tmp, TypeOF); 
-	       }
+	        {
+				 if (dataType1==VARINT && dataType2==VARINT) 
+				 {
+                     tHresult->data.varInt = tmp.varInt; // uloim soucet do te exitusjici
+                     tHresult->type=TypeOF;
+				 } 
+				 else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
+				  {
+					   tHresult->data.varDouble = tmp.varDouble; // uloim soucet do te exitusjici
+                       tHresult->type=TypeOF;
+				  }
+	        } 
+	         else 
+	         {
+				 if (dataType1==VARINT && dataType2==VARINT) 
+				 {
+                      // polozka result neexistovala, pridam to nove vytvorene
+                      TblInsert (active_htable, result, tmp, TypeOF); 
+				 } 
+				 else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
+				  {
+                      // polozka result neexistovala, pridam to nove vytvorene
+                      TblInsert (active_htable, result, tmp, TypeOF); 
+				  }
+	         }
 	 break;
 
 
@@ -298,46 +375,72 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
          result = instr->result;
 
          // nactu id src1,src2 & result z HASH tabulky
-         tHsrc1   = (TblSearch (lokal_htable_main, src1));
-         tHsrc2   = (TblSearch (lokal_htable_main, src2));
-         tHresult = (TblSearch (lokal_htable_main, result));
+         tHsrc1   = (TblSearch (active_htable, src1));
+         tHsrc2   = (TblSearch (active_htable, src2));
+         tHresult = (TblSearch (active_htable, result));
 
          // nactu typ dat src1 & src2
          dataType1 = tHsrc1->type;
          dataType2 = tHsrc2->type;
 
+        // tmp
+        tokenValue tmp;
+        
           // pokud src1 nebo src2 nebudou mit prirazenou hodnotu -> syntax error
           if (tHsrc1->data==NULL || tHsrc2->data==NULL) 
            { 
              return E_SEM_OTHER;
            }
 
+              ///----------- cekuju provadim operace
               if (dataType1==VARINT && dataType2==VARINT)
                {
                    // vysledek bude int
                    TypeOF = VARINT;
-                   tmp->varInt = (src1Data->varInt / src2Data->varInt); 
+                   tmp.varInt = (tHsrc1->data.varInt / tHsrc1->data.varInt); 
                }
               else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
                {
                    // vysledek bude double
                    TypeOF = VARDOUBLE;
-                   todouble(tHsrc1);
-                   todouble(tHsrc2);
-                   tmp->varInt = (tHsrc1->data->varInt / tHsrc2->data->varInt);
+                   
+                   // pokud prvni double a druhy int, int pretypuju a naopak
+                   if (dataType1==VARDOUBLE && dataType2==VARINT)
+                       tmp.varDouble = (tHsrc1->data.varDouble / (double) (tHsrc2->data.varInt));
+                   else 
+                       tmp.varDouble = ( (double) (tHsrc1->data.varInt) / tHsrc2->data.varDouble);
                }
                else {
                   return E_SEM_TYPE; // bude chyba!?
                }
 
-            // pokud result exituje, prepisu data
+            ///-----------pokud result exituje, prepisu data
             if (tHresult!=NULL) 
-	      {
-                 tHresult->data->varInt = tmp->varInt; // uloim soucet do te exitusjici
-	      } else {
-                   // polozka result neexistovala, pridam to nove vytvorene
-                   TblInsert (lokal_htable_main, result, tmp, TypeOF); 
-	       }
+	        {
+				 if (dataType1==VARINT && dataType2==VARINT) 
+				 {
+                     tHresult->data.varInt = tmp.varInt; // uloim soucet do te exitusjici
+                     tHresult->type=TypeOF;
+				 } 
+				 else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
+				  {
+					   tHresult->data.varDouble = tmp.varDouble; // uloim soucet do te exitusjici
+                       tHresult->type=TypeOF;
+				  }
+	        } 
+	         else 
+	         {
+				 if (dataType1==VARINT && dataType2==VARINT) 
+				 {
+                      // polozka result neexistovala, pridam to nove vytvorene
+                      TblInsert (active_htable, result, tmp, TypeOF); 
+				 } 
+				 else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
+				  {
+                      // polozka result neexistovala, pridam to nove vytvorene
+                      TblInsert (active_htable, result, tmp, TypeOF); 
+				  }
+	         }
 	 break;
 
 //---------------------------- KONKATENACE --------------------------------------------------------------
