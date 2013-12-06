@@ -172,7 +172,7 @@ void tostring(item *item){
 			char vysledek[delka+1];
 			sprintf(vysledek, "%d", item->data.varInt);
 			item->data.varString = vysledek;
-			item->type = VARINT;
+			item->type = VARSTRING;         //puvodne: item->type = VARINT;        
 			break;
 		}
 		case VARDOUBLE:{
@@ -180,7 +180,7 @@ void tostring(item *item){
 			char vysledek[100];
 			sprintf(vysledek, "%g", item->data.varDouble);
 			item->data.varString = vysledek;
-			item->type = VARDOUBLE;
+			item->type = VARSTRING;        // puvodne: item->type = VARDOUBLE;
 			break;
 		}
 		case VARBOOL:
