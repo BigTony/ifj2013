@@ -14,29 +14,29 @@
 #ifndef ILIST_H
 #define ILIST_H
 #include "errors.h"
-// VÝČET JEDNOTLIVÝCH INSTRUKCÍ => [operation, src1, src2, result]
+// VÝČET JEDNOTLIVÝCH INSTRUKCÍ 3AC => [operation, src1, src2, result]
 typedef enum {
 
 //===== aritmeticke operace ==============
 		 // src1 src2 result
-   I_ASS,  // = ||| src1 ...  result 
-   I_ADD,  // + ||| src1 src2 result
-   I_SUB,  // - ||| src1 src2 result
-   I_MUL,  // * ||| src1 src2 result
-   I_DIV,  // / ||| src1 src2 result
+   I_ASS,  // =   | src1 ...  result 
+   I_ADD,  // +   | src1 src2 result
+   I_SUB,  // -   | src1 src2 result
+   I_MUL,  // *   | src1 src2 result
+   I_DIV,  // /   | src1 src2 result
 
-//===== Řetězcový operátor ==================
+//===== Řetězcový operátor, konkatenace ==
 
-   I_CON, // . (konkatenance řetězců)
+   I_CON,  // .   | src1 src2 result 
 
 //===== logické operace ==================
 
-   I_G,    // >
-   I_GE,   // >=
-   I_L,    // <
-   I_LE,   // <=
-   I_ET,   // ===
-   I_NET,  // !==
+   I_G,    // >   | src1 src2 result
+   I_GE,   // >=  | src1 src2 result
+   I_L,    // <   | src1 src2 result
+   I_LE,   // <=  | src1 src2 result
+   I_ET,   // === | src1 src2 result
+   I_NET,  // !== | src1 src2 result
 
 //===== call & return fce =================
 
@@ -45,7 +45,7 @@ typedef enum {
 
 //===== vestavene funkce =================
 
-   I_TYPE, // BOOLVAL,DOUBLEVAL,INTVAL,STRVAL ---> NEHOTOVA
+   I_TYPE, // BOOLVAL,DOUBLEVAL,INTVAL,STRVAL
    I_SORT, // sort string
    I_FIND, // find string
    I_STRL, // str.lenght
@@ -55,10 +55,10 @@ typedef enum {
 
 //===== skoky ==========================
 
-   I_JMP,  // nepodmíněný 
+   I_JMP,  // nepodmíněný                 || ...  ... result  
    I_JZ,   // jump if zero        (false) || src1 ... result
    I_JNZ,  // jump if not zero    (true)  || src1 ... result
-   I_LAB,  // znacka, no effect
+   I_LAB,  // znacka, no effect           || ...  ...  ...   
 
 } TIType;
 

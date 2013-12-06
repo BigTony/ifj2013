@@ -47,7 +47,7 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
    int dataType,dataType1,dataType2;
    itemKey *src1Data,*src2Data,*resultData;
    int TypeOF;
-
+   int jump=0;
    // tmp
     tokenValue tmp;
 
@@ -962,16 +962,115 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
 
          /*========================I_JMP=========================*/
          case I_JMP:
+         // nactu result z INSTRUKCE
+         result = instr->result;
+
+         // nactu result z GLOBALNI HASH tabulky
+         tHresult = (TblSearch (global_htable, result));
+
+         // pokud by cil skoku nebyl v globalni tabulce ->chyba
+         if (tHresult==NULL) return E_SEM_OTHER; 
+         else 
+         {
+              // aktivuje instrukci v prave aktivnim listu, nejsu si jistej typama
+              ActivePtrItem (ActiveList,((TLItem *)tHresult->data.pointer));
+         }
          break;
 
 
          /*========================I_JZ=========================*/
          case I_JZ:
+         // nactu id src1,src2 & result z INSTRUKCE
+         src1   = instr->src1;
+         result = instr->result;
+
+         // nactu id src1,src2 & result z GLOBALNI HASH tabulky
+         tHsrc1   = (TblSearch (global_htable, src1));
+         tHresult = (TblSearch (global_htable, result));
+
+         // pokud by cil skoku, nebo zdrojova promenna nebyla v globalni tabulce ->chyba
+         if (tHresult==NULL || tHsrc1==NULL) return E_SEM_OTHER;
+         else 
+         {
+             switch (tHsrc1->type) 
+             {
+                case VARINT: // pokud je true, aktivuj zaznam
+                  if (tHsrc1->data.varInt==0) jump = 1;
+                  else  jump = 0;
+                break;
+
+                case VARBOOL:
+                  if (tHsrc1->data.varInt==0)  jump = 1;
+                  else  jump = 0;
+                break;
+
+                case VARDOUBLE:  
+                  if (tHsrc1->data.varDouble==0.0)  jump = 1; 
+                  else  jump = 0;
+                break;
+
+                case STRING:   
+                  if (strcmp(tHsrc1->data.varString,"")==0)  jump = 1;
+                  else  jump = 0;
+                break;
+
+                default: // chyba
+                break;
+             }
+
+           if (jump) 
+            {  // proved skok - nejsu si jistej typama
+               ActivePtrItem (ActiveList,((TLItem *)tHresult->data.pointer));
+            }
+         }
          break;
 
 
          /*========================I_JNZ=========================*/
          case I_JNZ:
+         // nactu id src1,src2 & result z INSTRUKCE
+         src1   = instr->src1;
+         result = instr->result;
+
+         // nactu id src1,src2 & result z GLOBALNI HASH tabulky
+         tHsrc1   = (TblSearch (global_htable, src1));
+         tHresult = (TblSearch (global_htable, result));
+
+         // pokud by cil skoku, nebo zdrojova promenna nebyla v globalni tabulce ->chyba
+         if (tHresult==NULL || tHsrc1==NULL) return E_SEM_OTHER;
+         else 
+         {
+             switch (tHsrc1->type) 
+             {
+                case VARINT: // pokud je true, aktivuj zaznam
+                  if (tHsrc1->data.varInt!=0) jump = 1;
+                  else  jump = 0;
+                break;
+
+                case VARBOOL:
+                  if (tHsrc1->data.varInt!=0)  jump = 1;
+                  else  jump = 0;
+                break;
+
+                case VARDOUBLE:  
+                  if (tHsrc1->data.varDouble!=0.0)  jump = 1; 
+                  else  jump = 0;
+                break;
+
+                case STRING:   
+                  if (strcmp(tHsrc1->data.varString,"")!=0)  jump = 1;
+                  else  jump = 0;
+                break;
+
+                default: // chyba
+                break;
+             }
+
+           if (jump) 
+            {  // proved skok - nejsu si jistej typama
+               ActivePtrItem (ActiveList,((TLItem *)tHresult->data.pointer));
+            }
+         }
          break;
 
 
