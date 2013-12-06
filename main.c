@@ -16,18 +16,20 @@
 #include <string.h>
 #include "parser.h"
 #include "errors.h"
+#include "memory.h"
 
-tPointers *g_ptrs=NULL;
+tPointers* g_ptrs;
 
 int main(int argc,char** argv){
   // inicializace globalni pametove tabulky
   init_global(g_ptrs);
-
+  getchar ();
+  printf("%d DEMENCE %d\n",&(g_ptrs->source),&g_ptrs);
+  getchar ();
   // Testovani parametru
   if (argc != 2){
   	print_error(E_INTERN,"spatny parametr pri spousteni");
   }
-  printf ("%d/n",g_ptrs.source);
   // Testovani otevreni souboru
   if ((g_ptrs->source = fopen(argv[1], "r")) == NULL){
     print_error(E_INTERN,"nelze otevrit soubor");

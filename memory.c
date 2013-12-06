@@ -1,9 +1,9 @@
 
 #include <stdlib.h>
+#include <stdio.h>
 #include "memory.h"
 
-// globanilni promena
-tPointers *g_ptrs;
+
 
 /**Inicializace globalni tabulky pointru
  * @param tPointers: ukazatel na globalni tabuku pointru   
@@ -25,6 +25,7 @@ void init_global(tPointers *ptrs)
 	ptrs->list_instr=NULL;
 	ptrs->act_list_inst=NULL;
 	ptrs->source=NULL;
+	printf("%d DEMENCE %d\n",&(ptrs->source),&ptrs );	
 }
 /**Dealokace globalni tabulky pointru
  *@param tPointers: ukazatel na globalni tabuku pointru   

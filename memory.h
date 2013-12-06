@@ -18,7 +18,7 @@ typedef struct tPointers{
 	char * counter;
 }tPointers;
 
-extern tPointers *g_ptrs;
+extern tPointers* g_ptrs;
 
 // Funkce pro alokaci, inicializaci a dealokaci globalnich promenych
 void init_global(tPointers *ptrs);
