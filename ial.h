@@ -21,9 +21,14 @@
 #include "scaner.h"
 #define ALLOC 67
 typedef char* itemKey;
-
-
-
+/*  // NEBUDU!! DoPiCI!! FURT!! LIST!!! DO SCANER.H!! dopcici!
+typedef union {
+    int varInt;
+    double varDouble;
+    char *varString;
+    void *pointer;
+}tokenValue;
+*/
 typedef struct item{
 	int type;
 	itemKey key;
