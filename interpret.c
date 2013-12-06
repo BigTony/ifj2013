@@ -18,26 +18,27 @@
 #include <errno.h>
 
 
+
 /*  INTERPRET - vykona intepretaci jazyka IFJ13
  *  @param1: globalni TS
  *  @param2: Instrukcni seznam MAINU
  *  @param3: zasobnik adres TS a ptr na navrat do instrukcniho seznamu
  */
-void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack) 
+void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
 {
 
 //------------------- INIT -------------------------------------------------------------
- 
- 
+
+
 // => PROMENNE_______________________________
 
    // data aktualni instrukce [operandy]
-   TInstr     *instr;           
+   TInstr  *instr;
    itemKey *src1;
    itemKey *src2;
    itemKey *result;
 
-   // data aktualni instrukce z HASH table          
+   // data aktualni instrukce z HASH table
    item *tHsrc1;
    item *tHsrc2;
    item *tHresult;
@@ -47,9 +48,15 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
    itemKey *src1Data,*src2Data,*resultData;
    int TypeOF;
 
+   // tmp
+    tokenValue tmp;
+
+    // pro porovnani
+    int datTyp=0;
+
    // navratova dresa instrukcniho seznamu MAINU
    TLItem *nil = NULL;
-   
+
 // => LOKALNI TS_______________________________
 
    // Lokalni TS
@@ -59,7 +66,7 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
    tableInit(local_htable_main);
 
    // push adresy lokalni TS na stack
-   pushStack(stack,local_htable_main,nil);
+   pushStack(stack,*local_htable_main,nil);
 
 // => AKTIVACE TS a INSTRUKCE___________________
 
@@ -67,7 +74,7 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
    tHashTbl *active_htable = local_htable_main;
 
    // aktivuju seznam MAINU
-   TList *ActiveList = L; 
+   TList *ActiveList = L;
 
    // aktivace prvni instrukce z prave provadenyho instrukcniho listu
    ActiveFirstItem (ActiveList);
@@ -76,64 +83,64 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
 //------------------- EXECUTE -------------------------------------------------------------
 
   /// cekuju jestli je instrukce aktivni, pokud ano = while (1), jinak = while (0) = end
-  while (IsActiveItem(ActiveList)) 
+  while (IsActiveItem(ActiveList))
   {
       // nactu aktivni instrukci z aktualniho instrukcniho listu
       instr = (TInstr*) ReturnActiveInstr (ActiveList);
 
      /* -------------------------------------------------------------
-      *	
-      *  semantic controll 
+      *
+      *  semantic controll
       *
       * ------------------------------------------------------------ */
 
       /// item* TblSearch (tHashTbl *tab, itemKey key);
-      /// void  TblInsert (tHashTbl *tab, itemKey key, tokenValue data, int type); 
+      /// void  TblInsert (tHashTbl *tab, itemKey key, tokenValue data, int type);
 
-      switch (instr->operation) 
+      switch (instr->operation)
       {
 
-	 /*========================I_ASS=================================================== (EKV.: mov) */ 
-	 case I_ASS:
+         /*========================I_ASS=================================================== (EKV.: mov) */
+         case I_ASS:
 
          // nactu id src1 & result
          src1   = instr->src1;
          result = instr->result;
-	
+
          // nactu typ dat src1
-         dataType = (TblSearch (lokal_htable_main, src1))->type;
+         dataType = (TblSearch (active_htable, src1))->type;
 
          // POKUD operand do ktereho prirazuju jiz exituje, tak jeho data prepisu
-         if (TblSearch (active_htable, result)!=NULL) 
+         if (TblSearch (active_htable, result)!=NULL)
          {
-	     if (dataType==VARINT)
-	     { 
-		 // prepisu data operandu result daty operandu src1
-		 (TblSearch (active_htable, result))->data.varInt = (TblSearch (active_htable, src1))->data.varInt;
-	     }
-	      else if (dataType==VARDOUBLE) 
-	       {
-		    (TblSearch (active_htable, result))->data.varDouble = (TblSearch (active_htable, src1))->data.varDouble;
-	       }
-	       else if (dataType==VARSTRING) 
-		{
-		     (TblSearch (active_htable, result))->data.varString = (TblSearch (active_htable, src1))->data.varString;
-		}
-           
+             if (dataType==VARINT)
+             {
+                 // prepisu data operandu result daty operandu src1
+                 (TblSearch (active_htable, result))->data.varInt = (TblSearch (active_htable, src1))->data.varInt;
+             }
+              else if (dataType==VARDOUBLE)
+               {
+                    (TblSearch (active_htable, result))->data.varDouble = (TblSearch (active_htable, src1))->data.varDouble;
+               }
+               else if (dataType==STRING)
+                {
+                     (TblSearch (active_htable, result))->data.varString = (TblSearch (active_htable, src1))->data.varString;
+                }
+
             // prepisu datovy typ operandu result datovym typem operandu src1
-            (TblSearch (active_htable result))->type = (TblSearch (active_htable, src1))->type;
-         } 
-         else 
+            (TblSearch (active_htable, result))->type = (TblSearch (active_htable, src1))->type;
+         }
+         else
          {
             // v pripade ze operand result jeste neexsituje, vlozim novou polozku
-            TblInsert (active_htable, result,/* src1*/, dataType); //ERROR
+           // TblInsert (active_htable, result,/* src1*/, dataType); //ERROR
          }
-	 break;
+         break;
 
 //---------------------------- ARITMETICKE OPERACE -----------------------------------------------------
 
-	 /*========================I_ADD===================================================*/
-	 case I_ADD:
+         /*========================I_ADD===================================================*/
+         case I_ADD:
 
          // nactu id src1,src2 & result z INSTRUKCE
          src1   = instr->src1;
@@ -149,12 +156,9 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
          dataType1 = tHsrc1->type;
          dataType2 = tHsrc2->type;
 
-        // tmp
-        tokenValue tmp;
-        
           // pokud src1 nebo src2 nebudou mit prirazenou hodnotu -> syntax error
-          if (tHsrc1->data==NULL || tHsrc2->data==NULL) 
-           { 
+          if (tHsrc1==NULL || tHsrc2==NULL)
+           {
              return E_SEM_OTHER;
            }
 
@@ -163,17 +167,17 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
                {
                    // vysledek bude int
                    TypeOF = VARINT;
-                   tmp.varInt = (tHsrc1->data.varInt + tHsrc1->data.varInt); 
+                   tmp.varInt = (tHsrc1->data.varInt + tHsrc1->data.varInt);
                }
               else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
                {
                    // vysledek bude double
                    TypeOF = VARDOUBLE;
-                   
+
                    // pokud prvni double a druhy int, int pretypuju a naopak
                    if (dataType1==VARDOUBLE && dataType2==VARINT)
                        tmp.varDouble = (tHsrc1->data.varDouble + (double) (tHsrc2->data.varInt));
-                   else 
+                   else
                        tmp.varDouble = ( (double) (tHsrc1->data.varInt) + tHsrc2->data.varDouble);
                }
                else {
@@ -181,37 +185,37 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
                }
 
             ///-----------pokud result exituje, prepisu data
-            if (tHresult!=NULL) 
-	        {
-		   if (dataType1==VARINT && dataType2==VARINT) 
-		   {
+            if (tHresult!=NULL)
+                {
+                   if (dataType1==VARINT && dataType2==VARINT)
+                   {
                      tHresult->data.varInt = tmp.varInt; // uloim soucet do te exitusjici
                      tHresult->type=TypeOF;
-		    } 
-		   else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
-		   {
-		       tHresult->data.varDouble = tmp.varDouble; // uloim soucet do te exitusjici
+                    }
+                   else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
+                   {
+                       tHresult->data.varDouble = tmp.varDouble; // uloim soucet do te exitusjici
                        tHresult->type=TypeOF;
-		   }
-	     } 
-	      else 
-	       {
-		  if (dataType1==VARINT && dataType2==VARINT) 
-		  {
+                   }
+             }
+              else
+               {
+                  if (dataType1==VARINT && dataType2==VARINT)
+                  {
                       // polozka result neexistovala, pridam to nove vytvorene
-                      TblInsert (active_htable, result, tmp, TypeOF); 
-		  } 
-		  else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
-		  {
+                      TblInsert (active_htable, result, tmp, TypeOF);
+                  }
+                  else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
+                  {
                       // polozka result neexistovala, pridam to nove vytvorene
-                      TblInsert (active_htable, result, tmp, TypeOF); 
-		  }
-	       }
-	 break;
+                      TblInsert (active_htable, result, tmp, TypeOF);
+                  }
+               }
+         break;
 
 
          /*========================I_SUB=========================================================*/
-	 case I_SUB:
+         case I_SUB:
 
          // nactu id src1,src2 & result z INSTRUKCE
          src1   = instr->src1;
@@ -227,12 +231,9 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
          dataType1 = tHsrc1->type;
          dataType2 = tHsrc2->type;
 
-        // tmp
-        tokenValue tmp;
-        
           // pokud src1 nebo src2 nebudou mit prirazenou hodnotu -> syntax error
-          if (tHsrc1->data==NULL || tHsrc2->data==NULL) 
-           { 
+          if (tHsrc1==NULL || tHsrc2==NULL)
+           {
              return E_SEM_OTHER;
            }
 
@@ -241,17 +242,17 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
                {
                    // vysledek bude int
                    TypeOF = VARINT;
-                   tmp.varInt = (tHsrc1->data.varInt - tHsrc1->data.varInt); 
+                   tmp.varInt = (tHsrc1->data.varInt - tHsrc1->data.varInt);
                }
               else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
                {
                    // vysledek bude double
                    TypeOF = VARDOUBLE;
-                   
+
                    // pokud prvni double a druhy int, int pretypuju a naopak
                    if (dataType1==VARDOUBLE && dataType2==VARINT)
                        tmp.varDouble = (tHsrc1->data.varDouble - (double) (tHsrc2->data.varInt));
-                   else 
+                   else
                        tmp.varDouble = ( (double) (tHsrc1->data.varInt) - tHsrc2->data.varDouble);
                }
                else {
@@ -259,37 +260,37 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
                }
 
             ///-----------pokud result exituje, prepisu data
-            if (tHresult!=NULL) 
-	        {
-		   if (dataType1==VARINT && dataType2==VARINT) 
-		   {
+            if (tHresult!=NULL)
+                {
+                   if (dataType1==VARINT && dataType2==VARINT)
+                   {
                      tHresult->data.varInt = tmp.varInt; // uloim soucet do te exitusjici
                      tHresult->type=TypeOF;
-		    } 
-		   else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
-		   {
-		       tHresult->data.varDouble = tmp.varDouble; // uloim soucet do te exitusjici
+                    }
+                   else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
+                   {
+                       tHresult->data.varDouble = tmp.varDouble; // uloim soucet do te exitusjici
                        tHresult->type=TypeOF;
-		   }
-	     } 
-	      else 
-	       {
-		  if (dataType1==VARINT && dataType2==VARINT) 
-		  {
+                   }
+             }
+              else
+               {
+                  if (dataType1==VARINT && dataType2==VARINT)
+                  {
                       // polozka result neexistovala, pridam to nove vytvorene
-                      TblInsert (active_htable, result, tmp, TypeOF); 
-		  } 
-		  else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
-		  {
+                      TblInsert (active_htable, result, tmp, TypeOF);
+                  }
+                  else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
+                  {
                       // polozka result neexistovala, pridam to nove vytvorene
-                      TblInsert (active_htable, result, tmp, TypeOF); 
-		  }
-	       }
-	 break;
+                      TblInsert (active_htable, result, tmp, TypeOF);
+                  }
+               }
+         break;
 
 
-	 /*========================I_MUL============================================================*/
-	 case I_MUL:
+         /*========================I_MUL============================================================*/
+         case I_MUL:
 
          // nactu id src1,src2 & result z INSTRUKCE
          src1   = instr->src1;
@@ -305,12 +306,9 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
          dataType1 = tHsrc1->type;
          dataType2 = tHsrc2->type;
 
-        // tmp
-        tokenValue tmp;
-        
           // pokud src1 nebo src2 nebudou mit prirazenou hodnotu -> syntax error
-          if (tHsrc1->data==NULL || tHsrc2->data==NULL) 
-           { 
+          if (tHsrc1==NULL || tHsrc2==NULL)
+           {
              return E_SEM_OTHER;
            }
 
@@ -319,17 +317,17 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
                {
                    // vysledek bude int
                    TypeOF = VARINT;
-                   tmp.varInt = (tHsrc1->data.varInt * tHsrc1->data.varInt); 
+                   tmp.varInt = (tHsrc1->data.varInt * tHsrc1->data.varInt);
                }
               else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
                {
                    // vysledek bude double
                    TypeOF = VARDOUBLE;
-                   
+
                    // pokud prvni double a druhy int, int pretypuju a naopak
                    if (dataType1==VARDOUBLE && dataType2==VARINT)
                        tmp.varDouble = (tHsrc1->data.varDouble * (double) (tHsrc2->data.varInt));
-                   else 
+                   else
                        tmp.varDouble = ( (double) (tHsrc1->data.varInt) * tHsrc2->data.varDouble);
                }
                else {
@@ -337,37 +335,37 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
                }
 
             ///-----------pokud result exituje, prepisu data
-            if (tHresult!=NULL) 
-	        {
-		   if (dataType1==VARINT && dataType2==VARINT) 
-		   {
+            if (tHresult!=NULL)
+                {
+                   if (dataType1==VARINT && dataType2==VARINT)
+                   {
                      tHresult->data.varInt = tmp.varInt; // uloim soucet do te exitusjici
                      tHresult->type=TypeOF;
-		    } 
-		   else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
-		   {
-		       tHresult->data.varDouble = tmp.varDouble; // uloim soucet do te exitusjici
+                    }
+                   else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
+                   {
+                       tHresult->data.varDouble = tmp.varDouble; // uloim soucet do te exitusjici
                        tHresult->type=TypeOF;
-		   }
-	     } 
-	      else 
-	       {
-		  if (dataType1==VARINT && dataType2==VARINT) 
-		  {
+                   }
+             }
+              else
+               {
+                  if (dataType1==VARINT && dataType2==VARINT)
+                  {
                       // polozka result neexistovala, pridam to nove vytvorene
-                      TblInsert (active_htable, result, tmp, TypeOF); 
-		  } 
-		  else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
-		  {
+                      TblInsert (active_htable, result, tmp, TypeOF);
+                  }
+                  else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
+                  {
                       // polozka result neexistovala, pridam to nove vytvorene
-                      TblInsert (active_htable, result, tmp, TypeOF); 
-		  }
-	       }
-	 break;
+                      TblInsert (active_htable, result, tmp, TypeOF);
+                  }
+               }
+         break;
 
 
-	 /*========================I_DIV==============================================================*/
-	 case I_DIV:
+         /*========================I_DIV==============================================================*/
+         case I_DIV:
 
          // nactu id src1,src2 & result z INSTRUKCE
          src1   = instr->src1;
@@ -383,12 +381,9 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
          dataType1 = tHsrc1->type;
          dataType2 = tHsrc2->type;
 
-        // tmp
-        tokenValue tmp;
-        
           // pokud src1 nebo src2 nebudou mit prirazenou hodnotu -> syntax error
-          if (tHsrc1->data==NULL || tHsrc2->data==NULL) 
-           { 
+          if (tHsrc1==NULL || tHsrc2==NULL)
+           {
              return E_SEM_OTHER;
            }
 
@@ -397,17 +392,17 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
                {
                    // vysledek bude int
                    TypeOF = VARINT;
-                   tmp.varInt = (tHsrc1->data.varInt / tHsrc1->data.varInt); 
+                   tmp.varInt = (tHsrc1->data.varInt / tHsrc1->data.varInt);
                }
               else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
                {
                    // vysledek bude double
                    TypeOF = VARDOUBLE;
-                   
+
                    // pokud prvni double a druhy int, int pretypuju a naopak
                    if (dataType1==VARDOUBLE && dataType2==VARINT)
                        tmp.varDouble = (tHsrc1->data.varDouble / (double) (tHsrc2->data.varInt));
-                   else 
+                   else
                        tmp.varDouble = ( (double) (tHsrc1->data.varInt) / tHsrc2->data.varDouble);
                }
                else {
@@ -415,92 +410,89 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
                }
 
             ///-----------pokud result exituje, prepisu data
-            if (tHresult!=NULL) 
-	        {
-		   if (dataType1==VARINT && dataType2==VARINT) 
-		   {
+            if (tHresult!=NULL)
+                {
+                   if (dataType1==VARINT && dataType2==VARINT)
+                   {
                      tHresult->data.varInt = tmp.varInt; // uloim soucet do te exitusjici
                      tHresult->type=TypeOF;
-		    } 
-		   else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
-		   {
-		       tHresult->data.varDouble = tmp.varDouble; // uloim soucet do te exitusjici
+                    }
+                   else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
+                   {
+                       tHresult->data.varDouble = tmp.varDouble; // uloim soucet do te exitusjici
                        tHresult->type=TypeOF;
-		   }
-	     } 
-	      else 
-	       {
-		  if (dataType1==VARINT && dataType2==VARINT) 
-		  {
+                   }
+             }
+              else
+               {
+                  if (dataType1==VARINT && dataType2==VARINT)
+                  {
                       // polozka result neexistovala, pridam to nove vytvorene
-                      TblInsert (active_htable, result, tmp, TypeOF); 
-		  } 
-		  else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
-		  {
+                      TblInsert (active_htable, result, tmp, TypeOF);
+                  }
+                  else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
+                  {
                       // polozka result neexistovala, pridam to nove vytvorene
-                      TblInsert (active_htable, result, tmp, TypeOF); 
-		  }
-	       }
-	 break;
+                      TblInsert (active_htable, result, tmp, TypeOF);
+                  }
+               }
+         break;
 
 //---------------------------- KONKATENACE --------------------------------------------------------------
 
-	 /*========================I_CON===============================================================*/ 
-	 case I_CON:
+         /*========================I_CON===============================================================*/
+         case I_CON:
          // nactu id src1,src2 & result z INSTRUKCE
          src1   = instr->src1;
          src2   = instr->src2;
          result = instr->result;
 
          // nactu id src1,src2 & result z HASH tabulky
-         tHsrc1   = (TblSearch (lokal_htable_main, src1));
-         tHsrc2   = (TblSearch (lokal_htable_main, src2));
-         tHresult = (TblSearch (lokal_htable_main, result));
+         tHsrc1   = (TblSearch (active_htable, src1));
+         tHsrc2   = (TblSearch (active_htable, src2));
+         tHresult = (TblSearch (active_htable, result));
 
          // nactu typ dat src1 & src2
          dataType1 = tHsrc1->type;
          dataType2 = tHsrc2->type;
 
-         // tmp
-         tokenValue tmp;
-
          // overeni jestli data ubec existuji
          if (tHsrc1!=NULL || tHsrc2!=NULL) return E_SEM_OTHER;
 
          /// cekni typ pro konkatenaci
-         if (dataType1==VARSTRING && dataType2==VARSTRING) 
+         if (dataType1==STRING && dataType2==STRING)
          {
-                TypeOF = VARSTRING;
-		tmp.varString = konkatenace(tHsrc1->data.varString, tHsrc2->data.varString);
-         } 
+                TypeOF = STRING;
+                tmp.varString = konkatenace(tHsrc1->data.varString, tHsrc2->data.varString);
+         }
 
-         else if (dataType1==VARSTRING && dataType2!=VARSTRING)
+         else if (dataType1==STRING && dataType2!=STRING)
          {
-              TypeOF = VARSTRING;
+              TypeOF = STRING;
               tostring(tHsrc2);
-              tHsrc2->type=VARSTRING;
+              tHsrc2->type=STRING;
               tmp.varString = konkatenace(tHsrc1->data.varString, tHsrc2->data.varString);
          }
 
-         else if (dataType1!=VARSTRING && dataType2==VARSTRING)
+         else if (dataType1!=STRING && dataType2==STRING)
          {
-              TypeOF = VARSTRING;
+              TypeOF = STRING;
               tostring(tHsrc1);
-              tHsrc1->type=VARSTRING;
+              tHsrc1->type=STRING;
               tmp.varString = konkatenace(tHsrc1->data.varString, tHsrc2->data.varString);
          }
          else return E_SEM_OTHER;
 
             // pokud result exituje, prepisu data
-            if (tHresult!=NULL) 
-	      {
+            if (tHresult!=NULL)
+              {
                  tHresult->data.varString = tmp.varString; // uloim do te exitusjici
-	      } else {
-                   // polozka result neexistovala, pridam 
-                   TblInsert (active_htable, result, tmp, TypeOF); 
-	      }
+              } else {
+                   // polozka result neexistovala, pridam
+                   TblInsert (active_htable, result, tmp, TypeOF);
+              }
 
-	 break;
+         break;
 
      /*
        #define IDENTIFIKATOR 1
@@ -520,17 +512,17 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
 
       /*
         typedef struct item{
-            	int type;
-            	itemKey key;
-            	tokenValue data;
-            	struct item *nextItem;
+                    int type;
+                    itemKey key;
+                    tokenValue data;
+                    struct item *nextItem;
         }item;
       */
 
 //---------------------------- POROVNAVANI ----------------------------------------------------------------
 
-	 /*========================I_G=================================================================*/ 
-	 case I_G:
+         /*========================I_G=================================================================*/
+         case I_G:
 
          // nactu id src1,src2 & result z INSTRUKCE
          src1   = instr->src1;
@@ -544,55 +536,55 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
 
         // tmp
         tokenValue tmp;
-        
+
          // typ: tHsrc1->type   data:   tHsrc1->data   item:  tHsrc1 , tHsrc2 , tHresult
 
          int datTyp=0;
 
          if (tHsrc1!=NULL || tHsrc2!=NULL) return E_SEM_OTHER;
 
-         if (tHsrc1->type==tHsrc2->type) 
+         if (tHsrc1->type==tHsrc2->type)
          {
-              TypeOF = VARBOLEAN;
+              TypeOF = VARBOOL;
 
-              if (tHsrc1->type==VARINT) 
+              if (tHsrc1->type==VARINT)
               {
                  if (tHsrc1->data.varInt > tHsrc2->data.varInt)  datTyp = 1;
                  else datTyp = 0;
               }
 
-	      else if (tHsrc1->type==VARDOUBLE) 
+              else if (tHsrc1->type==VARDOUBLE)
               {
                  if (tHsrc1->data.varDouble > tHsrc2->data.varDouble)  datTyp = 1;
                  else datTyp = 0;
               }
 
-              else if (tHsrc1->type==VARSTRING) 
+              else if (tHsrc1->type==STRING)
               {
                  if (strcmp(tHsrc1->data.varString,tHsrc2->data.varString)>0)  datTyp = 1;
                  else datTyp = 0;
               }
 
-         } 
-         else 
+         }
+         else
          {
              return E_SEM_TYPE; // nejsou stejny typy vole!
          }
 
             // pokud result exituje, prepisu data
-            if (tHresult!=NULL) 
-	      {
+            if (tHresult!=NULL)
+              {
                  tHresult->data.varInt = datTyp; // uloim soucet do te exitusjici
-	      } else {
+              } else {
                    // polozka result neexistovala, pridam to nove vytvorene
                    tmp.varInt = datTyp;
-                   TblInsert (active_htable, result, tmp, TypeOF); 
-	       }
-	 break;
+                   TblInsert (active_htable, result, tmp, TypeOF);
+               }
+         break;
 
-	 /*========================I_GE===================================================================*/
-	 case I_GE:
- 
+         /*========================I_GE===================================================================*/
+         case I_GE:
+
          // nactu id src1,src2 & result z INSTRUKCE
          src1   = instr->src1;
          src2   = instr->src2;
@@ -603,56 +595,53 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
          tHsrc2   = (TblSearch (active_htable, src2));
          tHresult = (TblSearch (active_htable, result));
 
-        // tmp
-        tokenValue tmp;
-        
          // typ: tHsrc1->type   data:   tHsrc1->data   item:  tHsrc1 , tHsrc2 , tHresult
 
-         int datTyp=0;
+         datTyp=0;
 
          if (tHsrc1!=NULL || tHsrc2!=NULL) return E_SEM_OTHER;
 
-         if (tHsrc1->type==tHsrc2->type) 
+         if (tHsrc1->type==tHsrc2->type)
          {
-              TypeOF = VARBOLEAN;
+              TypeOF = VARBOOL;
 
-              if (tHsrc1->type==VARINT) 
+              if (tHsrc1->type==VARINT)
               {
                  if (tHsrc1->data.varInt >= tHsrc2->data.varInt)  datTyp = 1;
                  else datTyp = 0;
               }
 
-	      else if (tHsrc1->type==VARDOUBLE) 
+              else if (tHsrc1->type==VARDOUBLE)
               {
                  if (tHsrc1->data.varDouble >= tHsrc2->data.varDouble)  datTyp = 1;
                  else datTyp = 0;
               }
 
-              else if (tHsrc1->type==VARSTRING) 
+              else if (tHsrc1->type==STRING)
               {
                  if (strcmp(tHsrc1->data.varString,tHsrc2->data.varString)>=0)  datTyp = 1;
                  else datTyp = 0;
               }
 
-         } 
-         else 
+         }
+         else
          {
              return E_SEM_TYPE; // nejsou stejny typy vole!
          }
 
             // pokud result exituje, prepisu data
-            if (tHresult!=NULL) 
-	      {
+            if (tHresult!=NULL)
+              {
                  tHresult->data.varInt = datTyp; // uloim soucet do te exitusjici
-	      } else {
+              } else {
                    // polozka result neexistovala, pridam to nove vytvorene
                    tmp.varInt = datTyp;
-                   TblInsert (active_htable, result, tmp, TypeOF); 
-	       }
-	 break;
+                   TblInsert (active_htable, result, tmp, TypeOF);
+               }
+         break;
 
-	 /*========================I_L=========================*/ 
-	 case I_L:
+         /*========================I_L=========================*/
+         case I_L:
 
          // nactu id src1,src2 & result z INSTRUKCE
          src1   = instr->src1;
@@ -664,57 +653,54 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
          tHsrc2   = (TblSearch (active_htable, src2));
          tHresult = (TblSearch (active_htable, result));
 
-        // tmp
-        tokenValue tmp;
-        
          // typ: tHsrc1->type   data:   tHsrc1->data   item:  tHsrc1 , tHsrc2 , tHresult
 
-         int datTyp=0;
+         datTyp=0;
 
          if (tHsrc1!=NULL || tHsrc2!=NULL) return E_SEM_OTHER;
 
-         if (tHsrc1->type==tHsrc2->type) 
+         if (tHsrc1->type==tHsrc2->type)
          {
-              TypeOF = VARBOLEAN;
+              TypeOF = VARBOOL;
 
-              if (tHsrc1->type==VARINT) 
+              if (tHsrc1->type==VARINT)
               {
                  if (tHsrc1->data.varInt < tHsrc2->data.varInt)  datTyp = 1;
                  else datTyp = 0;
               }
 
-	      else if (tHsrc1->type==VARDOUBLE) 
+              else if (tHsrc1->type==VARDOUBLE)
               {
                  if (tHsrc1->data.varDouble < tHsrc2->data.varDouble)  datTyp = 1;
                  else datTyp = 0;
               }
 
-              else if (tHsrc1->type==VARSTRING) 
+              else if (tHsrc1->type==STRING)
               {
                  if (strcmp(tHsrc1->data.varString,tHsrc2->data.varString)<0)  datTyp = 1;
                  else datTyp = 0;
               }
 
-         } 
-         else 
+         }
+         else
          {
              return E_SEM_TYPE; // nejsou stejny typy vole!
          }
 
             // pokud result exituje, prepisu data
-            if (tHresult!=NULL) 
-	      {
+            if (tHresult!=NULL)
+              {
                  tHresult->data.varInt = datTyp; // uloim soucet do te exitusjici
-	      } else {
+              } else {
                    // polozka result neexistovala, pridam to nove vytvorene
                    tmp.varInt = datTyp;
-                   TblInsert (active_htable, result, tmp, TypeOF); 
-	       }
-	 break;
+                   TblInsert (active_htable, result, tmp, TypeOF);
+               }
+         break;
 
-	 /*========================I_LE==========================================================*/ 
-	 case I_LE:
- 
+         /*========================I_LE==========================================================*/
+         case I_LE:
+
          // nactu id src1,src2 & result z INSTRUKCE
          src1   = instr->src1;
          src2   = instr->src2;
@@ -725,57 +711,54 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
          tHsrc2   = (TblSearch (active_htable, src2));
          tHresult = (TblSearch (active_htable, result));
 
-        // tmp
-        tokenValue tmp;
-        
          // typ: tHsrc1->type   data:   tHsrc1->data   item:  tHsrc1 , tHsrc2 , tHresult
 
-         int datTyp=0;
+         datTyp=0;
 
          if (tHsrc1!=NULL || tHsrc2!=NULL) return E_SEM_OTHER;
 
-         if (tHsrc1->type==tHsrc2->type) 
+         if (tHsrc1->type==tHsrc2->type)
          {
-              TypeOF = VARBOLEAN;
+              TypeOF = VARBOOL;
 
-              if (tHsrc1->type==VARINT) 
+              if (tHsrc1->type==VARINT)
               {
                  if (tHsrc1->data.varInt <= tHsrc2->data.varInt)  datTyp = 1;
                  else datTyp = 0;
               }
 
-	      else if (tHsrc1->type==VARDOUBLE) 
+              else if (tHsrc1->type==VARDOUBLE)
               {
                  if (tHsrc1->data.varDouble <= tHsrc2->data.varDouble)  datTyp = 1;
                  else datTyp = 0;
               }
 
-              else if (tHsrc1->type==VARSTRING) 
+              else if (tHsrc1->type==STRING)
               {
                  if (strcmp(tHsrc1->data.varString,tHsrc2->data.varString)<=0)  datTyp = 1;
                  else datTyp = 0;
               }
 
-         } 
-         else 
+         }
+         else
          {
              return E_SEM_TYPE; // nejsou stejny typy vole!
          }
 
             // pokud result exituje, prepisu data
-            if (tHresult!=NULL) 
-	      {
+            if (tHresult!=NULL)
+              {
                  tHresult->data.varInt = datTyp; // uloim soucet do te exitusjici
-	      } else {
+              } else {
                    // polozka result neexistovala, pridam to nove vytvorene
                    tmp.varInt = datTyp;
-                   TblInsert (active_htable, result, tmp, TypeOF); 
-	       }
-	 break;
+                   TblInsert (active_htable, result, tmp, TypeOF);
+               }
+         break;
 
 
-	 /*========================I_ET=========================*/ 
-	 case I_ET:
+         /*========================I_ET=========================*/
+         case I_ET:
 
          // nactu id src1,src2 & result z INSTRUKCE
          src1   = instr->src1;
@@ -787,57 +770,54 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
          tHsrc2   = (TblSearch (active_htable, src2));
          tHresult = (TblSearch (active_htable, result));
 
-        // tmp
-        tokenValue tmp;
-        
          // typ: tHsrc1->type   data:   tHsrc1->data   item:  tHsrc1 , tHsrc2 , tHresult
 
-         int datTyp=0;
+         datTyp=0;
 
          if (tHsrc1!=NULL || tHsrc2!=NULL) return E_SEM_OTHER;
 
-         if (tHsrc1->type==tHsrc2->type) 
+         if (tHsrc1->type==tHsrc2->type)
          {
-              TypeOF = VARBOLEAN;
+              TypeOF = VARBOOL;
 
-              if (tHsrc1->type==VARINT) 
+              if (tHsrc1->type==VARINT)
               {
                  if (tHsrc1->data.varInt == tHsrc2->data.varInt)  datTyp = 1;
                  else datTyp = 0;
               }
 
-	      else if (tHsrc1->type==VARDOUBLE) 
+              else if (tHsrc1->type==VARDOUBLE)
               {
                  if (tHsrc1->data.varDouble == tHsrc2->data.varDouble)  datTyp = 1;
                  else datTyp = 0;
               }
 
-              else if (tHsrc1->type==VARSTRING) 
+              else if (tHsrc1->type==STRING)
               {
                  if (strcmp(tHsrc1->data.varString,tHsrc2->data.varString)==0)  datTyp = 1;
                  else datTyp = 0;
               }
 
-         } 
-         else 
+         }
+         else
          {
              datTyp = 0;
          }
 
             // pokud result exituje, prepisu data
-            if (tHresult!=NULL) 
-	      {
+            if (tHresult!=NULL)
+              {
                  tHresult->data.varInt = datTyp; // uloim soucet do te exitusjici
-	      } else {
+              } else {
                    // polozka result neexistovala, pridam to nove vytvorene
                    tmp.varInt = datTyp;
-                   TblInsert (active_htable, result, tmp, TypeOF); 
-	       }
-	 break;
+                   TblInsert (active_htable, result, tmp, TypeOF);
+               }
+         break;
 
 
-	 /*========================I_NET=========================*/
-	 case I_NET:
+         /*========================I_NET=========================*/
+         case I_NET:
 
          // nactu id src1,src2 & result z INSTRUKCE
          src1   = instr->src1;
@@ -849,63 +829,60 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
          tHsrc2   = (TblSearch (active_htable, src2));
          tHresult = (TblSearch (active_htable, result));
 
-        // tmp
-        tokenValue tmp;
-        
          // typ: tHsrc1->type   data:   tHsrc1->data   item:  tHsrc1 , tHsrc2 , tHresult
 
-         int datTyp=0;
+         datTyp=0;
 
          if (tHsrc1!=NULL || tHsrc2!=NULL) return E_SEM_OTHER;
 
-         if (tHsrc1->type!=tHsrc2->type) 
+         if (tHsrc1->type!=tHsrc2->type)
          {
-              TypeOF = VARBOLEAN;
+              TypeOF = VARBOOL;
 
-              if (tHsrc1->type==VARINT) 
+              if (tHsrc1->type==VARINT)
               {
                  if (tHsrc1->data.varInt != tHsrc2->data.varInt)  datTyp = 1;
                  else datTyp = 0;
               }
 
-	      else if (tHsrc1->type==VARDOUBLE) 
+              else if (tHsrc1->type==VARDOUBLE)
               {
                  if (tHsrc1->data.varDouble != tHsrc2->data.varDouble)  datTyp = 1;
                  else datTyp = 0;
               }
 
-              else if (tHsrc1->type==VARSTRING) 
+              else if (tHsrc1->type==STRING)
               {
                  if (strcmp(tHsrc1->data.varString,tHsrc2->data.varString)!=0)  datTyp = 1;
                  else datTyp = 0;
               }
 
-         } 
-         else 
+         }
+         else
          {
              datTyp = 0;
          }
 
             // pokud result exituje, prepisu data
-            if (tHresult!=NULL) 
-	      {
+            if (tHresult!=NULL)
+              {
                  tHresult->data.varInt = datTyp; // uloim soucet do te exitusjici
-	      } else {
+              } else {
                    // polozka result neexistovala, pridam to nove vytvorene
                    tmp.varInt = datTyp;
-                   TblInsert (active_htable, result, tmp, TypeOF); 
-	       }
-	 break;
+                   TblInsert (active_htable, result, tmp, TypeOF);
+               }
+         break;
 
 //----------------------------  FUNKCE  --------------------------------------------------------------
 
-	 /*========================I_CALL=========================*/ 
-	 case I_CALL:
-	 break;
+         /*========================I_CALL=========================*/
+         case I_CALL:
+         break;
 
-	 /*========================I_RETURN=========================*/ 
-	 case I_RETURN:
-	 break;
+         /*========================I_RETURN=========================*/
+         case I_RETURN:
+         break;
 
 //----------------------------  PREPNUTI KONTEXTU  --------------------------------------------------------------
 
@@ -920,61 +897,61 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
 //---------------------------- INTERNI FUNKCE --------------------------------------------------------------
 
 
-	 /*========================I_SORT=========================*/
-	 case I_SORT:
-	 break;
+         /*========================I_SORT=========================*/
+         case I_SORT:
+         break;
 
-	 /*========================I_FIND=========================*/ 
-	 case I_FIND:
-	 break;
+         /*========================I_FIND=========================*/
+         case I_FIND:
+         break;
 
-	 /*========================I_STRL=========================*/ 
-	 case I_STRL:
-	 break;
-
-
-	 /*========================I_PUTS=========================*/ 
-	 case I_PUTS:
-	 break;
+         /*========================I_STRL=========================*/
+         case I_STRL:
+         break;
 
 
-	 /*========================I_GETS=========================*/ 
-	 case I_GETS:
-	 break;
+         /*========================I_PUTS=========================*/
+         case I_PUTS:
+         break;
 
 
-	 /*========================I_GETSU=========================*/ 
-	 case I_GETSU:
-	 break;
+         /*========================I_GETS=========================*/
+         case I_GETS:
+         break;
+
+
+         /*========================I_GETSU=========================*/
+         case I_GETSU:
+         break;
 
 
 //---------------------------- SKOKYY --------------------------------------------------------------
 
 
-	 /*========================I_JMP=========================*/ 
-	 case I_JMP:
-	 break;
+         /*========================I_JMP=========================*/
+         case I_JMP:
+         break;
 
 
-	 /*========================I_JZ=========================*/ 
-	 case I_JZ:
-	 break;
+         /*========================I_JZ=========================*/
+         case I_JZ:
+         break;
 
 
-	 /*========================I_JNZ=========================*/ 
-	 case I_JNZ:
-	 break;
+         /*========================I_JNZ=========================*/
+         case I_JNZ:
+         break;
 
 
-	 /*========================I_LAB=========================*/ 
-	 case I_LAB:
-	 break;
+         /*========================I_LAB=========================*/
+         case I_LAB:
+         break;
 
 
      }
 
-  	/*posun se na dalsi instrukci*/
-	ActiveNextItem (ActiveList);
+          /*posun se na dalsi instrukci*/
+        ActiveNextItem (ActiveList);
   }
 
 }
