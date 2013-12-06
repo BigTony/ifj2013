@@ -107,33 +107,65 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
          src1   = instr->src1;
          result = instr->result;
 
+         // nactu id src1,src2 & result z HASH tabulky
+         tHsrc1   = (TblSearch (active_htable, src1));
+         tHresult = (TblSearch (active_htable, result));
+
          // nactu typ dat src1
-         dataType = (TblSearch (active_htable, src1))->type;
+         dataType = (tHsrc1)->type;
 
-         // POKUD operand do ktereho prirazuju jiz exituje, tak jeho data prepisu
-         if (TblSearch (active_htable, result)!=NULL)
-         {
-             if (dataType==VARINT)
-             {
-                 // prepisu data operandu result daty operandu src1
-                 (TblSearch (active_htable, result))->data.varInt = (TblSearch (active_htable, src1))->data.varInt;
-             }
-              else if (dataType==VARDOUBLE)
-               {
-                    (TblSearch (active_htable, result))->data.varDouble = (TblSearch (active_htable, src1))->data.varDouble;
-               }
-               else if (dataType==STRING)
+          if (tHsrc1==NULL) return E_SEM_OTHER;
+          else 
+          {
+                if (dataType==VARINT)
                 {
-                     (TblSearch (active_htable, result))->data.varString = (TblSearch (active_htable, src1))->data.varString;
-                }
+                   // prepisu data operandu result daty operandu src1
+                   tmp.varInt = (TblSearch (active_htable, src1))->data.varInt;
 
-            // prepisu datovy typ operandu result datovym typem operandu src1
-            (TblSearch (active_htable, result))->type = (TblSearch (active_htable, src1))->type;
-         }
-         else
-         {
-            // v pripade ze operand result jeste neexsituje, vlozim novou polozku
-           // TblInsert (active_htable, result,/* src1*/, dataType); //ERROR
+                     // POKUD operand do ktereho prirazuju jiz exituje, tak jeho data prepisu
+                     if (tHresult!=NULL)
+                     {
+                        tHresult->data.varInt = tmp.varInt;
+                        tHresult->type = dataType;
+                     }
+                     else
+                     {
+                        // v pripade ze operand result jeste neexsituje, vlozim novou polozku
+                        TblInsert (active_htable, result, tmp, dataType); 
+                     }
+                }
+                else if (dataType==VARDOUBLE)
+                {
+                    tmp.varDouble = (TblSearch (active_htable, src1))->data.varDouble;
+
+                     // POKUD operand do ktereho prirazuju jiz exituje, tak jeho data prepisu
+                     if (tHresult!=NULL)
+                     {
+                        tHresult->data.varDouble = tmp.varDouble;
+                        tHresult->type = dataType;
+                     }
+                     else
+                     {
+                        // v pripade ze operand result jeste neexsituje, vlozim novou polozku
+                        TblInsert (active_htable, result, tmp, dataType); 
+                     }
+                }
+                else if (dataType==STRING)
+                {
+                     tmp.varString = (TblSearch (active_htable, src1))->data.varString;
+
+                     // POKUD operand do ktereho prirazuju jiz exituje, tak jeho data prepisu
+                     if (tHresult!=NULL)
+                     {
+                        tHresult->data.varString = tmp.varString;
+                        tHresult->type = dataType;
+                     }
+                     else
+                     {
+                        // v pripade ze operand result jeste neexsituje, vlozim novou polozku
+                        TblInsert (active_htable, result, tmp, dataType); 
+                     }
+                }
          }
          break;
 
