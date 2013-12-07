@@ -930,6 +930,9 @@ int interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
 
 //---------------------------- INTERNI FUNKCE --------------------------------------------------------------
 
+         /*========================I_TYPE=========================*/
+         case I_TYPE:
+         break;
 
          /*========================I_SORT=========================*/
          case I_SORT:
