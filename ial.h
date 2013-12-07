@@ -20,7 +20,8 @@
 #include "errors.h"
 #include "scaner.h"
 #define ALLOC 67
-typedef char* itemKey;
+
+
 /*  // NEBUDU!! DoPiCI!! FURT!! LIST!!! DO SCANER.H!! dopcici!
 typedef union {
     int varInt;
@@ -29,9 +30,11 @@ typedef union {
     void *pointer;
 }tokenValue;
 */
-typedef struct item{
+
+//typedef char* itemKey;
+typedef struct item {
 	int type;
-	itemKey key;
+	char* key;
 	tokenValue data;
 	struct item *nextItem;
 }item;
@@ -41,12 +44,12 @@ typedef struct tHashTbl{
 	int size; // pocet itemu v tabulce
 }tHashTbl;
 
-int hashCode ( itemKey key );
+int hashCode ( char* key );
 void tableInit(tHashTbl *hash_table);
-item* TblSearch (tHashTbl *tab, itemKey key);
-void TblInsert (tHashTbl *tab, itemKey key,tokenValue data, int type);
-tokenValue* TblReadData (tHashTbl *tab, itemKey key);
-int TblReadType (tHashTbl *tab, itemKey key);
+item* TblSearch (tHashTbl *tab, char* key);
+void TblInsert (tHashTbl *tab, char* key,tokenValue data, int type);
+tokenValue* TblReadData (tHashTbl *tab, char* key);
+int TblReadType (tHashTbl *tab, char* key);
 void TblDelete (tHashTbl *tab);
 #endif
  

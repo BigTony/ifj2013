@@ -28,7 +28,7 @@ void tableInit(tHashTbl *hash_table){
 }
 
 // nahradit lepsi
-int hashCode ( itemKey key ) {
+int hashCode ( char* key ) {
 	int retval = 1;
 	int keylen = strlen(key);
 	for ( int i=0; i<keylen; i++ )
@@ -37,7 +37,7 @@ int hashCode ( itemKey key ) {
 }
 
 /// HLEDANI
-item* TblSearch (tHashTbl *tab, itemKey key) 
+item* TblSearch (tHashTbl *tab, char* key) 
 {
   item *Titem;
   int  Hashed = hashCode(key);
@@ -54,7 +54,7 @@ item* TblSearch (tHashTbl *tab, itemKey key)
 
 
 /// VLOZENI NOVE POLOZKY
-void TblInsert (tHashTbl *tab, itemKey key,tokenValue data, int type) 
+void TblInsert (tHashTbl *tab, char* key,tokenValue data, int type) 
 {
 
   item *AddNew = NULL;
@@ -88,7 +88,7 @@ void TblInsert (tHashTbl *tab, itemKey key,tokenValue data, int type)
 }
 
 /// PRECTE HODNOTU PROMENNE
-tokenValue* TblReadData (tHashTbl *tab, itemKey key) 
+tokenValue* TblReadData (tHashTbl *tab, char* key) 
 {
   item *read;
   if ((read=TblSearch(tab,key)) != NULL)
@@ -99,7 +99,7 @@ return NULL;
 }
 
 /// PRECTE TYP PROMENNE
-int TblReadType (tHashTbl *tab, itemKey key) 
+int TblReadType (tHashTbl *tab, char* key) 
 {
   item *read;
   if ((read=TblSearch(tab,key)) != NULL)

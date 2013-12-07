@@ -10,7 +10,7 @@
 //
 //
 
-#include <strings.h>
+#include <string.h>
 #include "interpret.h"
 #include <math.h>
 #include <stdio.h>
@@ -24,7 +24,7 @@
  *  @param2: Instrukcni seznam MAINU
  *  @param3: zasobnik adres TS a ptr na navrat do instrukcniho seznamu
  */
-void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
+int interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
 {
 
 //------------------- INIT -------------------------------------------------------------
@@ -34,9 +34,9 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
 
    // data aktualni instrukce [operandy]
    TInstr  *instr;
-   itemKey *src1;
-   itemKey *src2;
-   itemKey *result;
+   char *src1;
+   char *src2;
+   char *result;
 
    // data aktualni instrukce z HASH table
    item *tHsrc1;
@@ -45,9 +45,10 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
 
    // POMOCNE PROMENNE
    int dataType,dataType1,dataType2;
-   itemKey *src1Data,*src2Data,*resultData;
+   //char *src1Data,*src2Data,*resultData;
    int TypeOF;
    int jump=0;
+
    // tmp
     tokenValue tmp;
 
@@ -571,7 +572,7 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
 
          // typ: tHsrc1->type   data:   tHsrc1->data   item:  tHsrc1 , tHsrc2 , tHresult
 
-         int datTyp=0;
+         datTyp=0;
 
          if (tHsrc1!=NULL || tHsrc2!=NULL) return E_SEM_OTHER;
 
@@ -1086,4 +1087,6 @@ void interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
         ActiveNextItem (ActiveList);
   }
 
+return EXIT_SUCCESS;
+// end func
 }

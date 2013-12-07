@@ -11,7 +11,7 @@
 //
 #ifndef INTEPRET_H
 #define INTEPRET_H
-#include "string.h"
+#include "strings.h"
 #include "ial.h"
 #include "ilist.h"
 #include "errors.h"
