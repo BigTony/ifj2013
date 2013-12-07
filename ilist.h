@@ -45,7 +45,11 @@ typedef enum {
 
 //===== vestavene funkce =================
 
-   I_TYPE, // BOOLVAL,DOUBLEVAL,INTVAL,STRVAL
+   I_BOOLVAL,  // BOOLVAL
+   I_DOUBLEVAL,// DOUBLEVAL
+   I_INTVAL,   // INTVAL
+   I_STRVAL,   // STRVAL
+
    I_SORT, // sort string
    I_FIND, // find string
    I_STRL, // str.lenght
