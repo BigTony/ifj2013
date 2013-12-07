@@ -17,7 +17,8 @@
 #include <stdlib.h>
 #include <errno.h>
 
-
+void tovarint(item *item);
+void tostring(item *item);
 
 /*  INTERPRET - vykona intepretaci jazyka IFJ13
  *  @param1: globalni TS
