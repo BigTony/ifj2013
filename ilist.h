@@ -45,10 +45,10 @@ typedef enum {
 
 //===== vestavene funkce =================
 
-   I_BOOLVAL,  // BOOLVAL
-   I_DOUBLEVAL,// DOUBLEVAL
-   I_INTVAL,   // INTVAL
-   I_STRVAL,   // STRVAL
+   I_BOOLVAL,  // BOOLVAL        | src1 ... ...
+   I_DOUBLEVAL,// DOUBLEVAL      | src1 ... ...   
+   I_INTVAL,   // INTVAL         | src1 ... ...
+   I_STRVAL,   // STRVAL         | src1 ... ...
 
    I_SORT, // sort string
    I_FIND, // find string
