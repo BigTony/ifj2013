@@ -100,6 +100,19 @@ typedef struct{
 	tokenValue value;
 }Ttoken;
 
+char* vestaveneFunkce[10]={
+    "boolval",      //BOOLVAL
+    "doubleval",    //DOUBLEVAL
+    "intval",       //INTVAL
+    "strval",       //STRVAL
+    "get_string",   //GET_STRING
+    "put_string",   //PUT_STRING
+    "strlen",       //STRLEN
+    "get_substring",//GET_SUBSTRING
+    "find_string",  //FIND_STRING
+    "sort_string",  //SORT_STRING
+};
+
 // Funkce
 int getToken(FILE *fp,Ttoken *token);
 #endif
