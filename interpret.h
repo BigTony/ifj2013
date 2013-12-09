@@ -19,7 +19,10 @@
 #include "adt.h"
 #include "memory.h"
 
-
+void tostring(item *item);
+void toVARBOOL(item *item);
+void todouble(item *item);
+void tovarint(item *item);
 void interpret (tHashTbl *global_htable, TList *L);
 
 #endif

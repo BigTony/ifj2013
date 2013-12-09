@@ -155,63 +155,63 @@ int getToken(FILE *fp,Ttoken *token){
             case (char)-1: //KONEC
                 token->id = KONEC;
                 w[0]=c;
-                token->value.varString=w;
+                freeW(&w); token->value.varString=NULL;
                 return token->id;
             case '{' :
                 token->id = ZAV_SLOZ_L;
                 w[len]=c; w[len+1]='\0';
-                token->value.varString = w;
+                freeW(&w); token->value.varString=NULL;
                 return token->id;
             case '}' :
                 token->id = ZAV_SLOZ_P;
                 w[len]=c; w[len+1]='\0';
-                token->value.varString = w;
+                freeW(&w); token->value.varString=NULL;
                 return token->id;
             case ';' :
                 token->id = STREDNIK;
                 w[len]=c; w[len+1]='\0';
-                token->value.varString = w;
+                freeW(&w); token->value.varString=NULL;
                 return token->id;
             case '(' :
                 token->id = ZAV_JEDN_L;
                 w[len]=c; w[len+1]='\0';
-                token->value.varString = w;
+                freeW(&w); token->value.varString=NULL;
                 return token->id;
             case ')' :
                 token->id = ZAV_JEDN_P;
                 w[len]=c; w[len+1]='\0';
-                token->value.varString = w;
+                freeW(&w); token->value.varString=NULL;
                 return token->id;
             case '+' :
                 token->id = PLUS;
                 w[len]=c; w[len+1]='\0';
-                token->value.varString = w;
+                freeW(&w); token->value.varString=NULL;
                 return token->id;
             case '-' :
                 token->id = MINUS;
                 w[len]=c; w[len+1]='\0';
-                token->value.varString = w;
+                freeW(&w); token->value.varString=NULL;
                 return token->id;
             case '/' :
                 token->id = DELENO;
                 w[len]=c; w[len+1]='\0';
-                token->value.varString = w;
+                freeW(&w); token->value.varString=NULL;
                 return token->id;
             case '.' :
                 token->id = TECKA;
                 w[len]=c; w[len+1]='\0';
-                token->value.varString = w;
+                freeW(&w); token->value.varString=NULL;
                 return token->id;
             case ',' :
                 token->id = CARKA;
                 w[len]=c; w[len+1]='\0';
-                token->value.varString = w;
+                freeW(&w); token->value.varString=NULL;
                 return token->id;
 
             case '*' :
                 token->id = KRAT;
                 w[len]=c; w[len+1]='\0';
-                token->value.varString = w;
+                freeW(&w); token->value.varString=NULL;
                 return token->id;
 
             default:
@@ -230,7 +230,7 @@ int getToken(FILE *fp,Ttoken *token){
             if(c== '=')
             {
                 w[len]=c; w[len+1]='\0';
-                token->value.varString = w;
+                freeW(&w); token->value.varString=NULL;
                 token->id=VETSI_ROVNO;
                 return token->id;
             }
@@ -238,7 +238,7 @@ int getToken(FILE *fp,Ttoken *token){
             {
                 w[len]='\0';
                 ungetc(c,fp);
-                token->value.varString = w;
+                freeW(&w); token->value.varString=NULL;
                 token->id=VETSI;
                 return token->id;
             }
@@ -263,20 +263,20 @@ int getToken(FILE *fp,Ttoken *token){
                 {
                     w[len]=c;
                     len++; w[len]='\0';
-                    token->value.varString = w;
+                    freeW(&w); token->value.varString=NULL;
                     token->id=ROVNO;
                     return token->id;
                 }
                 else
                 {
-                    freeW(&w);
+                    freeW(&w); token->value.varString=NULL;
                     print_error(E_LEX,"LexERROR"); return E_LEX;
                 }
             }
             else
             {
                 w[len]='\0';
-                token->value.varString = w;
+                freeW(&w); token->value.varString=NULL;
                 token->id=PRIRAZENI;
                 return token->id;
             }
@@ -300,19 +300,19 @@ int getToken(FILE *fp,Ttoken *token){
                 {
                     w[len]=c;
                     len++; w[len]='\0';
-                    token->value.varString = w;
+                    freeW(&w); token->value.varString=NULL;
                     token->id=NEROVNO;
                     return token->id;
                 }
                 else
                 {
-                    freeW(&w);
+                    freeW(&w); token->value.varString=NULL;
                     print_error(E_LEX,"LexERROR"); return E_LEX;
                 }
             }
             else
             {
-                freeW(&w);
+                freeW(&w); token->value.varString=NULL;
                 print_error(E_LEX,"LexERROR"); return E_LEX;
             }
         }
@@ -333,7 +333,7 @@ int getToken(FILE *fp,Ttoken *token){
             {
                 w[len]=c;
                 len++; w[len]='\0';
-                token->value.varString = w;
+                freeW(&w); token->value.varString=NULL;
                 token->id=MENSI_ROVNO;
                 return token->id;
             }
@@ -356,27 +356,27 @@ int getToken(FILE *fp,Ttoken *token){
                            c=fgetc(fp);
                            if(isspace(c)!=0){
                                w[len]='\0';
-                               token->value.varString = w;
+                                freeW(&w); token->value.varString=NULL;
                                token->id=START;
                                return token->id;
                             }
                             else{
-                                freeW(&w);
+                                freeW(&w); token->value.varString=NULL;
                                 print_error(E_LEX,"LexERROR"); return E_LEX;
                             }
                        }
                        else{
-                        freeW(&w);
+                        freeW(&w); token->value.varString=NULL;
                         print_error(E_LEX,"LexERROR"); return E_LEX;
                         }
                     }
                     else{
-                       freeW(&w);
+                       freeW(&w); token->value.varString=NULL;
                        print_error(E_LEX,"LexERROR"); return E_LEX;
                     }
                 }
                 else{
-                    freeW(&w);
+                    freeW(&w); token->value.varString=NULL;
                     print_error(E_LEX,"LexERROR"); return E_LEX;
                 }
             }
@@ -385,7 +385,7 @@ int getToken(FILE *fp,Ttoken *token){
                 w[len]='\0';
                 ungetc(c,fp);
                 len--;
-                token->value.varString = w;
+                freeW(&w); token->value.varString=NULL;
                 token->id =MENSI;
                 return token->id;
             }
@@ -420,7 +420,6 @@ int getToken(FILE *fp,Ttoken *token){
                           print_error(E_LEX,"LexERROR"); return E_LEX;
                       }
                     }
-
                     c=fgetc(fp);
                 }
                 //navraceni nasledujiciho znaku ZA identifikatorem (kvuli dowhile)
@@ -430,13 +429,13 @@ int getToken(FILE *fp,Ttoken *token){
                 len--;
                 token->id=VARIABLE;
                 token->value.varString = w;
-               // freeW(&w);
+               // freeW(&w); token->value.varString=NULL;
                 return token->id;
 
             }
             else
             {
-                freeW(&w);
+                freeW(&w); token->value.varString=NULL;
                 print_error(E_LEX,"LexERROR"); return E_LEX;
             }
         }
@@ -470,7 +469,7 @@ int getToken(FILE *fp,Ttoken *token){
            /* if((strcmp(w,"if")==0)||(strcmp(w,"else")==0)||(strcmp(w,"while")==0)||(strcmp(w,"return")==0
                 )||(strcmp(w,"function")==0)||(strcmp(w,"null")==0)||(strcmp(w,"true")==0)||(strcmp(w,"false")==0))
             {
-                freeW(&w);
+                freeW(&w); token->value.varString=NULL;
                 print_error(E_LEX,"LexERROR"); return E_LEX;
             }*/
             int i=0;
@@ -486,46 +485,46 @@ int getToken(FILE *fp,Ttoken *token){
                 {
                     case 0:
                         token->id=BOOLVAL;
-                        token->value.varString=w;
+                        freeW(&w); token->value.varString=NULL;
                         return token->id;
                     case 1:
                         token->id=DOUBLEVAL;
-                        token->value.varString=w;
+                        freeW(&w); token->value.varString=NULL;
                         return token->id;
                     case 2:
                         token->id=INTVAL;
-                        token->value.varString=w;
+                        freeW(&w); token->value.varString=NULL;
                         return token->id;
                     case 3:
                         token->id=STRVAL;
-                        token->value.varString=w;
+                        freeW(&w); token->value.varString=NULL;
                         return token->id;
                     case 4:
                         token->id=GET_STRING;
-                        token->value.varString=w;
+                        freeW(&w); token->value.varString=NULL;
                         return token->id;
                     case 5:
                         token->id=PUT_STRING;
-                        token->value.varString=w;
+                        freeW(&w); token->value.varString=NULL;
                         return token->id;
                     case 6:
                         token->id=STRLEN;
-                        token->value.varString=w;
+                        freeW(&w); token->value.varString=NULL;
                         return token->id;
                     case 7:
                         token->id=GET_SUBSTRING;
-                        token->value.varString=w;
+                        freeW(&w); token->value.varString=NULL;
                         return token->id;
                     case 8:
                         token->id=FIND_STRING;
-                        token->value.varString=w;
+                        freeW(&w); token->value.varString=NULL;
                         return token->id;
                     case 9:
                         token->id=SORT_STRING;
-                        token->value.varString=w;
+                        freeW(&w); token->value.varString=NULL;
                         return token->id;
                     default:
-                        freeW(&w);
+                        freeW(&w); token->value.varString=NULL;
                         print_error(E_LEX,"LexERROR");
                         break;
 
@@ -534,37 +533,37 @@ int getToken(FILE *fp,Ttoken *token){
             else if((strcmp(w,"if")==0))
             {
                 token->id=IF;
-                token->value.varString=w;
+                freeW(&w); token->value.varString=NULL;
                 return token->id;
             }
             else if((strcmp(w,"else")==0))
             {
                 token->id=ELSE;
-                token->value.varString=w;
+                freeW(&w); token->value.varString=NULL;
                 return token->id;
             }
             else if((strcmp(w,"while")==0))
             {
                 token->id=WHILE;
-                token->value.varString=w;
+                freeW(&w); token->value.varString=NULL;
                 return token->id;
             }
             else if((strcmp(w,"return")==0))
             {
                 token->id=RETURN;
-                token->value.varString=w;
+                freeW(&w); token->value.varString=NULL;
                 return token->id;
             }
             else if((strcmp(w,"function")==0))
             {
                 token->id=FUNCTION;
-                token->value.varString=w;
+                freeW(&w); token->value.varString=NULL;
                 return token->id;
             }
             else if((strcmp(w,"null")==0))
             {
                 token->id=NIL;
-                token->value.varString=NULL;
+                freeW(&w); token->value.varString=NULL;
                 return token->id;
             }
             else if((strcmp(w,"true")==0))
@@ -583,7 +582,7 @@ int getToken(FILE *fp,Ttoken *token){
             {
                 token->id=IDENTIFIKATOR;
                 token->value.varString = w;
-               // freeW(&w);
+               // freeW(&w); token->value.varString=NULL;
                 return token->id;
             }
 
@@ -651,12 +650,12 @@ int getToken(FILE *fp,Ttoken *token){
                             ungetc(c,fp);
                             token->id=VARDOUBLE;
                             token->value.varDouble = strtod(w,NULL);
-                            freeW(&w);
+                            freeW(&w); token->value.varString=NULL;
                             return token->id;
                         }
                         else
                         {
-                            freeW(&w);
+                            freeW(&w); token->value.varString=NULL;
                             print_error(E_LEX,"LexERROR"); return E_LEX;
                         }
                     }
@@ -666,7 +665,7 @@ int getToken(FILE *fp,Ttoken *token){
                         ungetc(c,fp);
                         token->id=VARDOUBLE;
                         token->value.varDouble = strtod(w,NULL);
-                        freeW(&w);
+                        freeW(&w); token->value.varString=NULL;
                         return token->id;
                     }
                 }
@@ -676,7 +675,7 @@ int getToken(FILE *fp,Ttoken *token){
                     w[len]='\0';
                     token->id=VARINT;
                     token->value.varInt=atoi(w);
-                    freeW(&w);
+                    freeW(&w); token->value.varString=NULL;
                     return token->id;
                 }
             }
@@ -695,7 +694,7 @@ int getToken(FILE *fp,Ttoken *token){
                 ungetc(c,fp);
                 token->id=VARDOUBLE;
                 token->value.varDouble = strtod(w,NULL);
-                freeW(&w);
+                freeW(&w); token->value.varString=NULL;
                 return token->id;
 
             }
@@ -705,17 +704,13 @@ int getToken(FILE *fp,Ttoken *token){
                 w[len]='\0';
                 token->id=VARINT;
                 token->value.varInt=atoi(w);
-                freeW(&w);
+                freeW(&w); token->value.varString=NULL;
                 return token->id;
             }
-
         }
-
-
         //////////////////
         //END NUMBERS   //
         //////////////////
-
         /**
         *VARSTRING
         **/
@@ -845,7 +840,7 @@ int getToken(FILE *fp,Ttoken *token){
         //////////////////
 }
     //k tomuhle by nemelo vubec dojit, jen kvuli warningu
-    freeW(&w);
+    freeW(&w); token->value.varString=NULL;
     print_error(E_LEX,"LexERROR");
     return E_LEX;
 }
