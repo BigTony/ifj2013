@@ -15,6 +15,19 @@
 #include "scaner.h"
 #include <stdio.h>
 
+
+char* vestaveneFunkce[10]={
+    "boolval",      //BOOLVAL
+    "doubleval",    //DOUBLEVAL
+    "intval",       //INTVAL
+    "strval",       //STRVAL
+    "get_string",   //GET_STRING
+    "put_string",   //PUT_STRING
+    "strlen",       //STRLEN
+    "get_substring",//GET_SUBSTRING
+    "find_string",  //FIND_STRING
+    "sort_string",  //SORT_STRING
+};
 //test-vypis nacteneho tokenu
 int getToken_test(FILE *fp,Ttoken *token)
 {

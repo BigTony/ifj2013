@@ -186,6 +186,7 @@ void classify(){
 			// zkontroluje jestli je na zasobniku }
 		}
 	}
+	//zkontroluj jesti je zasobnik prazdny
 }
 
 void parser(tPointers *ptrs){
