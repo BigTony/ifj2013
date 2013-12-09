@@ -101,22 +101,22 @@ void interpret (tHashTbl *global_htable, TList *L)
          src1   = instr->src1;
          result = instr->result;
 
-         // nactu id src1,src2 & result z HASH tabulky
-         // tHsrcGlob1 = (TblSearch (global_htable, src1));//global
-         // tHsrc1     = (TblSearch(active_htable,src1));
-         if((tHsrc1 = (TblSearch(active_htable,src1))) == NULL){
-            printf("lolfuck\n");
-            tHsrc1 = (TblSearch (global_htable, src1));
-         }
-         printf("lolfuck2\n");
-         // tHsrc1     = (tHsrc1) ? tHsrc1 : tHsrcGlob1;
+          // nactu id src1,src2 & result z HASH tabulky
+          tHsrcGlob1 = (TblSearch (global_htable, src1));//global
+          tHsrc1     = (TblSearch(active_htable,src1));
+          tHsrc1     = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
+
          tHresult   = (TblSearch (active_htable, result));
+<<<<<<< HEAD
+=======
+
+>>>>>>> 58d2f0f4fd5e4ea87d2e55a04471939ccb409eb2
          // nactu typ dat src1
          dataType = (tHsrc1->type);
 
-          if (!dataType)    print_error(E_SEM_OTHER, "dat.typ v itemu neni nastaven");
+          if (!dataType)    print_error(E_SEM_OTHER, "dat.typ v itemu neni nastaven [I_ASS]");
 
-          if (tHsrc1==NULL) print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje ASSERT");
+          if (tHsrc1==NULL) print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje [I_ASS]");
           else 
           {
                 if (dataType==VARINT)
@@ -201,12 +201,12 @@ void interpret (tHashTbl *global_htable, TList *L)
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob1 = (TblSearch (global_htable, src1));//global
          tHsrc1     = (TblSearch (active_htable, src1));
-         tHsrc1     = (tHsrc1) ? tHsrc1 : tHsrcGlob1;
+         tHsrc1     = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
 
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob2 = (TblSearch (global_htable, src2));//global
          tHsrc2     = (TblSearch (active_htable, src2));
-         tHsrc2     = (tHsrc2) ? tHsrc2 : tHsrcGlob2;
+         tHsrc2     = (tHsrc2!=NULL) ? tHsrc2 : tHsrcGlob2;
 
          tHresult = (TblSearch (active_htable, result));
 
@@ -219,7 +219,7 @@ void interpret (tHashTbl *global_htable, TList *L)
           // pokud src1 nebo src2 nebudou mit prirazenou hodnotu -> syntax error
           if (tHsrc1==NULL || tHsrc2==NULL)
            {
-              print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje");
+              print_error(E_SEM_OTHER, "item src1 nebo src2 v lokalni ani globalni TS neexistuje [I_ADD]");
            }
 
               ///----------- cekuju provadim operace
@@ -241,7 +241,7 @@ void interpret (tHashTbl *global_htable, TList *L)
                        tmp.varDouble = ( (double) (tHsrc1->data.varInt) + tHsrc2->data.varDouble);
                }
                else {
-                  print_error(E_SEM_TYPE, "item v lokalni ani globalni TS neexistuje");
+                  print_error(E_SEM_TYPE, "item v lokalni ani globalni TS neexistuje [I_ADD]");
                }
 
             ///-----------pokud result exituje, prepisu data
@@ -285,12 +285,12 @@ void interpret (tHashTbl *global_htable, TList *L)
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob1 = (TblSearch (global_htable, src1));//global
          tHsrc1     = (TblSearch (active_htable, src1));
-         tHsrc1     = (tHsrc1) ? tHsrc1 : tHsrcGlob1;
+         tHsrc1     = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
 
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob2 = (TblSearch (global_htable, src2));//global
          tHsrc2     = (TblSearch (active_htable, src2));
-         tHsrc2     = (tHsrc2) ? tHsrc2 : tHsrcGlob2;
+         tHsrc2     = (tHsrc2!=NULL) ? tHsrc2 : tHsrcGlob2;
 
          tHresult = (TblSearch (active_htable, result));
          // nactu typ dat src1 & src2
@@ -300,7 +300,7 @@ void interpret (tHashTbl *global_htable, TList *L)
           // pokud src1 nebo src2 nebudou mit prirazenou hodnotu -> syntax error
           if (tHsrc1==NULL || tHsrc2==NULL)
            {
-              print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje");
+              print_error(E_SEM_OTHER, "item src1 nebo src2 v lokalni ani globalni TS neexistuje [I_SUB]");
            }
 
               ///----------- cekuju provadim operace
@@ -322,7 +322,7 @@ void interpret (tHashTbl *global_htable, TList *L)
                        tmp.varDouble = ( (double) (tHsrc1->data.varInt) - tHsrc2->data.varDouble);
                }
                else {
-                  print_error(E_SEM_TYPE, "vadny typ operandu");
+                  print_error(E_SEM_TYPE, "vadny typ operandu [I_SUB]");
                }
 
             ///-----------pokud result exituje, prepisu data
@@ -367,12 +367,12 @@ void interpret (tHashTbl *global_htable, TList *L)
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob1 = (TblSearch (global_htable, src1));//global
          tHsrc1     = (TblSearch (active_htable, src1));
-         tHsrc1     = (tHsrc1) ? tHsrc1 : tHsrcGlob1;
+         tHsrc1     = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
 
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob2 = (TblSearch (global_htable, src2));//global
          tHsrc2     = (TblSearch (active_htable, src2));
-         tHsrc2     = (tHsrc2) ? tHsrc2 : tHsrcGlob2;
+         tHsrc2     = (tHsrc2!=NULL) ? tHsrc2 : tHsrcGlob2;
 
          tHresult = (TblSearch (active_htable, result));
 
@@ -383,7 +383,7 @@ void interpret (tHashTbl *global_htable, TList *L)
           // pokud src1 nebo src2 nebudou mit prirazenou hodnotu -> syntax error
           if (tHsrc1==NULL || tHsrc2==NULL)
            {
-              print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje");
+              print_error(E_SEM_OTHER, "item src1 nebo src2 v lokalni ani globalni TS neexistuje [I_MUL]");
            }
 
               ///----------- cekuju provadim operace
@@ -405,7 +405,7 @@ void interpret (tHashTbl *global_htable, TList *L)
                        tmp.varDouble = ( (double) (tHsrc1->data.varInt) * tHsrc2->data.varDouble);
                }
                else {
-                  print_error(E_SEM_TYPE, "vadny typ operandu");
+                  print_error(E_SEM_TYPE, "vadny typ operandu [I_MUL]");
                }
 
             ///-----------pokud result exituje, prepisu data
@@ -449,12 +449,12 @@ void interpret (tHashTbl *global_htable, TList *L)
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob1 = (TblSearch (global_htable, src1));//global
          tHsrc1     = (TblSearch (active_htable, src1));
-         tHsrc1     = (tHsrc1) ? tHsrc1 : tHsrcGlob1;
+         tHsrc1     = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
 
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob2 = (TblSearch (global_htable, src2));//global
          tHsrc2     = (TblSearch (active_htable, src2));
-         tHsrc2     = (tHsrc2) ? tHsrc2 : tHsrcGlob2;
+         tHsrc2     = (tHsrc2!=NULL) ? tHsrc2 : tHsrcGlob2;
 
          tHresult = (TblSearch (active_htable, result));
 
@@ -465,7 +465,7 @@ void interpret (tHashTbl *global_htable, TList *L)
           // pokud src1 nebo src2 nebudou mit prirazenou hodnotu -> syntax error
           if (tHsrc1==NULL || tHsrc2==NULL)
            {
-              print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje");
+              print_error(E_SEM_OTHER, "item src1 nebo src2 v lokalni ani globalni TS neexistuje [I_DIV]");
            }
 
               ///----------- cekuju provadim operace
@@ -487,7 +487,7 @@ void interpret (tHashTbl *global_htable, TList *L)
                        tmp.varDouble = ( (double) (tHsrc1->data.varInt) / tHsrc2->data.varDouble);
                }
                else {
-                  print_error(E_SEM_TYPE, "vadny typ operandu");
+                  print_error(E_SEM_TYPE, "vadny typ operandu [I_DIV]");
                }
 
             ///-----------pokud result exituje, prepisu data
@@ -531,12 +531,12 @@ void interpret (tHashTbl *global_htable, TList *L)
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob1 = (TblSearch (global_htable, src1));//global
          tHsrc1     = (TblSearch (active_htable, src1));
-         tHsrc1     = (tHsrc1) ? tHsrc1 : tHsrcGlob1;
+         tHsrc1     = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
 
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob2 = (TblSearch (global_htable, src2));//global
          tHsrc2     = (TblSearch (active_htable, src2));
-         tHsrc2     = (tHsrc2) ? tHsrc2 : tHsrcGlob2;
+         tHsrc2     = (tHsrc2!=NULL) ? tHsrc2 : tHsrcGlob2;
 
          tHresult = (TblSearch (active_htable, result));
 
@@ -545,7 +545,7 @@ void interpret (tHashTbl *global_htable, TList *L)
          dataType2 = tHsrc2->type;
 
          // overeni jestli data ubec existuji
-         if (tHsrc1==NULL || tHsrc2==NULL)  print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje");
+         if (tHsrc1==NULL || tHsrc2==NULL)  print_error(E_SEM_OTHER, "item src1 nebo src2 v lokalni ani globalni TS neexistuje [I_CON]");
 
          /// cekni typ pro konkatenaci
          if (dataType1==STRING && dataType2==STRING)
@@ -623,12 +623,12 @@ void interpret (tHashTbl *global_htable, TList *L)
 
          tHsrcGlob1 = (TblSearch (global_htable, src1));//global
          tHsrc1     = (TblSearch (active_htable, src1));
-         tHsrc1     = (tHsrc1) ? tHsrc1 : tHsrcGlob1;
+         tHsrc1     = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
 
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob2 = (TblSearch (global_htable, src2));//global
          tHsrc2     = (TblSearch (active_htable, src2));
-         tHsrc2     = (tHsrc2) ? tHsrc2 : tHsrcGlob2;
+         tHsrc2     = (tHsrc2!=NULL) ? tHsrc2 : tHsrcGlob2;
 
          tHresult = (TblSearch (active_htable, result));
 
@@ -692,12 +692,12 @@ void interpret (tHashTbl *global_htable, TList *L)
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob1 = (TblSearch (global_htable, src1));//global
          tHsrc1     = (TblSearch (active_htable, src1));
-         tHsrc1     = (tHsrc1) ? tHsrc1 : tHsrcGlob1;
+         tHsrc1     = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
 
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob2 = (TblSearch (global_htable, src2));//global
          tHsrc2     = (TblSearch (active_htable, src2));
-         tHsrc2     = (tHsrc2) ? tHsrc2 : tHsrcGlob2;
+         tHsrc2     = (tHsrc2!=NULL) ? tHsrc2 : tHsrcGlob2;
 
          tHresult = (TblSearch (active_htable, result));
 
@@ -705,7 +705,7 @@ void interpret (tHashTbl *global_htable, TList *L)
 
          datTyp=0;
 
-         if (tHsrc1==NULL || tHsrc2==NULL) print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje");
+         if (tHsrc1==NULL || tHsrc2==NULL) print_error(E_SEM_OTHER, "item src1 nebo src2 v lokalni ani globalni TS neexistuje [I_GE]");
 
          if (tHsrc1->type==tHsrc2->type)
          {
@@ -758,12 +758,12 @@ void interpret (tHashTbl *global_htable, TList *L)
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob1 = (TblSearch (global_htable, src1));//global
          tHsrc1     = (TblSearch (active_htable, src1));
-         tHsrc1     = (tHsrc1) ? tHsrc1 : tHsrcGlob1;
+         tHsrc1     = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
 
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob2 = (TblSearch (global_htable, src2));//global
          tHsrc2     = (TblSearch (active_htable, src2));
-         tHsrc2     = (tHsrc2) ? tHsrc2 : tHsrcGlob2;
+         tHsrc2     = (tHsrc2!=NULL) ? tHsrc2 : tHsrcGlob2;
 
          tHresult = (TblSearch (active_htable, result));
 
@@ -771,7 +771,7 @@ void interpret (tHashTbl *global_htable, TList *L)
 
          datTyp=0;
 
-         if (tHsrc1==NULL || tHsrc2==NULL) print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje");
+         if (tHsrc1==NULL || tHsrc2==NULL) print_error(E_SEM_OTHER, "item src1 nebo src2 v lokalni ani globalni TS neexistuje [I_L]");
 
          if (tHsrc1->type==tHsrc2->type)
          {
@@ -823,12 +823,12 @@ void interpret (tHashTbl *global_htable, TList *L)
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob1 = (TblSearch (global_htable, src1));//global
          tHsrc1     = (TblSearch (active_htable, src1));
-         tHsrc1     = (tHsrc1) ? tHsrc1 : tHsrcGlob1;
+         tHsrc1     = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
 
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob2 = (TblSearch (global_htable, src2));//global
          tHsrc2     = (TblSearch (active_htable, src2));
-         tHsrc2     = (tHsrc2) ? tHsrc2 : tHsrcGlob2;
+         tHsrc2     = (tHsrc2!=NULL) ? tHsrc2 : tHsrcGlob2;
 
          tHresult = (TblSearch (active_htable, result));
 
@@ -836,7 +836,7 @@ void interpret (tHashTbl *global_htable, TList *L)
 
          datTyp=0;
 
-         if (tHsrc1==NULL || tHsrc2==NULL) print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje");
+         if (tHsrc1==NULL || tHsrc2==NULL) print_error(E_SEM_OTHER, "item src1 nebo src2 v lokalni ani globalni TS neexistuje [I_LE]");
 
          if (tHsrc1->type==tHsrc2->type)
          {
@@ -890,12 +890,12 @@ void interpret (tHashTbl *global_htable, TList *L)
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob1 = (TblSearch (global_htable, src1));//global
          tHsrc1     = (TblSearch (active_htable, src1));
-         tHsrc1     = (tHsrc1) ? tHsrc1 : tHsrcGlob1;
+         tHsrc1     = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
 
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob2 = (TblSearch (global_htable, src2));//global
          tHsrc2     = (TblSearch (active_htable, src2));
-         tHsrc2     = (tHsrc2) ? tHsrc2 : tHsrcGlob2;
+         tHsrc2     = (tHsrc2!=NULL) ? tHsrc2 : tHsrcGlob2;
 
          tHresult = (TblSearch (active_htable, result));
 
@@ -903,7 +903,7 @@ void interpret (tHashTbl *global_htable, TList *L)
 
          datTyp=0;
 
-         if (tHsrc1==NULL || tHsrc2==NULL) print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje");
+         if (tHsrc1==NULL || tHsrc2==NULL) print_error(E_SEM_OTHER, "item src1 nebo src2 v lokalni ani globalni TS neexistuje [I_ET]");
 
          if (tHsrc1->type==tHsrc2->type)
          {
@@ -956,12 +956,12 @@ void interpret (tHashTbl *global_htable, TList *L)
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob1 = (TblSearch (global_htable, src1));//global
          tHsrc1     = (TblSearch (active_htable, src1));
-         tHsrc1     = (tHsrc1) ? tHsrc1 : tHsrcGlob1;
+         tHsrc1     = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
 
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob2 = (TblSearch (global_htable, src2));//global
          tHsrc2     = (TblSearch (active_htable, src2));
-         tHsrc2     = (tHsrc2) ? tHsrc2 : tHsrcGlob2;
+         tHsrc2     = (tHsrc2!=NULL) ? tHsrc2 : tHsrcGlob2;
 
          tHresult = (TblSearch (active_htable, result));
 
@@ -969,7 +969,7 @@ void interpret (tHashTbl *global_htable, TList *L)
 
          datTyp=0;
 
-         if (tHsrc1==NULL || tHsrc2==NULL) print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje");
+         if (tHsrc1==NULL || tHsrc2==NULL) print_error(E_SEM_OTHER, "item src1 nebo src2 v lokalni ani globalni TS neexistuje [I_NET]");
 
          if (tHsrc1->type!=tHsrc2->type)
          {
@@ -1041,7 +1041,7 @@ void interpret (tHashTbl *global_htable, TList *L)
          // nactu id src1  z HASH tabulky
          tHsrc1   = (TblSearch (active_htable, src1));
 
-         if (tHsrc1==NULL) print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje");
+         if (tHsrc1==NULL) print_error(E_SEM_OTHER, "item v lokalni TS neexistuje [I_BOOLVAL]");
          else 
          {
             toVARBOOL(tHsrc1);
@@ -1057,7 +1057,7 @@ void interpret (tHashTbl *global_htable, TList *L)
          // nactu id src1  z HASH tabulky
          tHsrc1   = (TblSearch (active_htable, src1));
 
-         if (tHsrc1==NULL) print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje");
+         if (tHsrc1==NULL) print_error(E_SEM_OTHER, "item v lokalni TS neexistuje [I_DOUBLEVAL]");
          else 
          {
             todouble(tHsrc1);
@@ -1073,7 +1073,7 @@ void interpret (tHashTbl *global_htable, TList *L)
          // nactu id src1  z HASH tabulky
          tHsrc1   = (TblSearch (active_htable, src1));
 
-         if (tHsrc1==NULL) print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje");
+         if (tHsrc1==NULL) print_error(E_SEM_OTHER, "item v lokalni  TS neexistuje [I_INTVAL]");
          else 
          {
             tovarint(tHsrc1);
@@ -1089,7 +1089,7 @@ void interpret (tHashTbl *global_htable, TList *L)
          // nactu id src1  z HASH tabulky
          tHsrc1   = (TblSearch (active_htable, src1));
 
-         if (tHsrc1==NULL) print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje");
+         if (tHsrc1==NULL) print_error(E_SEM_OTHER, "item v lokalni TS neexistuje [I_STRVAL]");
          else 
          {
             tostring(tHsrc1);
@@ -1136,7 +1136,7 @@ void interpret (tHashTbl *global_htable, TList *L)
          tHresult = (TblSearch (global_htable, result));
 
          // pokud by cil skoku nebyl v globalni tabulce ->chyba
-         if (tHresult==NULL) print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje I_JMP");
+         if (tHresult==NULL) print_error(E_SEM_OTHER, "cil skoku v lokalni TS neexistuje [I_JMP]");
          else 
          {
               // aktivuje instrukci v prave aktivnim listu, nejsu si jistej typama
@@ -1151,17 +1151,16 @@ void interpret (tHashTbl *global_htable, TList *L)
          src1   = instr->src1;
          result = instr->result;
 
+          // nactu id src1,src2 & result z HASH tabulky
+          tHsrcGlob1 = (TblSearch (global_htable, src1));//global
+          tHsrc1     = (TblSearch(active_htable,src1));
+          tHsrc1     = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
+
          // nactu id src1,src2 & result z GLOBALNI HASH tabulky
          tHresult = (TblSearch (global_htable, result));
-         if((tHsrc1 = (TblSearch(active_htable,src1))) == NULL){
-            printf("lolfuck\n");
-            tHsrc1 = (TblSearch (global_htable, src1));
-         }
-         printf("NIGGGA BIATCH\n");
+
          TblPrint(active_htable);
          TblPrint(global_htable);
-         printf("whatttt: %s\n",src1 );
-         printf("what: %s\n",result);
 
          // pokud by cil skoku, nebo zdrojova promenna nebyla v globalni tabulce ->chyba
          if (tHresult==NULL || tHsrc1==NULL) print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje I_JZ");
@@ -1207,9 +1206,10 @@ void interpret (tHashTbl *global_htable, TList *L)
          src1   = instr->src1;
          result = instr->result;
 
-         // nactu id src1,src2 & result z GLOBALNI HASH tabulky
-         tHsrc1   = (TblSearch (global_htable, src1));
-         tHresult = (TblSearch (global_htable, result));
+          // nactu id src1,src2 & result z HASH tabulky
+          tHsrcGlob1 = (TblSearch (global_htable, src1));//global
+          tHsrc1     = (TblSearch(active_htable,src1));
+          tHsrc1     = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
 
          // pokud by cil skoku, nebo zdrojova promenna nebyla v globalni tabulce ->chyba
          if (tHresult==NULL || tHsrc1==NULL) print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje I_JNZ");
