@@ -163,7 +163,21 @@ void ExEqual(TStack *stack,TExpType input){
 void ExLess(TStack *stack,TExpType input){
 	TStack *cur_ptr = stack;
 	TSItemPtr prev_ptr = NULL;	
-	tokenValue value = g_ptrs->token->value;
+	tokenValue value;
+	switch(g_ptrs->token->id){
+		case VARINT:
+		case VARBOOL:
+		case VARDOUBLE:
+			value.varString = gen_id(g_ptrs->counter);
+			add_const_hashtbl(g_ptrs->main_symobol_tbl,g_ptrs->token->id,g_ptrs->token->value,(char *)value.varString);
+			break;
+		case VARIABLE:
+		case STRING:
+			value = g_ptrs->token->value;
+			break;
+		default:
+			break;
+	}
 	// kdyz je hned nahore
 	if(STop(cur_ptr) <= END){
 		SPush(stack,L,value);
@@ -207,14 +221,18 @@ void ExGreater(TStack *stack){
 	
 	while(STop(cur_ptr) != ENDSTACK){
 		if(STop(cur_ptr) != L){
-			SPush(&temp,STop(cur_ptr),value);
+			SPush(&temp,STop(cur_ptr),cur_ptr->top->var);
 			cur_ptr->top=cur_ptr->top->ptrNext;
 		}else{
 			cur_ptr->top=cur_ptr->top->ptrNext;
 			switch(STop(&temp)){
 				// E->VALUE
 				case VALUE:{
+					
 					tokenValue value_i = temp.top->var;
+					printf("-==--=-=-=-=-=-=\n");
+					printf("%s\n",value_i);
+					printf("-==--=-=-=-=-=-=\n");
 					SPop(&temp);
 					// zasobnik musi byt prazdny => nic za E->VALUE
 					if(!SEmpty(&temp)){
@@ -222,9 +240,11 @@ void ExGreater(TStack *stack){
 						SPopAll(stack);
 						print_error(E_SYN,"chyba pri E->VALUE neco za value");
 					}
-					printf("-==--=-=-=-=-=-=\n");
-					printf("-==--=-=-=-=-=-=\n");
+
 					SPush(cur_ptr,NONTERM,value_i);
+					printf("toptoptop\n");
+					printf("%s\n",stack->top->var);
+					printf("-==--=-=-=-=-=-=\n");
 					break;
 				}
 				// E->(E)
@@ -260,6 +280,7 @@ void ExGreater(TStack *stack){
 				// E-> E op E
 				case NONTERM:
 					// operand 1
+					
 					if(STop(&temp) != NONTERM){
 						SPopAll(&temp);
 						SPopAll(stack);
@@ -330,11 +351,8 @@ void ExGreater(TStack *stack){
 					printf("-----------create instr\n");
 					printf("%s\n",value1);
 					printf("%s\n",value2);
-					printf("%s\n",op);
+					printf("%i\n",op);
 					value=CreateExInstruction(value1,value2,op);
-					printf("cum sem pico\n");
-					printf("%s\n",value);
-					printf("------\n");
 					SPush(cur_ptr,NONTERM,value);
 					break;
 				default:
@@ -426,6 +444,10 @@ int ExEx(int ifYes,char * result){
 			SPopAll(&stack);
 			print_error(E_SYN,"chyba tabulka vratila neexistujici hodnotu");
 		}
+
+		printf("toptoptop\n");
+		printf("%s\n",stack.top->var);
+		printf("-==--=-=-=-=-=-=\n");
 
 		if(redukce == 0){
 			getToken_test(g_ptrs->source,g_ptrs->token);
