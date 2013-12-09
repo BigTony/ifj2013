@@ -473,7 +473,7 @@ void interpret (tHashTbl *global_htable, TList *L)
                    TypeOF = VARDOUBLE;
                   // todouble(tHsrc1);
                   // todouble(tHsrc2);
-                   tmp.varDouble = (double)((tHsrc1->data.varInt) / (double)(tHsrc2->data.varInt));
+                   tmp.varDouble = (double)((double)(tHsrc1->data.varInt) / (double)(tHsrc2->data.varInt));
                }
               else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
                {
@@ -662,6 +662,11 @@ void interpret (tHashTbl *global_htable, TList *L)
                  if (strcmp(tHsrc1->data.varString,tHsrc2->data.varString)>0)  datTyp = 1;
                  else datTyp = 0;
               }
+              else if (tHsrc1->type==VARBOOL)
+              {
+                 if (tHsrc1->data.varInt > tHsrc2->data.varInt)  datTyp = 1;
+                 else datTyp = 0;
+              }
 
          }
          else
@@ -728,11 +733,15 @@ void interpret (tHashTbl *global_htable, TList *L)
                  if (strcmp(tHsrc1->data.varString,tHsrc2->data.varString)>=0)  datTyp = 1;
                  else datTyp = 0;
               }
-
+              else if (tHsrc1->type==VARBOOL)
+              {
+                 if (tHsrc1->data.varInt >= tHsrc2->data.varInt)  datTyp = 1;
+                 else datTyp = 0;
+              }
          }
          else
          {
-              print_error(E_SEM_TYPE, "item v lokalni ani globalni TS neexistuje");
+              print_error(E_SEM_TYPE, "item v lokalni ani globalni TS neexistuje [I_GE]");
          }
 
             // pokud result exituje, prepisu data
@@ -795,10 +804,16 @@ void interpret (tHashTbl *global_htable, TList *L)
                  else datTyp = 0;
               }
 
+              else if (tHsrc1->type==VARBOOL)
+              {
+                 if (tHsrc1->data.varInt < tHsrc2->data.varInt)  datTyp = 1;
+                 else datTyp = 0;
+              }
+
          }
          else
          {
-              print_error(E_SEM_TYPE, "item v lokalni ani globalni TS neexistuje");
+              print_error(E_SEM_TYPE, "item v lokalni ani globalni TS neexistuje [I_L]");
          }
 
             // pokud result exituje, prepisu data
@@ -859,11 +874,16 @@ void interpret (tHashTbl *global_htable, TList *L)
                  if (strcmp(tHsrc1->data.varString,tHsrc2->data.varString)<=0)  datTyp = 1;
                  else datTyp = 0;
               }
+              else if (tHsrc1->type==VARBOOL)
+              {
+                 if (tHsrc1->data.varInt <= tHsrc2->data.varInt)  datTyp = 1;
+                 else datTyp = 0;
+              }
 
          }
          else
          {
-              print_error(E_SEM_TYPE, "item v lokalni ani globalni TS neexistuje");
+              print_error(E_SEM_TYPE, "item v lokalni ani globalni TS neexistuje [I_LE]");
          }
 
             // pokud result exituje, prepisu data
@@ -926,7 +946,11 @@ void interpret (tHashTbl *global_htable, TList *L)
                  if (strcmp(tHsrc1->data.varString,tHsrc2->data.varString)==0)  datTyp = 1;
                  else datTyp = 0;
               }
-
+              else if (tHsrc1->type==VARBOOL)
+              {
+                 if (tHsrc1->data.varInt == tHsrc2->data.varInt)  datTyp = 1;
+                 else datTyp = 0;
+              }
          }
          else
          {
@@ -990,6 +1014,11 @@ void interpret (tHashTbl *global_htable, TList *L)
               else if (tHsrc1->type==STRING)
               {
                  if (strcmp(tHsrc1->data.varString,tHsrc2->data.varString)!=0)  datTyp = 1;
+                 else datTyp = 0;
+              }
+              else if (tHsrc1->type==VARBOOL)
+              {
+                 if (tHsrc1->data.varInt != tHsrc2->data.varInt)  datTyp = 1;
                  else datTyp = 0;
               }
 
