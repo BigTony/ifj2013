@@ -57,7 +57,7 @@ void interpret (tHashTbl *global_htable, TList *L)
    tableInit(&local_htable_main);
 
    // init & push adresy lokalni TS na stack
-   initStack(g_ptrs->function_stack);
+   initStack(&g_ptrs->function_stack);
    pushStack(g_ptrs->function_stack,local_htable_main,NULL);
 
 //_____________________AKTIVACE TS a INSTRUKCE___________________________________
