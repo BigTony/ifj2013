@@ -116,7 +116,7 @@ void todouble(item *item){
 				}
   				if (isdigit(zpracuj[i]) && (cislo<=INT_MAX)&&(desetiny_cislo==0)){
   					if(carka == 1){
-  						desetiny_cislo=desetiny_cislo+(zpracuj[i]-'0')/10;	
+  						desetiny_cislo=desetiny_cislo+(zpracuj[i]-'0')/10;
   					}else{
   						cislo=cislo*10+(zpracuj[i]-'0');
   					}
@@ -127,7 +127,7 @@ void todouble(item *item){
   					}else{
   						break;
   					}
-  					
+
   				}else{
   					break;
   				}
@@ -159,8 +159,8 @@ void todouble(item *item){
 
 int get_int_len (int value){
   int l=1;
-  while(value>9){ 
-  	l++; value/=10; 
+  while(value>9){
+  	l++; value/=10;
   }
   return l;
 }
@@ -172,7 +172,7 @@ void tostring(item *item){
 			char vysledek[delka+1];
 			sprintf(vysledek, "%d", item->data.varInt);
 			item->data.varString = vysledek;
-			item->type = STRING;         //puvodne: item->type = VARINT;        
+			item->type = STRING;         //puvodne: item->type = VARINT;
 			break;
 		}
 		case VARDOUBLE:{
@@ -189,7 +189,7 @@ void tostring(item *item){
 			}else{
 				item->data.varString = "1";
 			}
-			item->type = STRING;	
+			item->type = STRING;
 			break;
 		case STRING:
 			break;
@@ -221,7 +221,7 @@ void pretypovani(item *item,int to){
 
 
 
-// vestavene funkce 
+// vestavene funkce
 void VARBOOLval(item *item){
 	switch(item->type){
 		case VARINT:
@@ -239,6 +239,21 @@ void VARBOOLval(item *item){
 			print_error(E_SYN,"token nelze prevest");
 			break;
 	}
+}
+
+int get_substring(char *text,char* word)
+{
+    int pozice=getSubstringKmp(text,word);
+    int textLen=strlen(text);
+
+    if(pozice>textLen)
+    {//NENASEL
+        return -1;
+    }
+    else//NASEL
+    {
+        return pozice;
+    }
 }
 
 
