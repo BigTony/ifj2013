@@ -326,6 +326,8 @@ void ExGreater(TStack *stack){
 					tokenValue value2 = temp.top->var;
 					SPop(&temp);
 
+					value=CreateExInstruction(value1,value2,op);
+
 					
 					if(!SEmpty(&temp)){
 						SPopAll(&temp);
@@ -375,11 +377,11 @@ TExpType skipNonTerm(TStack *stack){
 void ExEx(int ifYes,char * result){
 	tokenValue value;
 	if(ifYes == IF){
-		if(getToken(g_ptrs->source,g_ptrs->token) != ZAV_JEDN_L){
+		if(getToken_test(g_ptrs->source,g_ptrs->token) != ZAV_JEDN_L){
 			print_error(E_SYN,"chyby ( v ifu");
 		}
 	}else{
-		getToken(g_ptrs->source,g_ptrs->token);
+		getToken_test(g_ptrs->source,g_ptrs->token);
 	}
 
 	TStack stack;
@@ -430,7 +432,7 @@ void ExEx(int ifYes,char * result){
 		}else{
 			redukce = 0;
 		}
-	}while((getToken(g_ptrs->source,g_ptrs->token)) != STREDNIK);
+	}while((getToken_test(g_ptrs->source,g_ptrs->token)) != STREDNIK);
 
 
 	// po nalezeni ; dokonceni vyrazu 

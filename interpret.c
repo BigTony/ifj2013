@@ -932,18 +932,66 @@ int interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
 
          /*========================I_BOOLVAL=========================*/
          case I_BOOLVAL:
+
+         // nactu id src1  z INSTRUKCE
+         src1   = instr->src1;
+
+         // nactu id src1  z HASH tabulky
+         tHsrc1   = (TblSearch (active_htable, src1));
+
+         if (tHsrc1==NULL) return E_SEM_OTHER;
+         else 
+         {
+            toVARBOOL(tHsrc1);
+         }
          break;
 
          /*========================I_DOUBLEVAL=========================*/
          case I_DOUBLEVAL:
+
+         // nactu id src1  z INSTRUKCE
+         src1   = instr->src1;
+
+         // nactu id src1  z HASH tabulky
+         tHsrc1   = (TblSearch (active_htable, src1));
+
+         if (tHsrc1==NULL) return E_SEM_OTHER;
+         else 
+         {
+            todouble(tHsrc1);
+         }
          break;
 
          /*========================I_INTVAL=========================*/
          case I_INTVAL:
+
+         // nactu id src1  z INSTRUKCE
+         src1   = instr->src1;
+
+         // nactu id src1  z HASH tabulky
+         tHsrc1   = (TblSearch (active_htable, src1));
+
+         if (tHsrc1==NULL) return E_SEM_OTHER;
+         else 
+         {
+            tovarint(tHsrc1);
+         }
          break;
 
          /*========================I_STRVAL=========================*/
          case I_STRVAL:
+
+         // nactu id src1  z INSTRUKCE
+         src1   = instr->src1;
+
+         // nactu id src1  z HASH tabulky
+         tHsrc1   = (TblSearch (active_htable, src1));
+
+         if (tHsrc1==NULL) return E_SEM_OTHER;
+         else 
+         {
+            tostring(tHsrc1);
+         }
          break;
 
          /*========================I_SORT=========================*/

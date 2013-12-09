@@ -30,7 +30,7 @@
 #define STRING 5
 #define VARBOOL 6
 #define NIL 7   //null
-#define JUMP // pro rozliseni skoku
+#define JUMP 8 // pro rozliseni skoku
 // Znaky
 #define ZAV_JEDN_L  10 // (
 #define ZAV_JEDN_P  11 // )
@@ -60,21 +60,27 @@
 #define WHILE		42
 #define RETURN		43
 #define FUNCTION 	44
+
 // Konstanty
-/*#define true        51
-#define false       52*/
+
 //=========================
+//Vestavene funkce
+#define BOOLVAL         50
+#define DOUBLEVAL       51
+#define INTVAL          52
+#define STRVAL          53
+#define GET_STRING      54
+#define PUT_STRING      55
+#define STRLEN          56
+#define GET_SUBSTRING   57
+#define FIND_STRING     58
+#define SORT_STRING     59
 //-------------------
 // starty konce lol
 #define START     60 // <?php
 #define KONEC    61 // eof
 //-------------------
-                //Unikove sekvence
-                /*#define ESC_TAB     45 // \t
-                #define ESC_N_L     46 // \n
-                #define ESC_DOLAR   47 // \$
-                #define ESC_ESC     48 // \\
-                #define ESC_UVOZ    49 // \"   */
+
 
 //Alokace
 #define BUFF        10 //Alok ci realok vstupniho stringu
@@ -96,6 +102,13 @@ typedef struct{
 	tokenValue value;
 }Ttoken;
 
+
+
 // Funkce
 int getToken(FILE *fp,Ttoken *token);
+
+int getToken_test(FILE *fp,Ttoken *token);
+
 #endif
+
+

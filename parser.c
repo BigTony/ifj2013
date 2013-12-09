@@ -18,27 +18,41 @@
  * @param hashTbl: tabulka kam vkladas
  * @param type: typ vlozene hodnoty
  * @param tokenValue: hodnota vlozene hodnoty
- * @param counter: ukazatel na pocitadlo constant string  
+ * @param id: ukazatel na string  
  */     
 void add_const_hashtbl(tHashTbl *hashTbl, int type,tokenValue value, char *id)
 {
 	TblInsert (hashTbl, id, value, type);	
 }
-
+/**Generovani pomocnych idecek
+ * @param counter: string ze ktereho se generuje
+ * @return: Vraci ukazatel na novy string 
+ */ 
 char* gen_id(char *counter)
 {
 	int i=2;
 	do
 	{
-		counter[i++]++;
-	} while ((counter[i]!='\0') &&(counter[i]==CHAR_MAX));	
-	return(counter);	
+		counter[i]++;
+		i++;
+	} while ((counter[i]!='\0') &&(counter[i]==CHAR_MAX));
+	char* new=allocString();
+	strcpy(new,counter);	
+	return(new);	
+}
+
+tokenValue CreateExInstruction(tokenValue value1,tokenValue value2,TIType op)
+{
+tokenValue new_id;
+new_id.varString = gen_id(g_ptrs->counter);
+InsertInstLast (g_ptrs->list_instr,value1.varString,value2.varString,(char*)new_id.varString,op);   
+return (new_id);
 }
 
 // deklarace nebo prirazeni promene
 void defVar(tokenValue value){
 	char * var_name = value.varString;
-	if(getToken(g_ptrs->source,g_ptrs->token) != PRIRAZENI){
+	if(getToken_test(g_ptrs->source,g_ptrs->token) != PRIRAZENI){
 		print_error(E_SYN,"chyba v syntaxi ocekavano = pri prirazeni promene");
 	}else{
 		printf("lezu do vyrazu\n");
@@ -47,10 +61,6 @@ void defVar(tokenValue value){
 	}
 }
 
-void callCreateINstruction(tokenValue value1,tokenValue value2,int op)
-{    
-return;
-}
 
 // podminka if
 void defIf(){
@@ -58,54 +68,62 @@ void defIf(){
 	char* TmpJmp=gen_id(g_ptrs->counter);
 	ExEx(IF,TmpExp); // vyhodnoceni vyrazu	
 	InsertInstLast (g_ptrs->act_list_inst,TmpExp,NULL,TmpJmp,I_JZ);
-	TLItem *tmpItem;
+	TLItem *tmpItem = g_ptrs->list_instr->Last;
 	// vytvoreni 3AC
 	// vytvoreni 3AC podmineneho skoku1
-	if(getToken(g_ptrs->source,g_ptrs->token) != ZAV_SLOZ_L){
+	if(getToken_test(g_ptrs->source,g_ptrs->token) != ZAV_SLOZ_L){
 		print_error(E_SYN,"chyby leva slozena zavorka u if {");
 	}else{
-		// { ulozym na zasobnik
 		classify();
 		InsertInstLast (g_ptrs->act_list_inst,NULL,NULL,NULL,I_LAB);
 		add_const_hashtbl(g_ptrs->main_symobol_tbl, IDENTIFIKATOR, (tokenValue)(void*)g_ptrs->act_list_inst->Last, TmpJmp);
 		//ulozeni nazvu a odkazu navesti do globalni tabulky
-		if(getToken(g_ptrs->source,g_ptrs->token) == ELSE){
-			if(getToken(g_ptrs->source,g_ptrs->token) != ZAV_SLOZ_L){
-				print_error(E_SYN,"chyby leva slozena zavorka u else {");
-			}else{
-				// { ulozym na zasobnik
-				classify();
-				// vytvoreni 3AC podmineneho obsahu skoku1
-			}
+		if(getToken_test(g_ptrs->source,g_ptrs->token) != ELSE){
+		print_error(E_SYN,"chyby else i if");
 		}
-		return;
+		else{
+			if(getToken_test(g_ptrs->source,g_ptrs->token) != ZAV_SLOZ_L){
+				print_error(E_SYN,"chyby leva slozena zavorka u else {");
+			}
+			else{
+				classify();
+			}
+		}		
 	}
+	return;
 }
+
 
 // cyklus while
 void defWhile(){
-	if(getToken(g_ptrs->source,g_ptrs->token) != ZAV_JEDN_L){
+	if(getToken_test(g_ptrs->source,g_ptrs->token) != ZAV_JEDN_L){
 		print_error(E_SYN,"chyba leva zavorka u while");
 	}else{
-		// vyhodnoceni vyrazu
-		// vytvoreni 3AC
-		if(getToken(g_ptrs->source,g_ptrs->token) != ZAV_SLOZ_L){
+		char* TmpExp=gen_id(g_ptrs->counter);
+		char* TmpJmp=gen_id(g_ptrs->counter);
+		char* TmpJmp1=gen_id(g_ptrs->counter);
+		add_const_hashtbl(g_ptrs->main_symobol_tbl, IDENTIFIKATOR, (tokenValue)(void*)g_ptrs->act_list_inst->Last, TmpJmp);
+		ExEx(IF,TmpExp); // vyhodnoceni vyrazu	
+		InsertInstLast (g_ptrs->act_list_inst,TmpExp,NULL,TmpJmp1,I_JZ);
+		
+		if(getToken_test(g_ptrs->source,g_ptrs->token) != ZAV_SLOZ_L){
 			print_error(E_SYN,"chyby slozena leva zavorka u while");
 		}else{
-			// { ulozym na zasobnik
 			classify();
-			// vytvoreni 3AC podmineneho obsahu skoku1
-			return;
+		InsertInstLast (g_ptrs->act_list_inst,TmpExp,NULL,TmpJmp,I_JZ);
+		InsertInstLast (g_ptrs->act_list_inst,NULL,NULL,NULL,I_LAB);
+		add_const_hashtbl(g_ptrs->main_symobol_tbl, IDENTIFIKATOR, (tokenValue)(void*)g_ptrs->act_list_inst->Last, TmpJmp1);			
+		return;
 		}
 	}
 }
 
 // retuuurn
 void defReturn(){
-	if(getToken(g_ptrs->source,g_ptrs->token) != VARIABLE){
+	if(getToken_test(g_ptrs->source,g_ptrs->token) != VARIABLE){
 		print_error(E_SYN,"pri returnu neni zadna returnova hodnota");
 	}else{
-		if(getToken(g_ptrs->source,g_ptrs->token) != STREDNIK){
+		if(getToken_test(g_ptrs->source,g_ptrs->token) != STREDNIK){
 			print_error(E_SYN,"za returnem neni strednik");
 		}else{
 			// vygeneruje 3AC
@@ -116,15 +134,15 @@ void defReturn(){
 
 // deklarace funkce
 void defFunction(tokenValue value){
-	if(getToken(g_ptrs->source,g_ptrs->token) != IDENTIFIKATOR){
+	if(getToken_test(g_ptrs->source,g_ptrs->token) != IDENTIFIKATOR){
 		print_error(E_SYN,"pri deklarace funkce chyby jeji nazev");
 	}else{
-		if(getToken(g_ptrs->source,g_ptrs->token) != ZAV_JEDN_L){
+		if(getToken_test(g_ptrs->source,g_ptrs->token) != ZAV_JEDN_L){
 			print_error(E_SYN,"pri deklaraci funkce chyby ( ");
 		}else{
 			// vyhodnoceni vyrazu
 			// vytvoreni 3AC
-			if(getToken(g_ptrs->source,g_ptrs->token) != ZAV_SLOZ_L){
+			if(getToken_test(g_ptrs->source,g_ptrs->token) != ZAV_SLOZ_L){
 				print_error(E_SYN,"pri deklaraci funkce chyby {");
 			}else{
 				// { ulozym na zasobnik
@@ -139,16 +157,16 @@ void defFunction(tokenValue value){
 // volani funkce
 void callFunction(tokenValue value){
 	// vygenerujeme 3AC pro nazev funkce
-	if(getToken(g_ptrs->source,g_ptrs->token) != ZAV_JEDN_L){
+	if(getToken_test(g_ptrs->source,g_ptrs->token) != ZAV_JEDN_L){
 		print_error(E_SYN,"pri volani funkce chyby (");
 	}else{
-		while(getToken(g_ptrs->source,g_ptrs->token) != ZAV_JEDN_P){
+		while(getToken_test(g_ptrs->source,g_ptrs->token) != ZAV_JEDN_P){
 			if(g_ptrs->token->id != VARIABLE){
 				print_error(E_SYN,"pri volani funkce jsou parametry jine symboly");
 			}else{
 				// generujeme 3AC
 			}
-			if(getToken(g_ptrs->source,g_ptrs->token) != CARKA){
+			if(getToken_test(g_ptrs->source,g_ptrs->token) != CARKA){
 				print_error(E_SYN,"za parametrem neni carka");
 			}
 		}
@@ -156,47 +174,70 @@ void callFunction(tokenValue value){
 }
 
 // vyber spravnej postup pro token
-void classify(){
-	printf("sem v clasify\n");
-	int i = 0;
-	while(getToken_test(g_ptrs->source,g_ptrs->token)){
-		if(i == 10){
-			return;
-		}
-		printf("sem ve whilu clasify\n");
-		if(g_ptrs->token->id == KONEC){
-			return; // kdyz je token konec analyzy
-		}
+void main_classify(){
+	printf("sem v main clasify\n");
+	while (getToken_test(g_ptrs->source,g_ptrs->token)!=KONEC)
+	{
+		printf("sem ve whilu main clasify\n");		
 		// token je bud promena nebo volani fce
 		if(g_ptrs->token->id == VARIABLE){
 			printf("VARIABLE\n");
 			defVar(g_ptrs->token->value);	
-		}else if(g_ptrs->token->id == IDENTIFIKATOR){
-			callFunction(g_ptrs->token->value);
 		}else if(g_ptrs->token->id == FUNCTION){
 			defFunction(g_ptrs->token->value);
 		}else if(g_ptrs->token->id == IF){
 			defIf();
 		}else if(g_ptrs->token->id == WHILE){
 			defWhile();
-			break;
 		}else if(g_ptrs->token->id == RETURN){
 			defReturn();
-		}else if(g_ptrs->token->id == ZAV_SLOZ_P){
-			// zkontroluje jestli je na zasobniku }
-			break;
+		}else{
+		   print_error(E_SYN,"neocekavany token v main_clasify");
 		}
-		i = i+1;
+	}
+}
+
+
+
+// vyber spravnej postup pro token
+void classify(){
+	printf("sem v clasify\n");
+	while (getToken_test(g_ptrs->source,g_ptrs->token)!= ZAV_SLOZ_P)
+	// zkontroluje jestli je token }, kdyz jo tak konci
+	{
+		printf("sem ve whilu clasify\n");		
+		// token je bud promena nebo volani fce
+		if(g_ptrs->token->id == VARIABLE){
+			printf("VARIABLE\n");
+			defVar(g_ptrs->token->value);	
+		}else if(g_ptrs->token->id == IF){
+			defIf();
+		}else if(g_ptrs->token->id == WHILE){
+			defWhile();
+		}else if(g_ptrs->token->id == RETURN){
+			defReturn();
+		}
+			
+		else{
+		   print_error(E_SYN,"neocekavany token v clasify");
+		}
 	}
 }
 
 void parser(tPointers *ptrs){
+	tableInit(g_ptrs->main_symobol_tbl); // init globalni tabulky symbolu
+	printf("init tabulkyOK\n");
+	initStackIE(g_ptrs->IEStack); // init if else stacku
+	printf("init stackuOK\n");
+	InitList((g_ptrs->list_instr=CreateList())); // init listu instrukci
+	printf("init listuOK\n");
 	printf("ziskavam token\n");
-	getToken(g_ptrs->source,g_ptrs->token);
-	printf("mam token\n");
+	
+	getToken_test(g_ptrs->source,g_ptrs->token);
+
 	if (g_ptrs->token->id == START){
 			printf("clasify?\n");
-			classify();
+			main_classify();
 			printf("clasify end?\n");
 		}
 	else{
