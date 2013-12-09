@@ -66,6 +66,7 @@ void defVar(tokenValue value){
 void defIf(){
 	char* TmpExp=gen_id(g_ptrs->counter);
 	char* TmpJmp=gen_id(g_ptrs->counter);
+	char* TmpJmp1=gen_id(g_ptrs->counter);
 	ExEx(IF,TmpExp); // vyhodnoceni vyrazu	
 
 	InsertInstLast (g_ptrs->act_list_inst,TmpExp,NULL,TmpJmp,I_JZ);
@@ -73,11 +74,12 @@ void defIf(){
 	// vytvoreni 3AC
 	// vytvoreni 3AC podmineneho skoku1
 	classify();
+	InsertInstLast (g_ptrs->act_list_inst,NULL,NULL,TmpJmp1,I_JMP);
 	InsertInstLast (g_ptrs->act_list_inst,NULL,NULL,NULL,I_LAB);
 	add_const_hashtbl(g_ptrs->main_symobol_tbl, IDENTIFIKATOR, (tokenValue)(void*)g_ptrs->act_list_inst->Last, TmpJmp);
 	//ulozeni nazvu a odkazu navesti do globalni tabulky
 	if(getToken_test(g_ptrs->source,g_ptrs->token) != ELSE){
-	print_error(E_SYN,"chyby else i if");
+	print_error(E_SYN,"chyby else u if");
 	}
 	else{
 		if(getToken_test(g_ptrs->source,g_ptrs->token) != ZAV_SLOZ_L){
@@ -85,6 +87,7 @@ void defIf(){
 		}
 		else{
 			classify();
+			add_const_hashtbl(g_ptrs->main_symobol_tbl, IDENTIFIKATOR, (tokenValue)(void*)g_ptrs->act_list_inst->Last, TmpJmp1);
 		}
 	}		
 
