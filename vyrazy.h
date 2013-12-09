@@ -10,7 +10,7 @@
 #include "parser.h"
 // hodnoty ktere jsou mozne ulozit na zasobnik
 typedef enum{
-	VALUE, // promena 0F
+	VALUE, // promena 0
 	PLUS_, // + 1
 	MINUS_, // - 2
 	MULTI, // * 3
@@ -22,21 +22,20 @@ typedef enum{
 	GTH, // > 9
 	LTH, // < 10 
 	COM, // , 11
-	// FUNC, // Funkce 12 
-	BRACE_L, // ( 13 
-	BRACE_R, // ) 14		
-	KONK, // konkatenace . 15
-	END, // $ 16
+	BRACE_L, // ( 12
+	BRACE_R, // ) 13		
+	KONK, // konkatenace . 14
+	END, // $ 15
 
 	// nonterminal
-	NONTERM, // pravidlo r 17
-	G, // 18
-	L, // 19
-	E, // 20
-	B, // 21
-	ENDSTACK, // 22
-	ERROR // 23
-} TExpType; // 24
+	NONTERM, // pravidlo r 16
+	G, // 17
+	L, // 18
+	E, // 19
+	B, // 20
+	ENDSTACK, // 21
+	ERROR // 22
+} TExpType;
 
 #define MAX_INDEX 17
 

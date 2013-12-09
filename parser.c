@@ -67,6 +67,7 @@ void defIf(){
 	char* TmpExp=gen_id(g_ptrs->counter);
 	char* TmpJmp=gen_id(g_ptrs->counter);
 	ExEx(IF,TmpExp); // vyhodnoceni vyrazu	
+
 	InsertInstLast (g_ptrs->act_list_inst,TmpExp,NULL,TmpJmp,I_JZ);
 	TLItem *tmpItem = g_ptrs->list_instr->Last;
 	// vytvoreni 3AC

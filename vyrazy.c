@@ -18,7 +18,6 @@ int TabulkaVyrazu [MAX_INDEX][MAX_INDEX] = {
 	/* GTH */		{L,L,L,L,L,G,G,G,G,G,G,G,L,G,L,G},
 	/* LTH */		{L,L,L,L,L,G,G,G,G,G,G,G,L,G,L,G},
 	/* COM */		{L,L,L,L,L,L,L,L,L,L,L,E,L,E,L,B},
-	// /* FUNC */		{B,B,B,B,B,B,B,B,B,B,B,B,B,E,B,B,B},
 	/* BRACE_L */	{L,L,L,L,L,L,L,L,L,L,L,E,L,E,L,B},
 	/* BRACE_R */	{B,G,G,G,G,G,G,G,G,G,G,G,B,G,G,G},
 	/* KONK */		{L,G,G,L,L,G,G,G,G,G,G,G,L,G,G,G},
@@ -372,6 +371,7 @@ TExpType skipNonTerm(TStack *stack){
 }
 
 void ExEx(int ifYes,char * result){
+
 	tokenValue value;
 	if(ifYes == IF){
 		if(getToken_test(g_ptrs->source,g_ptrs->token) != ZAV_JEDN_L){
@@ -395,7 +395,7 @@ void ExEx(int ifYes,char * result){
 	SPush(&stack,END,value);
 	int redukce = 0;
 
-	while(g_ptrs->token->id != STREDNIK){
+	while((g_ptrs->token->id != STREDNIK)&&(g_ptrs->token->id != ZAV_SLOZ_L)){
 		a = TokenToExpresion(g_ptrs->token->id);
 		b = skipNonTerm(&stack);		
 
@@ -405,7 +405,7 @@ void ExEx(int ifYes,char * result){
 		}
 	
 		nonterm = TabulkaVyrazu[b][a];
-			
+
 		if(nonterm == E){
 			printf("[E]\n");
 			ExEqual(&stack,a);
@@ -437,8 +437,9 @@ void ExEx(int ifYes,char * result){
 		printf("lezu do konce vyrazu!\n");
 		a = END;
 		b = skipNonTerm(&stack);
-		if(b == END)
+		if(b == END){
 			break;
+		}
 		if(b > END){
 			SPopAll(&stack);
 			print_error(E_SYN,"chyba na zasobniku neni symbol z tabulky");
@@ -454,6 +455,9 @@ void ExEx(int ifYes,char * result){
 			SPopAll(&stack);
 			print_error(E_SYN,"chyba tabulka vratila neexistujici hodnotu");
 		}
+				printf("-------\n");
+		printstack(&stack);
+		printf("-------\n");
 	}
 
 }
