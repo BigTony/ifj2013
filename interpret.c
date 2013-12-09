@@ -136,9 +136,9 @@ void interpret (tHashTbl *global_htable, TList *L)
                 }
                 else if (dataType==VARDOUBLE)
                 {
+                    
+                    tmp.varDouble = (tHsrc1)->data.varDouble;
                     printf("zmrding\n");
-                    tmp.varDouble = (TblSearch (active_htable, src1))->data.varDouble;
-
                      // POKUD operand do ktereho prirazuju jiz exituje, tak jeho data prepisu
                      if (tHresult!=NULL)
                      {
@@ -153,7 +153,7 @@ void interpret (tHashTbl *global_htable, TList *L)
                 }
                 else if (dataType==STRING)
                 {
-                     tmp.varString = (TblSearch (active_htable, src1))->data.varString;
+                     tmp.varString = (tHsrc1)->data.varString;
 
                      // POKUD operand do ktereho prirazuju jiz exituje, tak jeho data prepisu
                      if (tHresult!=NULL)
@@ -169,7 +169,7 @@ void interpret (tHashTbl *global_htable, TList *L)
                 }
                 else if (dataType==VARBOOL)
                 {
-                     tmp.varInt= (TblSearch (active_htable, src1))->data.varInt;
+                     tmp.varInt= (tHsrc1)->data.varInt;
 
                      // POKUD operand do ktereho prirazuju jiz exituje, tak jeho data prepisu
                      if (tHresult!=NULL)
