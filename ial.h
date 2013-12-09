@@ -51,6 +51,7 @@ void TblInsert (tHashTbl *tab, char* key,tokenValue data, int type);
 tokenValue* TblReadData (tHashTbl *tab, char* key);
 int TblReadType (tHashTbl *tab, char* key);
 void TblDelete (tHashTbl *tab);
+void TblPrint( tHashTbl* tab );
 #endif
  
 

@@ -230,9 +230,6 @@ void ExGreater(TStack *stack){
 				case VALUE:{
 					
 					tokenValue value_i = temp.top->var;
-					// printf("-==--=-=-=-=-=-=\n");
-					// printf("%s\n",value_i);
-					// printf("-==--=-=-=-=-=-=\n");
 					SPop(&temp);
 					// zasobnik musi byt prazdny => nic za E->VALUE
 					if(!SEmpty(&temp)){
@@ -242,9 +239,6 @@ void ExGreater(TStack *stack){
 					}
 
 					SPush(cur_ptr,NONTERM,value_i);
-					// printf("toptoptop\n");
-					// printf("%s\n",stack->top->var);
-					// printf("-==--=-=-=-=-=-=\n");
 					break;
 				}
 				// E->(E)
@@ -280,9 +274,6 @@ void ExGreater(TStack *stack){
 				// E-> E op E
 				case NONTERM:
 					// operand 1
-					printf("------\n");
-					printf("%i\n",temp.top->item);
-					printf("------\n");
 					if(STop(&temp) != NONTERM){
 						SPopAll(&temp);
 						SPopAll(stack);
@@ -435,27 +426,12 @@ int ExEx(int ifYes,char * result){
 	
 		nonterm = TabulkaVyrazu[b][a];
 
-		printf("ZACATEK+++++++++\n");
-		printf("%p\n",stack.top->var);
-		printf("%i\n",stack.top->item);
-		printf("-==--=-=-=-=-=-=\n");
 		if(nonterm == E){
-			printf("[E]\n");
 			ExEqual(&stack,a);
 		}else if(nonterm == L){
-			printf("[L]\n");
 			ExLess(&stack,a);
 		}else if(nonterm == G){
-			printf("[G]\n");
-			printf("pred GE\n");
-			printf("%p\n",stack.top->var);
-			printf("%i\n",stack.top->item);
-			printf("-==--=-=-=-=-=-=\n");
 			ExGreater(&stack);
-			printf("po GE\n");
-			printf("%p\n",stack.top->var);
-			printf("%i\n",stack.top->item);
-			printf("-==--=-=-=-=-=-=\n");
 			redukce = 1;
 		}else if(nonterm == B){
 			SPopAll(&stack);
@@ -496,6 +472,8 @@ int ExEx(int ifYes,char * result){
 			print_error(E_SYN,"chyba tabulka vratila neexistujici hodnotu");
 		}
 	}
+	printf("%s\n",stack.top->var);
+	printf("%s\n",result);
 	InsertInstLast (g_ptrs->act_list_inst,(char *)stack.top->var.varString,NULL,result,I_ASS);
 	return 0;
 

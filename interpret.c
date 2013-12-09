@@ -116,6 +116,8 @@ void interpret (tHashTbl *global_htable, TList *L)
                 if (dataType==VARINT)
                 {
                    // prepisu data operandu result daty operandu src1
+                  TblPrint(global_htable);
+                  TblPrint(active_htable);
                    tmp.varInt = (TblSearch (active_htable, src1))->data.varInt;
 
                      // POKUD operand do ktereho prirazuju jiz exituje, tak jeho data prepisu
@@ -596,7 +598,7 @@ void interpret (tHashTbl *global_htable, TList *L)
 
 
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
-         printf("%s\n",src1);
+
          tHsrcGlob1 = (TblSearch (global_htable, src1));//global
          tHsrc1     = (TblSearch (active_htable, src1));
          tHsrc1     = (tHsrc1) ? tHsrc1 : tHsrcGlob1;
@@ -615,7 +617,7 @@ void interpret (tHashTbl *global_htable, TList *L)
 
          datTyp=0;
 
-         if (tHsrc1!=NULL || tHsrc2!=NULL)  print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje");
+         if (tHsrc1==NULL || tHsrc2==NULL)  print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje");
 
          if (tHsrc1->type==tHsrc2->type)
          {
