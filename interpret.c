@@ -107,10 +107,7 @@ void interpret (tHashTbl *global_htable, TList *L)
           tHsrc1     = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
 
          tHresult   = (TblSearch (active_htable, result));
-<<<<<<< HEAD
-=======
 
->>>>>>> 58d2f0f4fd5e4ea87d2e55a04471939ccb409eb2
          // nactu typ dat src1
          dataType = (tHsrc1->type);
 
@@ -132,13 +129,14 @@ void interpret (tHashTbl *global_htable, TList *L)
                      }
                      else
                      {
-                        printf("zmrding\n");
+                        
                         // v pripade ze operand result jeste neexsituje, vlozim novou polozku
                         TblInsert (active_htable, result, tmp, dataType); 
                      }
                 }
                 else if (dataType==VARDOUBLE)
                 {
+                    printf("zmrding\n");
                     tmp.varDouble = (TblSearch (active_htable, src1))->data.varDouble;
 
                      // POKUD operand do ktereho prirazuju jiz exituje, tak jeho data prepisu
