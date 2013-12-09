@@ -27,8 +27,7 @@ void interpret (tHashTbl *global_htable, TList *L)
 
 //------------------- INIT -------------------------------------------------------------
 
-
-// => PROMENNE_____________________________________________________________________
+//____________________PROMENNE____________________________________________
 
    // data aktualni instrukce [operandy]
    TInstr  *instr;
@@ -43,21 +42,14 @@ void interpret (tHashTbl *global_htable, TList *L)
 
    // POMOCNE PROMENNE
    int dataType,dataType1,dataType2;
-   //char *src1Data,*src2Data,*resultData;
    int TypeOF=0;
    int jump=0;
+   int datTyp=0;
 
-    // tmp
-    tokenValue tmp;
+   // tmp
+   tokenValue tmp;
 
-    // pro porovnani
-    int datTyp=0;
-
-
-   // navratova dresa instrukcniho seznamu MAINU
-   TLItem *nil = NULL;
-
-// => LOKALNI TS_______________________________________________________________________
+//___________________LOKALNI TS_____________________________________________
 
    // Lokalni TS
    tHashTbl *local_htable_main;
@@ -66,10 +58,10 @@ void interpret (tHashTbl *global_htable, TList *L)
    tableInit(&local_htable_main);
 
    // init & push adresy lokalni TS na stack
-   initStack(&g_ptrs->function_stack);
+   initStack(g_ptrs->function_stack);
    pushStack(g_ptrs->function_stack,local_htable_main,NULL);
 
-// => AKTIVACE TS a INSTRUKCE__________________________________________________________
+//_____________________AKTIVACE TS a INSTRUKCE___________________________________
 
    // ukazuje na aktivni LOKALNI TS, coz bude po inicializace ta jiz naalokovana
    tHashTbl *active_htable = local_htable_main;
