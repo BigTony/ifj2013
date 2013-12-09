@@ -306,7 +306,7 @@ void interpret (tHashTbl *global_htable, TList *L)
                {
                    // vysledek bude int
                    TypeOF = VARINT;
-                   tmp.varInt = (tHsrc1->data.varInt - tHsrc1->data.varInt);
+                   tmp.varInt = (tHsrc1->data.varInt - tHsrc2->data.varInt);
                }
               else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
                {
@@ -389,7 +389,7 @@ void interpret (tHashTbl *global_htable, TList *L)
                {
                    // vysledek bude int
                    TypeOF = VARINT;
-                   tmp.varInt = (tHsrc1->data.varInt * tHsrc1->data.varInt);
+                   tmp.varInt = (tHsrc1->data.varInt * tHsrc2->data.varInt);
                }
               else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
                {
@@ -471,7 +471,7 @@ void interpret (tHashTbl *global_htable, TList *L)
                {
                    // vysledek bude int
                    TypeOF = VARINT;
-                   tmp.varInt = (tHsrc1->data.varInt / tHsrc1->data.varInt);
+                   tmp.varInt = (tHsrc1->data.varInt / tHsrc2->data.varInt);
                }
               else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
                {
