@@ -241,19 +241,19 @@ void VARBOOLval(item *item){
 	}
 }
 
-int get_substring(char *text,char* word)
-{
-    int pozice=getSubstringKmp(text,word);
-    int textLen=strlen(text);
+// int get_substring(char *text,char* word)
+// {
+//     int pozice=getSubstringKmp(text,word);
+//     int textLen=strlen(text);
 
-    if(pozice>textLen)
-    {//NENASEL
-        return -1;
-    }
-    else//NASEL
-    {
-        return pozice;
-    }
-}
+//     if(pozice>textLen)
+//     {//NENASEL
+//         return -1;
+//     }
+//     else//NASEL
+//     {
+//         return pozice;
+//     }
+// }
 
 

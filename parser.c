@@ -103,7 +103,7 @@ void defWhile(){
 		InsertInstLast (g_ptrs->act_list_inst,TmpExp,NULL,TmpJmp1,I_JZ);
 		
 		classify();
-		InsertInstLast (g_ptrs->act_list_inst,TmpExp,NULL,TmpJmp,I_JZ);
+		InsertInstLast (g_ptrs->act_list_inst,NULL,NULL,TmpJmp,I_JMP);
 		InsertInstLast (g_ptrs->act_list_inst,NULL,NULL,NULL,I_LAB);
 		add_const_hashtbl(g_ptrs->main_symobol_tbl, IDENTIFIKATOR, (tokenValue)(void*)g_ptrs->act_list_inst->Last, TmpJmp1);			
 		return;
