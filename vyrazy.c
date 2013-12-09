@@ -326,7 +326,6 @@ void ExGreater(TStack *stack){
 					tokenValue value2 = temp.top->var;
 					SPop(&temp);
 
-					callCreateINstruction(value1,value2,op);
 					
 					if(!SEmpty(&temp)){
 						SPopAll(&temp);
@@ -334,6 +333,7 @@ void ExGreater(TStack *stack){
 						print_error(E_SYN,"chyba pri E->E op E , stack neni prazdny )");
 					}
 					// value musi bejt kam se uklada instrukce aww yeaaah
+					callCreateINstruction(value1,value2,op);
 					SPush(cur_ptr,NONTERM,value);
 					break;
 				default:
