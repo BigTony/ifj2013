@@ -27,6 +27,6 @@ void parser(tPointers *ptrs);
 void add_hash_tbl(tHashTbl *hashTbl, int type, tokenValue value);
 //hlavni funkce parseru
 void classify();
-//funkce na vlozeni instrukce do ilist
-void callCreateINstruction(tokenValue value1,tokenValue value2,int op);
+//funkce na vlozeni instrukce do ilist v ExEx
+tokenValue CreateExInstruction(tokenValue value1,tokenValue value2,TIType op);
 #endif

@@ -36,8 +36,9 @@ void print_error(int err_code, char* err_msg){
 	}
 	if (err_msg!=NULL)
 	{	
-		printf ("Aditionaldescription: %s\n",err_msg);
+		printf ("Aditional description:\n---------------------------------------\n%s\n",err_msg);
 	}
+	destr_global();
 	exit(err_code);
 }
 

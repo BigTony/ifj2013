@@ -108,7 +108,7 @@ void InsertLast (TList *L,TInstr *Instr)
 		print_error(E_INTERN,"Chyba alokace List Item Instruction");
   }
 }
-// vlozi Instrukci na konec seznamu
+// vlozi Instrukci na konec seznamu se zadanymi operandy
 void InsertInstLast (TList *L,char *src1,char* src2,char* dest,TIType type) 
 {
   TInstr *New;

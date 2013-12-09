@@ -14,16 +14,16 @@ typedef struct tPointers{
 	struct tHashTblStack *function_stack;	//zasobnik tabulek symbolu pro funkce
 	struct TList *list_instr;	//Ukazatel List main instrukci 
 	struct TList *act_list_inst; //Ukazatel na aktulani instruction list
+	struct tIfElseStack *IEStack; //Ukazatel na If else stack 
 	FILE *source;	//ukazatel na v vstupni soubor
 	char * counter;
-	int kokot;
 }tPointers;
 
 extern tPointers* g_ptrs;
 
 // Funkce pro alokaci, inicializaci a dealokaci globalnich promenych
 void init_global();
-void dealloc_global(tPointers *ptrs);
+void destr_global();
 // Pole pro alokacni funkce
 typedef void (*ptrDealoc) (tPointers *ptrs);
 // Pole pro dealokacni funkce 

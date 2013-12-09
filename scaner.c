@@ -19,7 +19,7 @@
 int getToken_test(FILE *fp,Ttoken *token)
 {
 int i= getToken(fp,token);
-printf("Token ID Load:%d/n",i);
+printf("Token ID Load:%d\n",i);
 return i;
 }
 //////

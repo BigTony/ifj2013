@@ -16,13 +16,16 @@
 // zasobnik pro tabulku symbolu
 //
 void initStack(tHashTblStack *stack){
+	if((stack = (tHashTblStack*)malloc(sizeof(tHashTblStack))) == NULL){
+	print_error(E_INTERN,"chyba pri alokaci stacku tabulky symbolu");
+	}
 	stack->top = NULL;
 }
 
 void pushStack(tHashTblStack *stack,tHashTbl hashTbl,TLItem *NavrInstrukce){
 	tStackItemPtr temp;
 	if((temp = (tStackItemPtr )malloc(sizeof(tStackItemPtr))) == NULL){
-		print_error(E_INTERN,"chyba pri alokaci stacku pro tabulku symbolu");
+		print_error(E_INTERN,"chyba pri alokaci itemu stacku pro tabulku symbolu");
 	}
 	temp->hashTbl = hashTbl;
 	temp->NavrInstrukce = NavrInstrukce;
@@ -67,13 +70,16 @@ void freeStack(tHashTblStack *stack){
 // ZAV_SLOZ_P
 
 void initStackIE(tIfElseStack *stack){
+	if((stack = (tIfElseStack*)malloc(sizeof(tIfElseStack))) == NULL){
+		print_error(E_INTERN,"chyba pri alokaci stacku IE");
+	}
 	stack->top = NULL;
 }
 
 void pushStackIE(tIfElseStack *stack,int symbol){
 	tStackItemIEPtr temp;
 	if((temp = (tStackItemIEPtr)malloc(sizeof(tStackItemIEPtr))) == NULL){
-		print_error(E_INTERN,"chyba pri alokaci stacku pro tabulku symbolu");
+		print_error(E_INTERN,"chyba pri alokaci itemu stacku IE");
 	}
 	temp->zavorka = symbol;
 

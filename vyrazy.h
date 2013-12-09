@@ -7,6 +7,7 @@
 #include "ilist.h"
 #include "errors.h"
 #include "memory.h"
+#include "parser.h"
 // hodnoty ktere jsou mozne ulozit na zasobnik
 typedef enum{
 	VALUE, // promena 0F

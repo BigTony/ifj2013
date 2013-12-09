@@ -30,7 +30,7 @@
 #define STRING 5
 #define VARBOOL 6
 #define NIL 7   //null
-#define JUMP // pro rozliseni skoku
+#define JUMP 8 // pro rozliseni skoku
 // Znaky
 #define ZAV_JEDN_L  10 // (
 #define ZAV_JEDN_P  11 // )
@@ -61,20 +61,13 @@
 #define RETURN		43
 #define FUNCTION 	44
 // Konstanty
-/*#define true        51
-#define false       52*/
 //=========================
 //-------------------
 // starty konce lol
 #define START     60 // <?php
 #define KONEC    61 // eof
 //-------------------
-                //Unikove sekvence
-                /*#define ESC_TAB     45 // \t
-                #define ESC_N_L     46 // \n
-                #define ESC_DOLAR   47 // \$
-                #define ESC_ESC     48 // \\
-                #define ESC_UVOZ    49 // \"   */
+
 
 //Alokace
 #define BUFF        10 //Alok ci realok vstupniho stringu
@@ -98,4 +91,5 @@ typedef struct{
 
 // Funkce
 int getToken(FILE *fp,Ttoken *token);
+int getToken_test(FILE *fp,Ttoken *token);
 #endif

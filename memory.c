@@ -1,6 +1,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include "memory.h"
 
 tPointers* g_ptrs;
@@ -15,7 +16,8 @@ void init_global()
 		print_error(E_INTERN,"Chyba alokace pameti: init_global");
 	}
 	g_ptrs->counter=allocString();
-	//nastavit na $$\0
+	strcpy(g_ptrs->counter,"$$aaaaa\0" );
+	//nastavit na $$aaaaa\0
 	if (NULL == (g_ptrs->token=(Ttoken*)malloc(sizeof(Ttoken))))
 	{
 		print_error(E_INTERN,"Chyba alokace pameti: init_global->token");
@@ -25,26 +27,21 @@ void init_global()
 	g_ptrs->list_instr=NULL;
 	g_ptrs->act_list_inst=NULL;
 	g_ptrs->source=NULL;
-	g_ptrs->kokot=NULL;
-	printf("%d memory.c %d\n",&(g_ptrs->source),&g_ptrs );		
+   g_ptrs->IEStack=NULL;		
 }
 /**Dealokace globalni tabulky pointru
  *@param tPointers: ukazatel na globalni tabuku pointru   
  */   
-// void destr_global(tPointers *ptrs)
-// {
-	
-// 	destr_tToken(ptrs->token);
-// 	destr_tHashTbl(ptrs->main_symobol_tbl);
-// 	destr_tHashTblStack(ptrs->function_stack);
-// 	destr_tListIns(ptrs->list_instr_list);
-// 	if (FILE!=NULL)
-// 	{
-// 		fclose(source);
-// 	}
-// 	if (counter!=NULL)
-// 	{
-// 		free(counter);
-// 	}
-// 	free(ptrs);
-// }
+void destr_global()
+{	
+
+if (g_ptrs->source!=NULL)
+{
+ 	fclose(g_ptrs->source);
+}
+if (	g_ptrs->counter!=NULL)
+{
+ 	free(g_ptrs->counter);
+}
+ 	free(g_ptrs);
+}

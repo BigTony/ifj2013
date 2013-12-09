@@ -326,7 +326,7 @@ void ExGreater(TStack *stack){
 					tokenValue value2 = temp.top->var;
 					SPop(&temp);
 
-					callCreateINstruction(value1,value2,op);
+					value=CreateExInstruction(value1,value2,op);
 					
 					if(!SEmpty(&temp)){
 						SPopAll(&temp);
