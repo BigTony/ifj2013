@@ -474,7 +474,6 @@ void interpret (tHashTbl *global_htable, TList *L)
                   // todouble(tHsrc1);
                   // todouble(tHsrc2);
                    tmp.varDouble = (double)((double)(tHsrc1->data.varInt) / (double)(tHsrc2->data.varInt));
-
                }
               else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
                {
@@ -483,9 +482,9 @@ void interpret (tHashTbl *global_htable, TList *L)
 
                    // pokud prvni double a druhy int, int pretypuju a naopak
                    if (dataType1==VARDOUBLE && dataType2==VARINT)
-                       tmp.varDouble = (tHsrc1->data.varDouble / (double) (tHsrc2->data.varInt));
+                       tmp.varDouble = (double)(tHsrc1->data.varDouble / (double) (tHsrc2->data.varInt));
                    else
-                       tmp.varDouble = ( (double) (tHsrc1->data.varInt) / tHsrc2->data.varDouble);
+                       tmp.varDouble = (double)( (double) (tHsrc1->data.varInt) / tHsrc2->data.varDouble);
                }
                else {
                   print_error(E_SEM_TYPE, "vadny typ operandu [I_DIV]");
