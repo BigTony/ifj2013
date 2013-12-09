@@ -132,7 +132,64 @@ void TblDelete (tHashTbl *tab)
 }
 
 
+/// FOR DEBUG HASH TABLE
+void TblPrint( tHashTbl* tab ) 
+{
 
+	char pole[8][15]= 
+	{
+	    "IDENTIFIKATOR\0",
+	    "VARINT\0",
+	    "VARDOUBLE\0",
+	    "VARIABLE\0",
+	    "STRING\0",
+	    "VARBOOL\0",
+	    "NIL\0"
+	};	
+
+	printf ("------------HASH TABLE--------------\n");
+	printf ("----(id, data, typ)---------------\n");
+
+        int i=0;
+	while (i<ALLOC) 
+        {
+		printf ("%i:",i);
+		item* ptr = (tab->tableItems)[i];
+                if (ptr==NULL);
+                else 
+                {
+		   while ( ptr != NULL ) 
+                   {
+                        switch (ptr->type) 
+                        {
+                           case VARINT:
+			     printf (" (%s,%d,%s)",ptr->key,ptr->data.varInt, pole[ptr->type-1]);
+                           break;
+
+                           case VARDOUBLE:
+			     printf (" (%s,%f,%s)",ptr->key,ptr->data.varDouble, pole[ptr->type-1]);
+                           break;
+
+                           case STRING:
+			     printf (" (%s,%s,%s)",ptr->key,ptr->data.varString, pole[ptr->type-1]);
+                           break;
+
+                           case VARBOOL:
+			     printf (" (%s,%d,%s)",ptr->key,ptr->data.varInt, pole[ptr->type-1]);
+                           break;
+
+                           default:
+                             printf (" (%s,%d,%s)",ptr->key,ptr->data.varInt, pole[ptr->type-1]);
+                           break;
+                        }
+
+			ptr = ptr->nextItem;
+		   }
+                }
+		printf ("\n");
+           i++; 
+	}
+ }
 
 
 
