@@ -71,25 +71,22 @@ void defIf(){
 	TLItem *tmpItem = g_ptrs->list_instr->Last;
 	// vytvoreni 3AC
 	// vytvoreni 3AC podmineneho skoku1
-	if(getToken_test(g_ptrs->source,g_ptrs->token) != ZAV_SLOZ_L){
-		print_error(E_SYN,"chyby leva slozena zavorka u if {");
-	}else{
-		classify();
-		InsertInstLast (g_ptrs->act_list_inst,NULL,NULL,NULL,I_LAB);
-		add_const_hashtbl(g_ptrs->main_symobol_tbl, IDENTIFIKATOR, (tokenValue)(void*)g_ptrs->act_list_inst->Last, TmpJmp);
-		//ulozeni nazvu a odkazu navesti do globalni tabulky
-		if(getToken_test(g_ptrs->source,g_ptrs->token) != ELSE){
-		print_error(E_SYN,"chyby else i if");
+	classify();
+	InsertInstLast (g_ptrs->act_list_inst,NULL,NULL,NULL,I_LAB);
+	add_const_hashtbl(g_ptrs->main_symobol_tbl, IDENTIFIKATOR, (tokenValue)(void*)g_ptrs->act_list_inst->Last, TmpJmp);
+	//ulozeni nazvu a odkazu navesti do globalni tabulky
+	if(getToken_test(g_ptrs->source,g_ptrs->token) != ELSE){
+	print_error(E_SYN,"chyby else i if");
+	}
+	else{
+		if(getToken_test(g_ptrs->source,g_ptrs->token) != ZAV_SLOZ_L){
+			print_error(E_SYN,"chyby leva slozena zavorka u else {");
 		}
 		else{
-			if(getToken_test(g_ptrs->source,g_ptrs->token) != ZAV_SLOZ_L){
-				print_error(E_SYN,"chyby leva slozena zavorka u else {");
-			}
-			else{
-				classify();
-			}
-		}		
-	}
+			classify();
+		}
+	}		
+
 	return;
 }
 
@@ -239,6 +236,7 @@ void parser(tPointers *ptrs){
 			printf("clasify?\n");
 			main_classify();
 			printf("clasify end?\n");
+			interpret (g_ptrs->main_symobol_tbl, g_ptrs->list_instr);
 		}
 	else{
 		print_error(E_SYN,"nazacatku neni <php");

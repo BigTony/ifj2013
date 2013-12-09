@@ -67,8 +67,7 @@ int interpret (tHashTbl *global_htable, TList *L)
    // naalokovani a inicializaci LOKALNI TS
    tableInit(local_htable_main);
 
-   // init & push adresy lokalni TS na stack
-   initStack(stack);
+   // push adresy lokalni TS na stack
    pushStack(stack,*local_htable_main,nil);
 
 // => AKTIVACE TS a INSTRUKCE___________________

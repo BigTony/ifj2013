@@ -19,7 +19,7 @@ void tableInit(tHashTbl *hash_table){
 		print_error(E_INTERN,"chyba pri alokaci tHashTbl");
 		return;
 	}
-	if((hash_table->tableItems = (item**)malloc(ALLOC*sizeof(item)))==NULL){
+	if((hash_table->tableItems = (item**)malloc(ALLOC*sizeof(item*)))==NULL){
 		print_error(E_INTERN,"chyba pri alokaci tableItems");
 		return;
 	}
@@ -61,10 +61,9 @@ void TblInsert (tHashTbl *tab, char* key,tokenValue data, int type)
 
   int  Hashed = hashCode(key);
 
-  if (TblSearch(tab, key)!=NULL) 
+  if ((AddNew=TblSearch(tab, key))!=NULL) 
   {
 	/// provedu aktualizaci dat,pri shode,kdyztak se udela oprava... 
-	AddNew = TblSearch(tab,key);
 	AddNew->data = data;
 	AddNew->type = type;
   } 
@@ -77,12 +76,12 @@ void TblInsert (tHashTbl *tab, char* key,tokenValue data, int type)
 		AddNew->data = data; /// [**data**]
 		AddNew->type = type;
 		/// navazuju
-	    AddNew->nextItem=tab->tableItems[Hashed];
-            tab->tableItems[Hashed]=AddNew->nextItem;
+	   AddNew->nextItem=tab->tableItems[Hashed];
+      tab->tableItems[Hashed]=AddNew;
 	} 
 	else 
 	{ 		
-		return;// a kurwa, => osetreni
+		print_error(E_INTERN,"Chyba alokace hst item" );
 	}
    }
 }
