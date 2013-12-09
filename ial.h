@@ -44,6 +44,10 @@ typedef struct tHashTbl{
 	int size; // pocet itemu v tabulce
 }tHashTbl;
 
+//Knuth-Morris-Pratt
+//void createTableKmp(char* patt, int pattLen, int** fail);
+int getSubstringKmp(char* text,char* patt);
+//
 int hashCode ( char* key );
 void tableInit(tHashTbl **hash_table);
 item* TblSearch (tHashTbl *tab, char* key);
@@ -53,7 +57,7 @@ int TblReadType (tHashTbl *tab, char* key);
 void TblDelete (tHashTbl *tab);
 void TblPrint( tHashTbl* tab );
 #endif
- 
+
 
 
 
