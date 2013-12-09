@@ -17,9 +17,6 @@
 #include <stdlib.h>
 #include <errno.h>
 
-void tovarint(item *item);
-void tostring(item *item);
-
 
 /*  INTERPRET - vykona intepretaci jazyka IFJ13
  *  @param1: globalni TS
@@ -47,7 +44,7 @@ void interpret (tHashTbl *global_htable, TList *L)
    // POMOCNE PROMENNE
    int dataType,dataType1,dataType2;
    //char *src1Data,*src2Data,*resultData;
-   int TypeOF;
+   int TypeOF=0;
    int jump=0;
 
     // tmp
