@@ -1172,6 +1172,7 @@ void interpret (tHashTbl *global_htable, TList *L)
                 break;
 
                 case VARBOOL:
+                  printf("NIGGGAAAA\n");
                   if (tHsrc1->data.varInt==0)  jump = 1;
                   else  jump = 0;
                 break;
