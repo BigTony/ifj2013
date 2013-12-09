@@ -97,6 +97,7 @@ void defWhile(){
 		char* TmpExp=gen_id(g_ptrs->counter);
 		char* TmpJmp=gen_id(g_ptrs->counter);
 		char* TmpJmp1=gen_id(g_ptrs->counter);
+		printf("%s %s %s\n",TmpExp,TmpJmp,TmpJmp1);
 		add_const_hashtbl(g_ptrs->main_symobol_tbl, IDENTIFIKATOR, (tokenValue)(void*)g_ptrs->act_list_inst->Last, TmpJmp);
 		ExEx(IF,TmpExp); // vyhodnoceni vyrazu	
 		InsertInstLast (g_ptrs->act_list_inst,TmpExp,NULL,TmpJmp1,I_JZ);

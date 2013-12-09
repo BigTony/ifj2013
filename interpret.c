@@ -23,6 +23,7 @@
  */
 void interpret (tHashTbl *global_htable, TList *L)
 {
+  TblPrint(global_htable);
 
 //------------------- INIT -------------------------------------------------------------
 
@@ -95,22 +96,28 @@ void interpret (tHashTbl *global_htable, TList *L)
          /*========================I_ASS=================================================== (EKV.: mov) */
          case I_ASS:
 
+
          // nactu id src1 & result
          src1   = instr->src1;
          result = instr->result;
 
          // nactu id src1,src2 & result z HASH tabulky
-         tHsrcGlob1 = (TblSearch (global_htable, src1));//global
-         tHsrc1     = (TblSearch(active_htable,src1));
-         tHsrc1     = (tHsrc1) ? tHsrc1 : tHsrcGlob1;
+         // tHsrcGlob1 = (TblSearch (global_htable, src1));//global
+         // tHsrc1     = (TblSearch(active_htable,src1));
+         if((tHsrc1 = (TblSearch(active_htable,src1))) == NULL){
+            printf("lolfuck\n");
+            tHsrc1 = (TblSearch (global_htable, src1));
+         }
+         printf("lolfuck2\n");
+         // tHsrc1     = (tHsrc1) ? tHsrc1 : tHsrcGlob1;
          tHresult   = (TblSearch (active_htable, result));
-
+         printf("%s\n",result);
          // nactu typ dat src1
          dataType = (tHsrc1->type);
 
           if (!dataType)    print_error(E_SEM_OTHER, "dat.typ v itemu neni nastaven");
 
-          if (tHsrc1==NULL) print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje");
+          if (tHsrc1==NULL) print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje ASSERT");
           else 
           {
                 if (dataType==VARINT)
@@ -126,6 +133,7 @@ void interpret (tHashTbl *global_htable, TList *L)
                      }
                      else
                      {
+                        printf("zmrding\n");
                         // v pripade ze operand result jeste neexsituje, vlozim novou polozku
                         TblInsert (active_htable, result, tmp, dataType); 
                      }
@@ -154,6 +162,22 @@ void interpret (tHashTbl *global_htable, TList *L)
                      if (tHresult!=NULL)
                      {
                         tHresult->data.varString = tmp.varString;
+                        tHresult->type = dataType;
+                     }
+                     else
+                     {
+                        // v pripade ze operand result jeste neexsituje, vlozim novou polozku
+                        TblInsert (active_htable, result, tmp, dataType); 
+                     }
+                }
+                else if (dataType==VARBOOL)
+                {
+                     tmp.varInt= (TblSearch (active_htable, src1))->data.varInt;
+
+                     // POKUD operand do ktereho prirazuju jiz exituje, tak jeho data prepisu
+                     if (tHresult!=NULL)
+                     {
+                        tHresult->data.varInt = tmp.varInt;
                         tHresult->type = dataType;
                      }
                      else
@@ -191,7 +215,7 @@ void interpret (tHashTbl *global_htable, TList *L)
          dataType1 = tHsrc1->type;
          dataType2 = tHsrc2->type;
 
-         if (!dataType1 || !dataType2)  print_error(E_SEM_OTHER, "dat.typ itemu v src1 nebo src2 neni nastaven");
+         if (!dataType1 || !dataType2)  print_error(E_SEM_OTHER, "dat.typ itemu v src1 nebo src2 neni nastaven I_ADD");
 
           // pokud src1 nebo src2 nebudou mit prirazenou hodnotu -> syntax error
           if (tHsrc1==NULL || tHsrc2==NULL)
@@ -596,7 +620,8 @@ void interpret (tHashTbl *global_htable, TList *L)
 
 
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
-         printf("%s\n",src1);
+         
+
          tHsrcGlob1 = (TblSearch (global_htable, src1));//global
          tHsrc1     = (TblSearch (active_htable, src1));
          tHsrc1     = (tHsrc1) ? tHsrc1 : tHsrcGlob1;
@@ -615,7 +640,7 @@ void interpret (tHashTbl *global_htable, TList *L)
 
          datTyp=0;
 
-         if (tHsrc1==NULL || tHsrc2==NULL)  print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje");
+         if (tHsrc1==NULL || tHsrc2==NULL)  print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje I_G");
 
          if (tHsrc1->type==tHsrc2->type)
          {
@@ -1112,7 +1137,7 @@ void interpret (tHashTbl *global_htable, TList *L)
          tHresult = (TblSearch (global_htable, result));
 
          // pokud by cil skoku nebyl v globalni tabulce ->chyba
-         if (tHresult==NULL) print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje");
+         if (tHresult==NULL) print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje I_JMP");
          else 
          {
               // aktivuje instrukci v prave aktivnim listu, nejsu si jistej typama
@@ -1128,11 +1153,19 @@ void interpret (tHashTbl *global_htable, TList *L)
          result = instr->result;
 
          // nactu id src1,src2 & result z GLOBALNI HASH tabulky
-         tHsrc1   = (TblSearch (global_htable, src1));
          tHresult = (TblSearch (global_htable, result));
+         if((tHsrc1 = (TblSearch(active_htable,src1))) == NULL){
+            printf("lolfuck\n");
+            tHsrc1 = (TblSearch (global_htable, src1));
+         }
+         printf("NIGGGA BIATCH\n");
+         TblPrint(active_htable);
+         TblPrint(global_htable);
+         printf("whatttt: %s\n",src1 );
+         printf("what: %s\n",result);
 
          // pokud by cil skoku, nebo zdrojova promenna nebyla v globalni tabulce ->chyba
-         if (tHresult==NULL || tHsrc1==NULL) print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje");
+         if (tHresult==NULL || tHsrc1==NULL) print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje I_JZ");
          else 
          {
              switch (tHsrc1->type) 
@@ -1180,7 +1213,7 @@ void interpret (tHashTbl *global_htable, TList *L)
          tHresult = (TblSearch (global_htable, result));
 
          // pokud by cil skoku, nebo zdrojova promenna nebyla v globalni tabulce ->chyba
-         if (tHresult==NULL || tHsrc1==NULL) print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje");
+         if (tHresult==NULL || tHsrc1==NULL) print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje I_JNZ");
          else 
          {
              switch (tHsrc1->type) 
