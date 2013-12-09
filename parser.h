@@ -29,4 +29,5 @@ void add_hash_tbl(tHashTbl *hashTbl, int type, tokenValue value);
 void classify();
 //funkce na vlozeni instrukce do ilist v ExEx
 tokenValue CreateExInstruction(tokenValue value1,tokenValue value2,TIType op);
+void callFunction();
 #endif

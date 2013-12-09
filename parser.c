@@ -53,13 +53,11 @@ return (new_id);
 void defVar(tokenValue value){
 	char * var_name = value.varString;
 	if(getToken_test(g_ptrs->source,g_ptrs->token) != PRIRAZENI){
-		print_error(E_SYN,"chyba v syntaxi ocekavano = pri prirazeni promene");
+		print_error(E_SYN,"chyba v syntaxi ocekavano = pri prirazeni promene nebo funkce");
 	}else{
-		printf("lezu do vyrazu\n");
 		if(ExEx(0,var_name)){
-			// je tam identifikator
+			callFunction();
 		}
-		printf("jsem zpet z vyrazu\n");
 	}
 }
 
@@ -125,19 +123,18 @@ void defReturn(){
 }
 
 // deklarace funkce
-void defFunction(tokenValue value){
+void defFunction(){
 	if(getToken_test(g_ptrs->source,g_ptrs->token) != IDENTIFIKATOR){
 		print_error(E_SYN,"pri deklarace funkce chyby jeji nazev");
 	}else{
 		if(getToken_test(g_ptrs->source,g_ptrs->token) != ZAV_JEDN_L){
 			print_error(E_SYN,"pri deklaraci funkce chyby ( ");
 		}else{
-			// vyhodnoceni vyrazu
+
 			// vytvoreni 3AC
 			if(getToken_test(g_ptrs->source,g_ptrs->token) != ZAV_SLOZ_L){
 				print_error(E_SYN,"pri deklaraci funkce chyby {");
 			}else{
-				// { ulozym na zasobnik
 				classify();
 				// vytvoreni 3AC podmineneho obsahu skoku1
 				return;
@@ -147,7 +144,7 @@ void defFunction(tokenValue value){
 }
 
 // volani funkce
-void callFunction(tokenValue value){
+void callFunction(){
 	// vygenerujeme 3AC pro nazev funkce
 	if(getToken_test(g_ptrs->source,g_ptrs->token) != ZAV_JEDN_L){
 		print_error(E_SYN,"pri volani funkce chyby (");
