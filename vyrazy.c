@@ -169,6 +169,8 @@ void ExLess(TStack *stack,TExpType input){
 		case VARBOOL:
 		case VARDOUBLE:
 			value.varString = gen_id(g_ptrs->counter);
+			printf("-----------\n");
+			printf("%g\n",g_ptrs->token->value);
 			add_const_hashtbl(g_ptrs->main_symobol_tbl,g_ptrs->token->id,g_ptrs->token->value,(char *)value.varString);
 			break;
 		case VARIABLE:

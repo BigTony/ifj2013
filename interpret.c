@@ -111,7 +111,6 @@ void interpret (tHashTbl *global_htable, TList *L)
          printf("lolfuck2\n");
          // tHsrc1     = (tHsrc1) ? tHsrc1 : tHsrcGlob1;
          tHresult   = (TblSearch (active_htable, result));
-         printf("%s\n",result);
          // nactu typ dat src1
          dataType = (tHsrc1->type);
 
