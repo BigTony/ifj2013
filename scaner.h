@@ -60,8 +60,21 @@
 #define WHILE		42
 #define RETURN		43
 #define FUNCTION 	44
+
 // Konstanty
+
 //=========================
+//Vestavene funkce
+#define BOOLVAL         50
+#define DOUBLEVAL       51
+#define INTVAL          52
+#define STRVAL          53
+#define GET_STRING      54
+#define PUT_STRING      55
+#define STRLEN          56
+#define GET_SUBSTRING   57
+#define FIND_STRING     58
+#define SORT_STRING     59
 //-------------------
 // starty konce lol
 #define START     60 // <?php
@@ -89,7 +102,23 @@ typedef struct{
 	tokenValue value;
 }Ttoken;
 
+char* vestaveneFunkce[10]={
+    "boolval",      //BOOLVAL
+    "doubleval",    //DOUBLEVAL
+    "intval",       //INTVAL
+    "strval",       //STRVAL
+    "get_string",   //GET_STRING
+    "put_string",   //PUT_STRING
+    "strlen",       //STRLEN
+    "get_substring",//GET_SUBSTRING
+    "find_string",  //FIND_STRING
+    "sort_string",  //SORT_STRING
+};
+
 // Funkce
 int getToken(FILE *fp,Ttoken *token);
+
 int getToken_test(FILE *fp,Ttoken *token);
 #endif
+
+

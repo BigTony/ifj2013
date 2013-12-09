@@ -457,7 +457,65 @@ int getToken(FILE *fp,Ttoken *token){
                 freeW(&w);
                 print_error(E_LEX,"LexERROR"); return E_LEX;
             }*/
-            if((strcmp(w,"if")==0))
+            int i=0;
+            while(i<10)
+            {
+                if(strcmp(w,vestaveneFunkce[i])==0){
+                    break;}
+                i++;
+            }
+            if(i<10)//Vestavena funkce
+            {
+                switch(i)
+                {
+                    case 0:
+                        token->id=BOOLVAL;
+                        token->value.varString=w;
+                        return token->id;
+                    case 1:
+                        token->id=DOUBLEVAL;
+                        token->value.varString=w;
+                        return token->id;
+                    case 2:
+                        token->id=INTVAL;
+                        token->value.varString=w;
+                        return token->id;
+                    case 3:
+                        token->id=STRVAL;
+                        token->value.varString=w;
+                        return token->id;
+                    case 4:
+                        token->id=GET_STRING;
+                        token->value.varString=w;
+                        return token->id;
+                    case 5:
+                        token->id=PUT_STRING;
+                        token->value.varString=w;
+                        return token->id;
+                    case 6:
+                        token->id=STRLEN;
+                        token->value.varString=w;
+                        return token->id;
+                    case 7:
+                        token->id=GET_SUBSTRING;
+                        token->value.varString=w;
+                        return token->id;
+                    case 8:
+                        token->id=FIND_STRING;
+                        token->value.varString=w;
+                        return token->id;
+                    case 9:
+                        token->id=SORT_STRING;
+                        token->value.varString=w;
+                        return token->id;
+                    default:
+                        freeW(&w);
+                        print_error(E_LEX,"LexERROR");
+                        break;
+
+                }
+            }
+            else if((strcmp(w,"if")==0))
             {
                 token->id=IF;
                 token->value.varString=w;
