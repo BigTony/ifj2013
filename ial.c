@@ -14,18 +14,25 @@
 #include <stdlib.h>
 #include <string.h>
 
-void tableInit(tHashTbl *hash_table){
-	if((hash_table = (tHashTbl*)malloc(sizeof(tHashTbl)))==NULL){
-		print_error(E_INTERN,"chyba pri alokaci tHashTbl");
-		return;
-	}
-	if((hash_table->tableItems = (item**)malloc(ALLOC*sizeof(item*)))==NULL){
+void tableItemsInit(tHashTbl *hash_table){
+	if(((hash_table->tableItems) = (item**)malloc(ALLOC*sizeof(item*)))==NULL){
 		print_error(E_INTERN,"chyba pri alokaci tableItems");
 		return;
 	}
 	hash_table->size = ALLOC;
-	for(int i = 0;i<ALLOC;((hash_table->tableItems))[i++] = NULL);
+	for(int i = 0;i<ALLOC;(hash_table->tableItems)[i++] = NULL);
+	printf("%p\n",hash_table);
 }
+
+void tableInit(tHashTbl **hash_table){
+	if((*hash_table = (tHashTbl*)malloc(sizeof(tHashTbl)))==NULL){
+		print_error(E_INTERN,"chyba pri alokaci tHashTbl");
+		return;
+	}
+	printf("%p\n",hash_table);
+	tableItemsInit(*hash_table);
+}
+
 
 // nahradit lepsi
 int hashCode ( char* key ) {
@@ -60,6 +67,7 @@ void TblInsert (tHashTbl *tab, char* key,tokenValue data, int type)
   item *AddNew = NULL;
 
   int  Hashed = hashCode(key);
+
 
   if ((AddNew=TblSearch(tab, key))!=NULL) 
   {

@@ -5,8 +5,6 @@
 #include "errors.h"
 
 
-
-
 /** Funkce pro vypis chyb a ukonceni programu
  *	@param err_code: Kod chyby
  *	@param err_msg: Doplnujici chybova hlaska 

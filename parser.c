@@ -223,11 +223,15 @@ void classify(){
 }
 
 void parser(tPointers *ptrs){
-	tableInit(g_ptrs->main_symobol_tbl); // init globalni tabulky symbolu
+	printf("-----\n");
+	tableInit(&(g_ptrs->main_symobol_tbl)); // init globalni tabulky symbolu
+	printf("%p\n",g_ptrs->main_symobol_tbl);
+	printf("-----\n");
 	printf("init tabulkyOK\n");
 	initStackIE(g_ptrs->IEStack); // init if else stacku
 	printf("init stackuOK\n");
 	InitList((g_ptrs->list_instr=CreateList())); // init listu instrukci
+	g_ptrs->act_list_inst = g_ptrs->list_instr;
 	printf("init listuOK\n");
 	printf("ziskavam token\n");
 	
@@ -237,7 +241,7 @@ void parser(tPointers *ptrs){
 			printf("clasify?\n");
 			main_classify();
 			printf("clasify end?\n");
-			interpret (g_ptrs->main_symobol_tbl, g_ptrs->list_instr);
+			// interpret (g_ptrs->main_symobol_tbl, g_ptrs->list_instr);
 		}
 	else{
 		print_error(E_SYN,"nazacatku neni <php");

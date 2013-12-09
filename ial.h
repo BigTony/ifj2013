@@ -45,7 +45,7 @@ typedef struct tHashTbl{
 }tHashTbl;
 
 int hashCode ( char* key );
-void tableInit(tHashTbl *hash_table);
+void tableInit(tHashTbl **hash_table);
 item* TblSearch (tHashTbl *tab, char* key);
 void TblInsert (tHashTbl *tab, char* key,tokenValue data, int type);
 tokenValue* TblReadData (tHashTbl *tab, char* key);
