@@ -25,7 +25,7 @@ void tostring(item *item);
  *  @param2: Instrukcni seznam MAINU
  *  @param3: zasobnik adres TS a ptr na navrat do instrukcniho seznamu
  */
-int interpret (tHashTbl *global_htable, TList *L, tHashTblStack *stack)
+int interpret (tHashTbl *global_htable, TList *L)
 {
 
 //------------------- INIT -------------------------------------------------------------
