@@ -112,13 +112,13 @@ int interpret (tHashTbl *global_htable, TList *L)
          // nactu id src1,src2 & result z HASH tabulky
          tHsrcGlob1 = (TblSearch (global_htable, src1));//global
          tHsrc1     = (TblSearch(active_htable,src1));
-         tHsrc1     = (tHsrc1):tHsrc1?tHsrcGlob1;
+         tHsrc1     = (tHsrc1) : tHsrc1 ? tHsrcGlob1;
          tHresult   = (TblSearch (active_htable, result));
 
          // nactu typ dat src1
          dataType = (tHsrc1->type) : tHsrc1->type ? tHsrcGlob1->type;
 
-          if (!dataType)    print_error(E_SEM_OTHER, "dat.typ v itemu neexistuje");
+          if (!dataType)    print_error(E_SEM_OTHER, "dat.typ v itemu neni nastaven");
 
           if (tHsrc1==NULL) print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje");
           else 
