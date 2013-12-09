@@ -17,7 +17,6 @@
 #include <stdlib.h>
 #include <errno.h>
 
-
 /*  INTERPRET - vykona intepretaci jazyka IFJ13
  *  @param1: globalni TS
  *  @param2: Instrukcni seznam MAINU
@@ -49,7 +48,7 @@ void interpret (tHashTbl *global_htable, TList *L)
    // tmp
    tokenValue tmp;
 
-//___________________LOKALNI TS_____________________________________________
+//____________________LOKALNI TS_____________________________________________
 
    // Lokalni TS
    tHashTbl *local_htable_main;
