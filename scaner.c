@@ -704,7 +704,6 @@ int getToken(FILE *fp,Ttoken *token){
                 w[len]='\0';
                 token->id=VARINT;
                 token->value.varInt=atoi(w);
-                freeW(&w); token->value.varString=NULL;
                 return token->id;
             }
         }
