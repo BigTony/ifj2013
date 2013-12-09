@@ -1,4 +1,4 @@
-#include <stdio.h> 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
@@ -7,7 +7,7 @@
 
 /** Funkce pro vypis chyb a ukonceni programu
  *	@param err_code: Kod chyby
- *	@param err_msg: Doplnujici chybova hlaska 
+ *	@param err_msg: Doplnujici chybova hlaska
  */
 void print_error(int err_code, char* err_msg){
 	switch(err_code) {
@@ -39,7 +39,7 @@ void print_error(int err_code, char* err_msg){
 			break;
 	}
 	if (err_msg!=NULL)
-	{	
+	{
 		printf ("\nAditional description:\n---------------------------------------\n||     %s      ||\n---------------------------------------\n",err_msg);
 	}
 	destr_global();

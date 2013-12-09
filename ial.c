@@ -42,24 +42,24 @@ int hashCode ( char* key ) {
 }
 
 /// HLEDANI
-item* TblSearch (tHashTbl *tab, char* key) 
+item* TblSearch (tHashTbl *tab, char* key)
 {
   item *Titem;
   int  Hashed = hashCode(key);
 
-  for (Titem=tab->tableItems[Hashed]; Titem!=NULL; Titem=Titem->nextItem) 
+  for (Titem=tab->tableItems[Hashed]; Titem!=NULL; Titem=Titem->nextItem)
   {
-	if (strcmp(Titem->key,key)==0) 
+	if (strcmp(Titem->key,key)==0)
 	{
 		return Titem;
-	} 
+	}
   }
  return NULL;
 }
 
 
 /// VLOZENI NOVE POLOZKY
-void TblInsert (tHashTbl *tab, char* key,tokenValue data, int type) 
+void TblInsert (tHashTbl *tab, char* key,tokenValue data, int type)
 {
 
   item *AddNew = NULL;
@@ -67,15 +67,15 @@ void TblInsert (tHashTbl *tab, char* key,tokenValue data, int type)
   int  Hashed = hashCode(key);
 
 
-  if ((AddNew=TblSearch(tab, key))!=NULL) 
+  if ((AddNew=TblSearch(tab, key))!=NULL)
   {
-	/// provedu aktualizaci dat,pri shode,kdyztak se udela oprava... 
+	/// provedu aktualizaci dat,pri shode,kdyztak se udela oprava...
 	AddNew->data = data;
 	AddNew->type = type;
-  } 
-  else 
+  }
+  else
   {
-	if((AddNew = (item*) malloc (sizeof(item)))!=NULL) 
+	if((AddNew = (item*) malloc (sizeof(item)))!=NULL)
 	{
 		// new
 		AddNew->key = key;
@@ -84,44 +84,44 @@ void TblInsert (tHashTbl *tab, char* key,tokenValue data, int type)
 		/// navazuju
 	   AddNew->nextItem=tab->tableItems[Hashed];
       tab->tableItems[Hashed]=AddNew;
-	} 
-	else 
-	{ 		
+	}
+	else
+	{
 		print_error(E_INTERN,"Chyba alokace hst item" );
 	}
    }
 }
 
 /// PRECTE HODNOTU PROMENNE
-tokenValue* TblReadData (tHashTbl *tab, char* key) 
+tokenValue* TblReadData (tHashTbl *tab, char* key)
 {
   item *read;
   if ((read=TblSearch(tab,key)) != NULL)
   {
-	return &(read->data);	
+	return &(read->data);
   }
 return NULL;
 }
 
 /// PRECTE TYP PROMENNE
-int TblReadType (tHashTbl *tab, char* key) 
+int TblReadType (tHashTbl *tab, char* key)
 {
   item *read;
   if ((read=TblSearch(tab,key)) != NULL)
   {
-	return (read->type);	
+	return (read->type);
   }
 return 0;
 }
 
 
 /// SMAZU VSECHNO
-void TblDelete (tHashTbl *tab) 
+void TblDelete (tHashTbl *tab)
 {
   item* Temp=NULL;
-  for (int key=0;key<ALLOC;key++) 
+  for (int key=0;key<ALLOC;key++)
   {
-	while (tab->tableItems[key]!=NULL) 
+	while (tab->tableItems[key]!=NULL)
 	{
 	    Temp=tab->tableItems[key]->nextItem; /// ulozim nasledujici polozku
 	    free (tab->tableItems[key]);
@@ -133,10 +133,10 @@ void TblDelete (tHashTbl *tab)
 
 
 /// FOR DEBUG HASH TABLE
-void TblPrint( tHashTbl* tab ) 
+void TblPrint( tHashTbl* tab )
 {
 
-	char pole[8][15]= 
+	char pole[8][15]=
 	{
 	    "IDENTIFIKATOR\0",
 	    "VARINT\0",
@@ -145,22 +145,22 @@ void TblPrint( tHashTbl* tab )
 	    "STRING\0",
 	    "VARBOOL\0",
 	    "NIL\0"
-	};	
+	};
 
 	printf ("------------HASH TABLE--------------\n");
 	printf ("----(id, data, typ)---------------\n");
 
         int i=0;
-	while (i<ALLOC) 
+	while (i<ALLOC)
         {
 		printf ("%i:",i);
 		item* ptr = (tab->tableItems)[i];
                 if (ptr==NULL);
-                else 
+                else
                 {
-		   while ( ptr != NULL ) 
+		   while ( ptr != NULL )
                    {
-                        switch (ptr->type) 
+                        switch (ptr->type)
                         {
                            case VARINT:
 			     printf (" (%s,%d,%s)",ptr->key,ptr->data.varInt, pole[ptr->type-1]);
@@ -187,9 +187,75 @@ void TblPrint( tHashTbl* tab )
 		   }
                 }
 		printf ("\n");
-           i++; 
+           i++;
 	}
  }
+///-/////////////////////-//
+///-/Knuth-Morris-Pratt -//
+///-////////////////////-//
+ void createTableKmp(char* patt, int pattLen, int** fail)
+{
+    int i=2;
+    int j=0;
+    (*fail)[0]=-1;
+    (*fail)[1]=0;
+    for(;i<pattLen;i++)
+    {
+        j=(*fail)[i-1];
+        while((j>0)&&(patt[j]!=patt[i-1]))
+        {
+            j=(*fail)[j];
+        }
+        (*fail)[i]=j+1;
+    }
+}
+
+int getSubstringKmp(char* text,char* patt)
+{
+    int pattLen=strlen(patt);
+    int* fail;
+    if((fail=malloc(sizeof(int)*pattLen))==NULL){
+        print_error(E_INTERN,"\nNealokovala se tabulka int* fail pro KMP algoritmus\n");
+    }
+
+    createTableKmp(patt,pattLen,&fail);
+
+    int iT=0;int iP=0;
+    while((text[iP+iT]!='\0')&&(patt[iP]!='\0'))
+    {
+        if(text[iP+iT]==patt[iP])
+        {
+            iP++;
+        }
+        else
+        {
+            iT=iT+(iP-(fail)[iP]);
+            if(iP>0)
+                iP=(fail)[iP];
+        }
+    }
+    if(patt[iP]=='\0')
+    {
+            if(fail!=NULL){
+            free(fail);}
+        else{
+            print_error(E_INTERN,"\nNeuvolnila se tabulka int* fail pro KMP algoritmus\n");
+        }
+    return iT;
+    }
+
+    else
+    {
+            if(fail!=NULL){
+            free(fail);}
+        else{
+            print_error(E_INTERN,"\nNeuvolnila se tabulka int* fail pro KMP algoritmus\n");
+        }
+    return iT+1;
+    }
+}
+///--------------------------------------//
+///-------------------------------------//
 
 
 

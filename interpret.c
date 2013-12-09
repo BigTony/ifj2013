@@ -212,7 +212,7 @@ void interpret (tHashTbl *global_htable, TList *L)
          dataType1 = tHsrc1->type;
          dataType2 = tHsrc2->type;
 
-         if (!dataType1 || !dataType2)  print_error(E_SEM_OTHER, "dat.typ itemu v src1 nebo src2 neni nastaven I_ADD");
+         if (!dataType1 || !dataType2)  print_error(E_SEM_OTHER, "dat.typ itemu v src1 nebo src2 neni nastaven  [I_ADD] ");
 
           // pokud src1 nebo src2 nebudou mit prirazenou hodnotu -> syntax error
           if (tHsrc1==NULL || tHsrc2==NULL)
@@ -225,7 +225,7 @@ void interpret (tHashTbl *global_htable, TList *L)
                {
                    // vysledek bude int
                    TypeOF = VARINT;
-                   tmp.varInt = (tHsrc1->data.varInt + tHsrc1->data.varInt);
+                   tmp.varInt = (tHsrc1->data.varInt + tHsrc2->data.varInt);
                }
               else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
                {
@@ -306,7 +306,7 @@ void interpret (tHashTbl *global_htable, TList *L)
                {
                    // vysledek bude int
                    TypeOF = VARINT;
-                   tmp.varInt = (tHsrc1->data.varInt - tHsrc1->data.varInt);
+                   tmp.varInt = (tHsrc1->data.varInt - tHsrc2->data.varInt);
                }
               else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
                {
@@ -389,7 +389,7 @@ void interpret (tHashTbl *global_htable, TList *L)
                {
                    // vysledek bude int
                    TypeOF = VARINT;
-                   tmp.varInt = (tHsrc1->data.varInt * tHsrc1->data.varInt);
+                   tmp.varInt = (tHsrc1->data.varInt * tHsrc2->data.varInt);
                }
               else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
                {
@@ -471,7 +471,7 @@ void interpret (tHashTbl *global_htable, TList *L)
                {
                    // vysledek bude int
                    TypeOF = VARINT;
-                   tmp.varInt = (tHsrc1->data.varInt / tHsrc1->data.varInt);
+                   tmp.varInt = (tHsrc1->data.varInt / tHsrc2->data.varInt);
                }
               else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
                {

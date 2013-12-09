@@ -13,10 +13,10 @@
 #define E_SEM_DIV_ZERO 10 // Deleni nulou
 #define E_SEM_DOUBLEVAL 11 // Chyba pri pretypovani na cislo
 #define E_SEM_TYPE 12 // Chyba typove kompatibility v aritmetickych a relacnich vyrazech
-#define E_SEM_OTHER 13 // Ostatni semanticke chyby 
-#define E_INTERN 99 // Interni chyba interpretu 
+#define E_SEM_OTHER 13 // Ostatni semanticke chyby
+#define E_INTERN 99 // Interni chyba interpretu
 // meine chyby
- 
+
 
 // Funkce pro obsluhu error kodu
 void print_error(int err_code,char* err_msg);
