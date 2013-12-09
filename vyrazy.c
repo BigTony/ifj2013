@@ -325,6 +325,7 @@ void ExGreater(TStack *stack){
 							print_error(E_SYN,"chyba spatny operand E op E");
 							break;
 					}
+
 					SPop(&temp);
 					// operand 2
 					if(STop(&temp) != NONTERM){

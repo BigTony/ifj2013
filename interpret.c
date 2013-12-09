@@ -471,15 +471,11 @@ void interpret (tHashTbl *global_htable, TList *L)
                {
                    // vysledek bude int
                    TypeOF = VARDOUBLE;
-<<<<<<< HEAD
-                   todouble(tHsrc1);
-                   todouble(tHsrc2);
-                   tmp.varDouble = (double)(tHsrc1->data.varDouble / tHsrc2->data.varDouble);
-=======
+
+
                   // todouble(tHsrc1);
                   // todouble(tHsrc2);
                    tmp.varDouble = (double)((double)(tHsrc1->data.varInt) / (double)(tHsrc2->data.varInt));
->>>>>>> b921eb48732c217c4fa50d9eb3c8b6e13b380f0d
                }
               else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
                {
