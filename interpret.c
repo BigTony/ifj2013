@@ -495,7 +495,7 @@ void interpret (tHashTbl *global_htable, TList *L)
                 {
                    if (dataType1==VARINT && dataType2==VARINT)
                    {
-                     tHresult->data.varInt = tmp.varInt; // uloim soucet do te exitusjici
+                     tHresult->data.varDouble = tmp.varDouble; // uloim soucet do te exitusjici
                      tHresult->type=TypeOF;
                     }
                    else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
