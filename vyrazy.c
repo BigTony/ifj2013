@@ -326,16 +326,13 @@ void ExGreater(TStack *stack){
 					tokenValue value2 = temp.top->var;
 					SPop(&temp);
 
-					value=CreateExInstruction(value1,value2,op);
-
-					
 					if(!SEmpty(&temp)){
 						SPopAll(&temp);
 						SPopAll(stack);
 						print_error(E_SYN,"chyba pri E->E op E , stack neni prazdny )");
 					}
 					// value musi bejt kam se uklada instrukce aww yeaaah
-					callCreateINstruction(value1,value2,op);
+					value=CreateExInstruction(value1,value2,op);
 					SPush(cur_ptr,NONTERM,value);
 					break;
 				default:
@@ -381,7 +378,10 @@ void ExEx(int ifYes,char * result){
 			print_error(E_SYN,"chyby ( v ifu");
 		}
 	}else{
-		getToken_test(g_ptrs->source,g_ptrs->token);
+		if(getToken_test(g_ptrs->source,g_ptrs->token) == STREDNIK){
+			print_error(E_SYN,"syntax error $a = ;");
+		}
+
 	}
 
 	TStack stack;
@@ -393,12 +393,9 @@ void ExEx(int ifYes,char * result){
 	SInit(&tempstack);
 	SPush(&stack,ENDSTACK,value);
 	SPush(&stack,END,value);
-	int c = 0;
 	int redukce = 0;
 
-	do{
-		printf("volaaam\n");
-		printf("%i\n",c );
+	while(g_ptrs->token->id != STREDNIK){
 		a = TokenToExpresion(g_ptrs->token->id);
 		b = skipNonTerm(&stack);		
 
@@ -428,11 +425,11 @@ void ExEx(int ifYes,char * result){
 		}
 
 		if(redukce == 0){
-			c = c+1;
+			getToken_test(g_ptrs->source,g_ptrs->token);
 		}else{
 			redukce = 0;
 		}
-	}while((getToken_test(g_ptrs->source,g_ptrs->token)) != STREDNIK);
+	}
 
 
 	// po nalezeni ; dokonceni vyrazu 
