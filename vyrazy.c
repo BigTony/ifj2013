@@ -230,9 +230,9 @@ void ExGreater(TStack *stack){
 				case VALUE:{
 					
 					tokenValue value_i = temp.top->var;
-					printf("-==--=-=-=-=-=-=\n");
-					printf("%s\n",value_i);
-					printf("-==--=-=-=-=-=-=\n");
+					// printf("-==--=-=-=-=-=-=\n");
+					// printf("%s\n",value_i);
+					// printf("-==--=-=-=-=-=-=\n");
 					SPop(&temp);
 					// zasobnik musi byt prazdny => nic za E->VALUE
 					if(!SEmpty(&temp)){
@@ -242,9 +242,9 @@ void ExGreater(TStack *stack){
 					}
 
 					SPush(cur_ptr,NONTERM,value_i);
-					printf("toptoptop\n");
-					printf("%s\n",stack->top->var);
-					printf("-==--=-=-=-=-=-=\n");
+					// printf("toptoptop\n");
+					// printf("%s\n",stack->top->var);
+					// printf("-==--=-=-=-=-=-=\n");
 					break;
 				}
 				// E->(E)
@@ -280,7 +280,9 @@ void ExGreater(TStack *stack){
 				// E-> E op E
 				case NONTERM:
 					// operand 1
-					
+					printf("------\n");
+					printf("%i\n",temp.top->item);
+					printf("------\n");
 					if(STop(&temp) != NONTERM){
 						SPopAll(&temp);
 						SPopAll(stack);
@@ -379,12 +381,12 @@ TExpType skipNonTerm(TStack *stack){
 		b = STop(stack);
 		if(b < NONTERM){
 			while(!SEmpty(&tempstack)){
-				SPush(stack,STop(&tempstack),value);
+				SPush(stack,STop(&tempstack),tempstack.top->var);
 				SPop(&tempstack);
 			}
 			break;
 		}else{
-			SPush(&tempstack,b,value);
+			SPush(&tempstack,b,stack->top->var);
 			SPop(stack);
 		} 
 	}	
@@ -420,9 +422,12 @@ int ExEx(int ifYes,char * result){
 	int redukce = 0;
 
 	while((g_ptrs->token->id != STREDNIK)&&(g_ptrs->token->id != ZAV_SLOZ_L)){
+		
 		a = TokenToExpresion(g_ptrs->token->id);
+		
 		b = skipNonTerm(&stack);		
 
+		
 		if(b > END){
 			SPopAll(&stack);
 			print_error(E_SYN,"chyba na zasobniku neni symbol z tabulky");
@@ -430,12 +435,27 @@ int ExEx(int ifYes,char * result){
 	
 		nonterm = TabulkaVyrazu[b][a];
 
+		printf("ZACATEK+++++++++\n");
+		printf("%p\n",stack.top->var);
+		printf("%i\n",stack.top->item);
+		printf("-==--=-=-=-=-=-=\n");
 		if(nonterm == E){
+			printf("[E]\n");
 			ExEqual(&stack,a);
 		}else if(nonterm == L){
+			printf("[L]\n");
 			ExLess(&stack,a);
 		}else if(nonterm == G){
+			printf("[G]\n");
+			printf("pred GE\n");
+			printf("%p\n",stack.top->var);
+			printf("%i\n",stack.top->item);
+			printf("-==--=-=-=-=-=-=\n");
 			ExGreater(&stack);
+			printf("po GE\n");
+			printf("%p\n",stack.top->var);
+			printf("%i\n",stack.top->item);
+			printf("-==--=-=-=-=-=-=\n");
 			redukce = 1;
 		}else if(nonterm == B){
 			SPopAll(&stack);
@@ -445,9 +465,6 @@ int ExEx(int ifYes,char * result){
 			print_error(E_SYN,"chyba tabulka vratila neexistujici hodnotu");
 		}
 
-		printf("toptoptop\n");
-		printf("%s\n",stack.top->var);
-		printf("-==--=-=-=-=-=-=\n");
 
 		if(redukce == 0){
 			getToken_test(g_ptrs->source,g_ptrs->token);
