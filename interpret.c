@@ -470,8 +470,8 @@ void interpret (tHashTbl *global_htable, TList *L)
               if (dataType1==VARINT && dataType2==VARINT)
                {
                    // vysledek bude int
-                   TypeOF = VARINT;
-                   tmp.varInt = (tHsrc1->data.varInt / tHsrc2->data.varInt);
+                   TypeOF = VARDOUBLE;
+                   tmp.varDouble = ((double)tHsrc1->data.varDouble / (double)tHsrc2->data.varDouble);
                }
               else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
                {
