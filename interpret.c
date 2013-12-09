@@ -40,8 +40,8 @@ int interpret (tHashTbl *global_htable, TList *L)
    char *result;
 
    // data aktualni instrukce z HASH table
-   item *tHsrc1;
-   item *tHsrc2;
+   item *tHsrc1, *tHsrcGlob1;
+   item *tHsrc2, *tHsrcGlob2;
    item *tHresult;
 
    // POMOCNE PROMENNE
@@ -110,13 +110,17 @@ int interpret (tHashTbl *global_htable, TList *L)
          result = instr->result;
 
          // nactu id src1,src2 & result z HASH tabulky
-         tHsrc1   = (TblSearch (active_htable, src1));
-         tHresult = (TblSearch (active_htable, result));
+         tHsrcGlob1 = (TblSearch (global_htable, src1));//global
+         tHsrc1     = (TblSearch(active_htable,src1));
+         tHsrc1     = (tHsrc1) : tHsrc1 ? tHsrcGlob1;
+         tHresult   = (TblSearch (active_htable, result));
 
          // nactu typ dat src1
-         dataType = (tHsrc1)->type;
+         dataType = (tHsrc1->type) : tHsrc1->type ? tHsrcGlob1->type;
 
-          if (tHsrc1==NULL) return E_SEM_OTHER;
+          if (!dataType)    print_error(E_SEM_OTHER, "dat.typ v itemu neni nastaven");
+
+          if (tHsrc1==NULL) print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje");
           else 
           {
                 if (dataType==VARINT)
