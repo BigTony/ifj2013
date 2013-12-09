@@ -214,7 +214,6 @@ void ExGreater(TStack *stack){
 			switch(STop(&temp)){
 				// E->VALUE
 				case VALUE:
-					printf("sem1\n");
 					if(STop(&temp) != VALUE){
 						SPopAll(&temp);
 						SPopAll(stack);
@@ -223,14 +222,12 @@ void ExGreater(TStack *stack){
 					tokenValue value_i = temp.top->var;
 					SPop(&temp);
 					// zasobnik musi byt prazdny => nic za E->VALUE
-					printf("sem2\n");
 					if(!SEmpty(&temp)){
 						SPopAll(&temp);
 						SPopAll(stack);
 						print_error(E_SYN,"chyba pri E->VALUE neco za value");
 					}
 					SPush(cur_ptr,NONTERM,value_i);
-					printf("breakuju?\n");
 					break;
 				// E->(E)
 				case BRACE_L:
@@ -259,6 +256,7 @@ void ExGreater(TStack *stack){
 						SPopAll(stack);
 						print_error(E_SYN,"chyba pri E->(E) zasobnik neni prazdny");
 					}
+
 					SPush(cur_ptr,NONTERM,value);
 					break;
 				// E-> E op E
@@ -410,13 +408,10 @@ int ExEx(int ifYes,char * result){
 		nonterm = TabulkaVyrazu[b][a];
 
 		if(nonterm == E){
-			printf("[E]\n");
 			ExEqual(&stack,a);
 		}else if(nonterm == L){
-			printf("[L]\n");
 			ExLess(&stack,a);
 		}else if(nonterm == G){
-			printf("[G]\n");
 			ExGreater(&stack);
 			redukce = 1;
 		}else if(nonterm == B){
@@ -437,7 +432,6 @@ int ExEx(int ifYes,char * result){
 
 	// po nalezeni ; dokonceni vyrazu 
 	while(1){
-		printf("lezu do konce vyrazu!\n");
 		a = END;
 		b = skipNonTerm(&stack);
 		if(b == END){
@@ -449,7 +443,6 @@ int ExEx(int ifYes,char * result){
 		}
 		nonterm = TabulkaVyrazu[b][a];
 		if(nonterm == G){
-			printf("[G]\n");
 			ExGreater(&stack);
 		}else if(nonterm == B){
 			SPopAll(&stack);
@@ -459,6 +452,7 @@ int ExEx(int ifYes,char * result){
 			print_error(E_SYN,"chyba tabulka vratila neexistujici hodnotu");
 		}
 	}
+	InsertInstLast (g_ptrs->act_list_inst,(char *)stack.top->var.varString,NULL,result,I_ASS);
 	return 0;
 
 }

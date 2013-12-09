@@ -17,8 +17,6 @@
 #include <stdlib.h>
 #include <errno.h>
 
-void tovarint(item *item);
-void tostring(item *item);
 
 /*  INTERPRET - vykona intepretaci jazyka IFJ13
  *  @param1: globalni TS
@@ -46,7 +44,7 @@ void interpret (tHashTbl *global_htable, TList *L)
    // POMOCNE PROMENNE
    int dataType,dataType1,dataType2;
    //char *src1Data,*src2Data,*resultData;
-   int TypeOF;
+   int TypeOF=0;
    int jump=0;
 
     // tmp
@@ -56,7 +54,7 @@ void interpret (tHashTbl *global_htable, TList *L)
     int datTyp=0;
 
     // zasobnik
-    tHashTblStack *stack
+    tHashTblStack *stack;
 
    // navratova dresa instrukcniho seznamu MAINU
    TLItem *nil = NULL;
@@ -67,7 +65,7 @@ void interpret (tHashTbl *global_htable, TList *L)
    tHashTbl *local_htable_main;
 
    // naalokovani a inicializaci LOKALNI TS
-   tableInit(local_htable_main);
+   tableInit(&local_htable_main);
 
    // init & push adresy lokalni TS na stack
    initStack(stack);
@@ -115,7 +113,7 @@ void interpret (tHashTbl *global_htable, TList *L)
          // nactu id src1,src2 & result z HASH tabulky
          tHsrcGlob1 = (TblSearch (global_htable, src1));//global
          tHsrc1     = (TblSearch(active_htable,src1));
-         tHsrc1     = (tHsrc1) : tHsrc1 ? tHsrcGlob1;
+         tHsrc1     = (tHsrc1) ? tHsrc1 : tHsrcGlob1;
          tHresult   = (TblSearch (active_htable, result));
 
          // nactu typ dat src1
@@ -191,12 +189,12 @@ void interpret (tHashTbl *global_htable, TList *L)
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob1 = (TblSearch (global_htable, src1));//global
          tHsrc1     = (TblSearch (active_htable, src1));
-         tHsrc1     = (tHsrc1) : tHsrc1 ? tHsrcGlob1;
+         tHsrc1     = (tHsrc1) ? tHsrc1 : tHsrcGlob1;
 
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob2 = (TblSearch (global_htable, src2));//global
          tHsrc2     = (TblSearch (active_htable, src2));
-         tHsrc2     = (tHsrc2) : tHsrc2 ? tHsrcGlob2;
+         tHsrc2     = (tHsrc2) ? tHsrc2 : tHsrcGlob2;
 
          tHresult = (TblSearch (active_htable, result));
 
@@ -275,12 +273,12 @@ void interpret (tHashTbl *global_htable, TList *L)
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob1 = (TblSearch (global_htable, src1));//global
          tHsrc1     = (TblSearch (active_htable, src1));
-         tHsrc1     = (tHsrc1) : tHsrc1 ? tHsrcGlob1;
+         tHsrc1     = (tHsrc1) ? tHsrc1 : tHsrcGlob1;
 
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob2 = (TblSearch (global_htable, src2));//global
          tHsrc2     = (TblSearch (active_htable, src2));
-         tHsrc2     = (tHsrc2) : tHsrc2 ? tHsrcGlob2;
+         tHsrc2     = (tHsrc2) ? tHsrc2 : tHsrcGlob2;
 
          tHresult = (TblSearch (active_htable, result));
          // nactu typ dat src1 & src2
@@ -312,7 +310,7 @@ void interpret (tHashTbl *global_htable, TList *L)
                        tmp.varDouble = ( (double) (tHsrc1->data.varInt) - tHsrc2->data.varDouble);
                }
                else {
-                  return E_SEM_TYPE; // bude chyba!?
+                  print_error(E_SEM_TYPE, "vadny typ operandu");
                }
 
             ///-----------pokud result exituje, prepisu data
@@ -357,12 +355,12 @@ void interpret (tHashTbl *global_htable, TList *L)
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob1 = (TblSearch (global_htable, src1));//global
          tHsrc1     = (TblSearch (active_htable, src1));
-         tHsrc1     = (tHsrc1) : tHsrc1 ? tHsrcGlob1;
+         tHsrc1     = (tHsrc1) ? tHsrc1 : tHsrcGlob1;
 
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob2 = (TblSearch (global_htable, src2));//global
          tHsrc2     = (TblSearch (active_htable, src2));
-         tHsrc2     = (tHsrc2) : tHsrc2 ? tHsrcGlob2;
+         tHsrc2     = (tHsrc2) ? tHsrc2 : tHsrcGlob2;
 
          tHresult = (TblSearch (active_htable, result));
 
@@ -395,7 +393,7 @@ void interpret (tHashTbl *global_htable, TList *L)
                        tmp.varDouble = ( (double) (tHsrc1->data.varInt) * tHsrc2->data.varDouble);
                }
                else {
-                  return E_SEM_TYPE; // bude chyba!?
+                  print_error(E_SEM_TYPE, "vadny typ operandu");
                }
 
             ///-----------pokud result exituje, prepisu data
@@ -439,12 +437,12 @@ void interpret (tHashTbl *global_htable, TList *L)
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob1 = (TblSearch (global_htable, src1));//global
          tHsrc1     = (TblSearch (active_htable, src1));
-         tHsrc1     = (tHsrc1) : tHsrc1 ? tHsrcGlob1;
+         tHsrc1     = (tHsrc1) ? tHsrc1 : tHsrcGlob1;
 
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob2 = (TblSearch (global_htable, src2));//global
          tHsrc2     = (TblSearch (active_htable, src2));
-         tHsrc2     = (tHsrc2) : tHsrc2 ? tHsrcGlob2;
+         tHsrc2     = (tHsrc2) ? tHsrc2 : tHsrcGlob2;
 
          tHresult = (TblSearch (active_htable, result));
 
@@ -477,7 +475,7 @@ void interpret (tHashTbl *global_htable, TList *L)
                        tmp.varDouble = ( (double) (tHsrc1->data.varInt) / tHsrc2->data.varDouble);
                }
                else {
-                  return E_SEM_TYPE; // bude chyba!?
+                  print_error(E_SEM_TYPE, "vadny typ operandu");
                }
 
             ///-----------pokud result exituje, prepisu data
@@ -521,12 +519,12 @@ void interpret (tHashTbl *global_htable, TList *L)
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob1 = (TblSearch (global_htable, src1));//global
          tHsrc1     = (TblSearch (active_htable, src1));
-         tHsrc1     = (tHsrc1) : tHsrc1 ? tHsrcGlob1;
+         tHsrc1     = (tHsrc1) ? tHsrc1 : tHsrcGlob1;
 
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob2 = (TblSearch (global_htable, src2));//global
          tHsrc2     = (TblSearch (active_htable, src2));
-         tHsrc2     = (tHsrc2) : tHsrc2 ? tHsrcGlob2;
+         tHsrc2     = (tHsrc2) ? tHsrc2 : tHsrcGlob2;
 
          tHresult = (TblSearch (active_htable, result));
 
@@ -559,7 +557,7 @@ void interpret (tHashTbl *global_htable, TList *L)
               tHsrc1->type=STRING;
               tmp.varString = konkatenace(tHsrc1->data.varString, tHsrc2->data.varString);
          }
-         else return E_SEM_OTHER;
+         else    print_error(E_SEM_TYPE, "vadny typ operandu");
 
             // pokud result exituje, prepisu data
             if (tHresult!=NULL)
@@ -611,12 +609,12 @@ void interpret (tHashTbl *global_htable, TList *L)
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob1 = (TblSearch (global_htable, src1));//global
          tHsrc1     = (TblSearch (active_htable, src1));
-         tHsrc1     = (tHsrc1) : tHsrc1 ? tHsrcGlob1;
+         tHsrc1     = (tHsrc1) ? tHsrc1 : tHsrcGlob1;
 
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob2 = (TblSearch (global_htable, src2));//global
          tHsrc2     = (TblSearch (active_htable, src2));
-         tHsrc2     = (tHsrc2) : tHsrc2 ? tHsrcGlob2;
+         tHsrc2     = (tHsrc2) ? tHsrc2 : tHsrcGlob2;
 
          tHresult = (TblSearch (active_htable, result));
 
@@ -654,7 +652,7 @@ void interpret (tHashTbl *global_htable, TList *L)
          }
          else
          {
-             return E_SEM_TYPE; // nejsou stejny typy vole!
+                  print_error(E_SEM_TYPE, "vadny typ operandu");
          }
 
             // pokud result exituje, prepisu data
@@ -680,12 +678,12 @@ void interpret (tHashTbl *global_htable, TList *L)
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob1 = (TblSearch (global_htable, src1));//global
          tHsrc1     = (TblSearch (active_htable, src1));
-         tHsrc1     = (tHsrc1) : tHsrc1 ? tHsrcGlob1;
+         tHsrc1     = (tHsrc1) ? tHsrc1 : tHsrcGlob1;
 
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob2 = (TblSearch (global_htable, src2));//global
          tHsrc2     = (TblSearch (active_htable, src2));
-         tHsrc2     = (tHsrc2) : tHsrc2 ? tHsrcGlob2;
+         tHsrc2     = (tHsrc2) ? tHsrc2 : tHsrcGlob2;
 
          tHresult = (TblSearch (active_htable, result));
 
@@ -746,12 +744,12 @@ void interpret (tHashTbl *global_htable, TList *L)
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob1 = (TblSearch (global_htable, src1));//global
          tHsrc1     = (TblSearch (active_htable, src1));
-         tHsrc1     = (tHsrc1) : tHsrc1 ? tHsrcGlob1;
+         tHsrc1     = (tHsrc1) ? tHsrc1 : tHsrcGlob1;
 
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob2 = (TblSearch (global_htable, src2));//global
          tHsrc2     = (TblSearch (active_htable, src2));
-         tHsrc2     = (tHsrc2) : tHsrc2 ? tHsrcGlob2;
+         tHsrc2     = (tHsrc2) ? tHsrc2 : tHsrcGlob2;
 
          tHresult = (TblSearch (active_htable, result));
 
@@ -759,7 +757,7 @@ void interpret (tHashTbl *global_htable, TList *L)
 
          datTyp=0;
 
-         if (tHsrc1!=NULL || tHsrc2!=NULL) return E_SEM_OTHER;
+         if (tHsrc1!=NULL || tHsrc2!=NULL) print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje");
 
          if (tHsrc1->type==tHsrc2->type)
          {
@@ -811,12 +809,12 @@ void interpret (tHashTbl *global_htable, TList *L)
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob1 = (TblSearch (global_htable, src1));//global
          tHsrc1     = (TblSearch (active_htable, src1));
-         tHsrc1     = (tHsrc1) : tHsrc1 ? tHsrcGlob1;
+         tHsrc1     = (tHsrc1) ? tHsrc1 : tHsrcGlob1;
 
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob2 = (TblSearch (global_htable, src2));//global
          tHsrc2     = (TblSearch (active_htable, src2));
-         tHsrc2     = (tHsrc2) : tHsrc2 ? tHsrcGlob2;
+         tHsrc2     = (tHsrc2) ? tHsrc2 : tHsrcGlob2;
 
          tHresult = (TblSearch (active_htable, result));
 
@@ -824,7 +822,7 @@ void interpret (tHashTbl *global_htable, TList *L)
 
          datTyp=0;
 
-         if (tHsrc1!=NULL || tHsrc2!=NULL) return E_SEM_OTHER;
+         if (tHsrc1!=NULL || tHsrc2!=NULL) print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje");
 
          if (tHsrc1->type==tHsrc2->type)
          {
@@ -878,12 +876,12 @@ void interpret (tHashTbl *global_htable, TList *L)
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob1 = (TblSearch (global_htable, src1));//global
          tHsrc1     = (TblSearch (active_htable, src1));
-         tHsrc1     = (tHsrc1) : tHsrc1 ? tHsrcGlob1;
+         tHsrc1     = (tHsrc1) ? tHsrc1 : tHsrcGlob1;
 
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob2 = (TblSearch (global_htable, src2));//global
          tHsrc2     = (TblSearch (active_htable, src2));
-         tHsrc2     = (tHsrc2) : tHsrc2 ? tHsrcGlob2;
+         tHsrc2     = (tHsrc2) ? tHsrc2 : tHsrcGlob2;
 
          tHresult = (TblSearch (active_htable, result));
 
@@ -891,7 +889,7 @@ void interpret (tHashTbl *global_htable, TList *L)
 
          datTyp=0;
 
-         if (tHsrc1!=NULL || tHsrc2!=NULL) return E_SEM_OTHER;
+         if (tHsrc1!=NULL || tHsrc2!=NULL) print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje");
 
          if (tHsrc1->type==tHsrc2->type)
          {
@@ -944,12 +942,12 @@ void interpret (tHashTbl *global_htable, TList *L)
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob1 = (TblSearch (global_htable, src1));//global
          tHsrc1     = (TblSearch (active_htable, src1));
-         tHsrc1     = (tHsrc1) : tHsrc1 ? tHsrcGlob1;
+         tHsrc1     = (tHsrc1) ? tHsrc1 : tHsrcGlob1;
 
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob2 = (TblSearch (global_htable, src2));//global
          tHsrc2     = (TblSearch (active_htable, src2));
-         tHsrc2     = (tHsrc2) : tHsrc2 ? tHsrcGlob2;
+         tHsrc2     = (tHsrc2) ? tHsrc2 : tHsrcGlob2;
 
          tHresult = (TblSearch (active_htable, result));
 

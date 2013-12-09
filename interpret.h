@@ -19,7 +19,7 @@
 #include "adt.h"
 
 
-interpret (tHashTbl *global_htable, TList *L);
+void interpret (tHashTbl *global_htable, TList *L);
 
 #endif
 
