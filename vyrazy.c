@@ -155,7 +155,7 @@ void printstack(TStack *stack){
 
 // =
 void ExEqual(TStack *stack,TExpType input){
-	tokenValue value;
+	tokenValue value = g_ptrs->token->value;
 	SPush(stack,input,value);
 }
 
@@ -163,7 +163,7 @@ void ExEqual(TStack *stack,TExpType input){
 void ExLess(TStack *stack,TExpType input){
 	TStack *cur_ptr = stack;
 	TSItemPtr prev_ptr = NULL;	
-	tokenValue value;
+	tokenValue value = g_ptrs->token->value;
 	// kdyz je hned nahore
 	if(STop(cur_ptr) <= END){
 		SPush(stack,L,value);
@@ -200,7 +200,7 @@ void ExLess(TStack *stack,TExpType input){
 
 // >
 void ExGreater(TStack *stack){
-	tokenValue value;
+	tokenValue value = g_ptrs->token->value;
 	TStack *cur_ptr = stack;
 	TStack temp;
 	SInit(&temp);
@@ -213,12 +213,7 @@ void ExGreater(TStack *stack){
 			cur_ptr->top=cur_ptr->top->ptrNext;
 			switch(STop(&temp)){
 				// E->VALUE
-				case VALUE:
-					if(STop(&temp) != VALUE){
-						SPopAll(&temp);
-						SPopAll(stack);
-						print_error(E_SYN,"chyba pri E->VALUE neco jineho nez value");
-					}
+				case VALUE:{
 					tokenValue value_i = temp.top->var;
 					SPop(&temp);
 					// zasobnik musi byt prazdny => nic za E->VALUE
@@ -227,8 +222,11 @@ void ExGreater(TStack *stack){
 						SPopAll(stack);
 						print_error(E_SYN,"chyba pri E->VALUE neco za value");
 					}
+					printf("-==--=-=-=-=-=-=\n");
+					printf("-==--=-=-=-=-=-=\n");
 					SPush(cur_ptr,NONTERM,value_i);
 					break;
+				}
 				// E->(E)
 				case BRACE_L:
 					if(STop(&temp) != BRACE_L){
@@ -329,7 +327,14 @@ void ExGreater(TStack *stack){
 						print_error(E_SYN,"chyba pri E->E op E , stack neni prazdny )");
 					}
 					// value musi bejt kam se uklada instrukce aww yeaaah
+					printf("-----------create instr\n");
+					printf("%s\n",value1);
+					printf("%s\n",value2);
+					printf("%s\n",op);
 					value=CreateExInstruction(value1,value2,op);
+					printf("cum sem pico\n");
+					printf("%s\n",value);
+					printf("------\n");
 					SPush(cur_ptr,NONTERM,value);
 					break;
 				default:

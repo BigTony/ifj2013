@@ -21,7 +21,6 @@ void tableItemsInit(tHashTbl *hash_table){
 	}
 	hash_table->size = ALLOC;
 	for(int i = 0;i<ALLOC;(hash_table->tableItems)[i++] = NULL);
-	printf("%p\n",hash_table);
 }
 
 void tableInit(tHashTbl **hash_table){
@@ -29,7 +28,6 @@ void tableInit(tHashTbl **hash_table){
 		print_error(E_INTERN,"chyba pri alokaci tHashTbl");
 		return;
 	}
-	printf("%p\n",hash_table);
 	tableItemsInit(*hash_table);
 }
 

@@ -232,7 +232,8 @@ void parser(tPointers *ptrs){
 			printf("clasify?\n");
 			main_classify();
 			printf("clasify end?\n");
-			// interpret (g_ptrs->main_symobol_tbl, g_ptrs->list_instr);
+			printf("-----zaciname interpretovat------\n");
+			interpret (g_ptrs->main_symobol_tbl, g_ptrs->list_instr);
 		}
 	else{
 		print_error(E_SYN,"nazacatku neni <php");

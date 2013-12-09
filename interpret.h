@@ -17,6 +17,7 @@
 #include "errors.h"
 #include "scaner.h"
 #include "adt.h"
+#include "memory.h"
 
 
 void interpret (tHashTbl *global_htable, TList *L);

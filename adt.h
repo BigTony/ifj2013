@@ -22,7 +22,7 @@
 // ktery bude pouzit pro tabulky symbolu
 //
 typedef struct tSHashItem{
-	tHashTbl hashTbl;
+	tHashTbl *hashTbl;
 	TLItem *NavrInstrukce;
 	struct tSHashItem *ptrNext;
 } *tStackItemPtr;
@@ -31,8 +31,8 @@ typedef struct {
 	tStackItemPtr top;
 } tHashTblStack;
 
-void initStack(tHashTblStack *stack);
-void pushStack(tHashTblStack *stack,tHashTbl hashTbl,TLItem *NavrInstrukce);
+void initStack(tHashTblStack **stack);
+void pushStack(tHashTblStack *stack,tHashTbl *hashTbl,TLItem *NavrInstrukce);
 void popStack(tHashTblStack *stack);
 tStackItemPtr topStack(tHashTblStack *stack);
 int emptyStack(tHashTblStack *stack);

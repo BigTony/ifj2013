@@ -53,8 +53,6 @@ void interpret (tHashTbl *global_htable, TList *L)
     // pro porovnani
     int datTyp=0;
 
-    // zasobnik
-    tHashTblStack *stack;
 
    // navratova dresa instrukcniho seznamu MAINU
    TLItem *nil = NULL;
@@ -68,8 +66,8 @@ void interpret (tHashTbl *global_htable, TList *L)
    tableInit(&local_htable_main);
 
    // init & push adresy lokalni TS na stack
-   initStack(stack);
-   pushStack(stack,*local_htable_main,nil);
+   initStack(&g_ptrs->function_stack);
+   pushStack(g_ptrs->function_stack,local_htable_main,NULL);
 
 // => AKTIVACE TS a INSTRUKCE__________________________________________________________
 
@@ -607,6 +605,7 @@ void interpret (tHashTbl *global_htable, TList *L)
 
 
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
+         printf("%s\n",src1);
          tHsrcGlob1 = (TblSearch (global_htable, src1));//global
          tHsrc1     = (TblSearch (active_htable, src1));
          tHsrc1     = (tHsrc1) ? tHsrc1 : tHsrcGlob1;

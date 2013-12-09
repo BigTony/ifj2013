@@ -15,16 +15,16 @@
 
 // zasobnik pro tabulku symbolu
 //
-void initStack(tHashTblStack *stack){
-	if((stack = (tHashTblStack*)malloc(sizeof(tHashTblStack))) == NULL){
-	print_error(E_INTERN,"chyba pri alokaci stacku tabulky symbolu");
+void initStack(tHashTblStack **stack){
+	if((*stack = (tHashTblStack*)malloc(sizeof(tHashTblStack))) == NULL){
+		print_error(E_INTERN,"chyba pri alokaci stacku tabulky symbolu");
 	}
-	stack->top = NULL;
+	(*stack)->top = NULL;
 }
 
-void pushStack(tHashTblStack *stack,tHashTbl hashTbl,TLItem *NavrInstrukce){
+void pushStack(tHashTblStack *stack,tHashTbl *hashTbl,TLItem *NavrInstrukce){
 	tStackItemPtr temp;
-	if((temp = (tStackItemPtr )malloc(sizeof(tStackItemPtr))) == NULL){
+	if((temp = (tStackItemPtr )malloc(sizeof(struct tSHashItem))) == NULL){
 		print_error(E_INTERN,"chyba pri alokaci itemu stacku pro tabulku symbolu");
 	}
 	temp->hashTbl = hashTbl;
