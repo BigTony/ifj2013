@@ -17,10 +17,10 @@
 #include <stdlib.h>
 #include <errno.h>
 
-/*  INTERPRET - vykona intepretaci jazyka IFJ13
- *  @param1: globalni TS
- *  @param2: Instrukcni seznam MAINU
- */
+/* INTERPRET - vykona intepretaci jazyka IFJ13
+* @param1: globalni TS
+* @param2: Instrukcni seznam MAINU
+*/
 void interpret (tHashTbl *global_htable, TList *L)
 {
   TblPrint(global_htable);
@@ -30,7 +30,7 @@ void interpret (tHashTbl *global_htable, TList *L)
 //____________________PROMENNE____________________________________________
 
    // data aktualni instrukce [operandy]
-   TInstr  *instr;
+   TInstr *instr;
    char *src1;
    char *src2;
    char *result;
@@ -82,13 +82,13 @@ void interpret (tHashTbl *global_htable, TList *L)
       instr = (TInstr*) ReturnActiveInstr (ActiveList);
 
      /* -------------------------------------------------------------
-      *
-      *  semantic controll
-      *
-      * ------------------------------------------------------------ */
+*
+* semantic controll
+*
+* ------------------------------------------------------------ */
 
       /// item* TblSearch (tHashTbl *tab, itemKey key);
-      /// void  TblInsert (tHashTbl *tab, itemKey key, tokenValue data, int type);
+      /// void TblInsert (tHashTbl *tab, itemKey key, tokenValue data, int type);
 
       switch (instr->operation)
       {
@@ -98,23 +98,23 @@ void interpret (tHashTbl *global_htable, TList *L)
 
 
          // nactu id src1 & result
-         src1   = instr->src1;
+         src1 = instr->src1;
          result = instr->result;
 
           // nactu id src1,src2 & result z HASH tabulky
           tHsrcGlob1 = (TblSearch (global_htable, src1));//global
-          tHsrc1     = (TblSearch(active_htable,src1));
-          tHsrc1     = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
+          tHsrc1 = (TblSearch(active_htable,src1));
+          tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
 
-         tHresult   = (TblSearch (active_htable, result));
+         tHresult = (TblSearch (active_htable, result));
 
          // nactu typ dat src1
          dataType = (tHsrc1->type);
 
-          if (!dataType)    print_error(E_SEM_OTHER, "dat.typ v itemu neni nastaven [I_ASS]");
+          if (!dataType) print_error(E_SEM_OTHER, "dat.typ v itemu neni nastaven [I_ASS]");
 
           if (tHsrc1==NULL) print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje [I_ASS]");
-          else 
+          else
           {
                 if (dataType==VARINT)
                 {
@@ -131,7 +131,7 @@ void interpret (tHashTbl *global_htable, TList *L)
                      {
                         
                         // v pripade ze operand result jeste neexsituje, vlozim novou polozku
-                        TblInsert (active_htable, result, tmp, dataType); 
+                        TblInsert (active_htable, result, tmp, dataType);
                      }
                 }
                 else if (dataType==VARDOUBLE)
@@ -148,7 +148,7 @@ void interpret (tHashTbl *global_htable, TList *L)
                      else
                      {
                         // v pripade ze operand result jeste neexsituje, vlozim novou polozku
-                        TblInsert (active_htable, result, tmp, dataType); 
+                        TblInsert (active_htable, result, tmp, dataType);
                      }
                 }
                 else if (dataType==STRING)
@@ -164,7 +164,7 @@ void interpret (tHashTbl *global_htable, TList *L)
                      else
                      {
                         // v pripade ze operand result jeste neexsituje, vlozim novou polozku
-                        TblInsert (active_htable, result, tmp, dataType); 
+                        TblInsert (active_htable, result, tmp, dataType);
                      }
                 }
                 else if (dataType==VARBOOL)
@@ -180,7 +180,7 @@ void interpret (tHashTbl *global_htable, TList *L)
                      else
                      {
                         // v pripade ze operand result jeste neexsituje, vlozim novou polozku
-                        TblInsert (active_htable, result, tmp, dataType); 
+                        TblInsert (active_htable, result, tmp, dataType);
                      }
                 }
          }
@@ -192,19 +192,19 @@ void interpret (tHashTbl *global_htable, TList *L)
          case I_ADD:
 
          // nactu id src1,src2 & result z INSTRUKCE
-         src1   = instr->src1;
-         src2   = instr->src2;
+         src1 = instr->src1;
+         src2 = instr->src2;
          result = instr->result;
 
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob1 = (TblSearch (global_htable, src1));//global
-         tHsrc1     = (TblSearch (active_htable, src1));
-         tHsrc1     = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
+         tHsrc1 = (TblSearch (active_htable, src1));
+         tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
 
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob2 = (TblSearch (global_htable, src2));//global
-         tHsrc2     = (TblSearch (active_htable, src2));
-         tHsrc2     = (tHsrc2!=NULL) ? tHsrc2 : tHsrcGlob2;
+         tHsrc2 = (TblSearch (active_htable, src2));
+         tHsrc2 = (tHsrc2!=NULL) ? tHsrc2 : tHsrcGlob2;
 
          tHresult = (TblSearch (active_htable, result));
 
@@ -212,7 +212,7 @@ void interpret (tHashTbl *global_htable, TList *L)
          dataType1 = tHsrc1->type;
          dataType2 = tHsrc2->type;
 
-         if (!dataType1 || !dataType2)  print_error(E_SEM_OTHER, "dat.typ itemu v src1 nebo src2 neni nastaven  [I_ADD] ");
+         if (!dataType1 || !dataType2) print_error(E_SEM_OTHER, "dat.typ itemu v src1 nebo src2 neni nastaven [I_ADD] ");
 
           // pokud src1 nebo src2 nebudou mit prirazenou hodnotu -> syntax error
           if (tHsrc1==NULL || tHsrc2==NULL)
@@ -235,8 +235,10 @@ void interpret (tHashTbl *global_htable, TList *L)
                    // pokud prvni double a druhy int, int pretypuju a naopak
                    if (dataType1==VARDOUBLE && dataType2==VARINT)
                        tmp.varDouble = (tHsrc1->data.varDouble + (double) (tHsrc2->data.varInt));
-                   else
+                   else if(dataType1==VARINT && dataType2==VARDOUBLE)
                        tmp.varDouble = ( (double) (tHsrc1->data.varInt) + tHsrc2->data.varDouble);
+                   else if(dataType1==VARDOUBLE && dataType2==VARDOUBLE)
+                       tmp.varDouble = (double)((tHsrc1->data.varDouble) + tHsrc2->data.varDouble);
                }
                else {
                   print_error(E_SEM_TYPE, "item v lokalni ani globalni TS neexistuje [I_ADD]");
@@ -276,19 +278,19 @@ void interpret (tHashTbl *global_htable, TList *L)
          case I_SUB:
 
          // nactu id src1,src2 & result z INSTRUKCE
-         src1   = instr->src1;
-         src2   = instr->src2;
+         src1 = instr->src1;
+         src2 = instr->src2;
          result = instr->result;
 
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob1 = (TblSearch (global_htable, src1));//global
-         tHsrc1     = (TblSearch (active_htable, src1));
-         tHsrc1     = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
+         tHsrc1 = (TblSearch (active_htable, src1));
+         tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
 
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob2 = (TblSearch (global_htable, src2));//global
-         tHsrc2     = (TblSearch (active_htable, src2));
-         tHsrc2     = (tHsrc2!=NULL) ? tHsrc2 : tHsrcGlob2;
+         tHsrc2 = (TblSearch (active_htable, src2));
+         tHsrc2 = (tHsrc2!=NULL) ? tHsrc2 : tHsrcGlob2;
 
          tHresult = (TblSearch (active_htable, result));
          // nactu typ dat src1 & src2
@@ -316,8 +318,10 @@ void interpret (tHashTbl *global_htable, TList *L)
                    // pokud prvni double a druhy int, int pretypuju a naopak
                    if (dataType1==VARDOUBLE && dataType2==VARINT)
                        tmp.varDouble = (tHsrc1->data.varDouble - (double) (tHsrc2->data.varInt));
-                   else
+                   else if(dataType1==VARINT && dataType2==VARDOUBLE)
                        tmp.varDouble = ( (double) (tHsrc1->data.varInt) - tHsrc2->data.varDouble);
+                   else if(dataType1==VARDOUBLE && dataType2==VARDOUBLE)
+                       tmp.varDouble = (double)((tHsrc1->data.varDouble) - tHsrc2->data.varDouble);
                }
                else {
                   print_error(E_SEM_TYPE, "vadny typ operandu [I_SUB]");
@@ -357,20 +361,20 @@ void interpret (tHashTbl *global_htable, TList *L)
          case I_MUL:
 
          // nactu id src1,src2 & result z INSTRUKCE
-         src1   = instr->src1;
-         src2   = instr->src2;
+         src1 = instr->src1;
+         src2 = instr->src2;
          result = instr->result;
 
 
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob1 = (TblSearch (global_htable, src1));//global
-         tHsrc1     = (TblSearch (active_htable, src1));
-         tHsrc1     = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
+         tHsrc1 = (TblSearch (active_htable, src1));
+         tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
 
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob2 = (TblSearch (global_htable, src2));//global
-         tHsrc2     = (TblSearch (active_htable, src2));
-         tHsrc2     = (tHsrc2!=NULL) ? tHsrc2 : tHsrcGlob2;
+         tHsrc2 = (TblSearch (active_htable, src2));
+         tHsrc2 = (tHsrc2!=NULL) ? tHsrc2 : tHsrcGlob2;
 
          tHresult = (TblSearch (active_htable, result));
 
@@ -399,8 +403,10 @@ void interpret (tHashTbl *global_htable, TList *L)
                    // pokud prvni double a druhy int, int pretypuju a naopak
                    if (dataType1==VARDOUBLE && dataType2==VARINT)
                        tmp.varDouble = (tHsrc1->data.varDouble * (double) (tHsrc2->data.varInt));
-                   else
+                   else if(dataType1==VARINT && dataType2==VARDOUBLE)
                        tmp.varDouble = ( (double) (tHsrc1->data.varInt) * tHsrc2->data.varDouble);
+                   else if(dataType1==VARDOUBLE && dataType2==VARDOUBLE)
+                       tmp.varDouble = (double)((tHsrc1->data.varDouble) * tHsrc2->data.varDouble);
                }
                else {
                   print_error(E_SEM_TYPE, "vadny typ operandu [I_MUL]");
@@ -440,19 +446,19 @@ void interpret (tHashTbl *global_htable, TList *L)
          case I_DIV:
 
          // nactu id src1,src2 & result z INSTRUKCE
-         src1   = instr->src1;
-         src2   = instr->src2;
+         src1 = instr->src1;
+         src2 = instr->src2;
          result = instr->result;
 
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob1 = (TblSearch (global_htable, src1));//global
-         tHsrc1     = (TblSearch (active_htable, src1));
-         tHsrc1     = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
+         tHsrc1 = (TblSearch (active_htable, src1));
+         tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
 
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob2 = (TblSearch (global_htable, src2));//global
-         tHsrc2     = (TblSearch (active_htable, src2));
-         tHsrc2     = (tHsrc2!=NULL) ? tHsrc2 : tHsrcGlob2;
+         tHsrc2 = (TblSearch (active_htable, src2));
+         tHsrc2 = (tHsrc2!=NULL) ? tHsrc2 : tHsrcGlob2;
 
          tHresult = (TblSearch (active_htable, result));
 
@@ -481,10 +487,14 @@ void interpret (tHashTbl *global_htable, TList *L)
                    TypeOF = VARDOUBLE;
 
                    // pokud prvni double a druhy int, int pretypuju a naopak
-                   if (dataType1==VARDOUBLE && dataType2==VARINT)
-                       tmp.varDouble = (double)(tHsrc1->data.varDouble / (double) (tHsrc2->data.varInt));
-                   else
-                       tmp.varDouble = (double)( (double) (tHsrc1->data.varInt) / tHsrc2->data.varDouble);
+                   if (dataType1==VARDOUBLE && dataType2==VARINT){
+                       tmp.varDouble = (tHsrc1->data.varDouble / (double) (tHsrc2->data.varInt));
+                    }
+                   else if(dataType1==VARINT && dataType2==VARDOUBLE)
+                       tmp.varDouble = ( (double)(tHsrc1->data.varInt) / tHsrc2->data.varDouble);
+                    else if(dataType1==VARDOUBLE && dataType2==VARDOUBLE)
+                      tmp.varDouble = (tHsrc1->data.varDouble / tHsrc2->data.varDouble);
+
                }
                else {
                   print_error(E_SEM_TYPE, "vadny typ operandu [I_DIV]");
@@ -524,19 +534,19 @@ void interpret (tHashTbl *global_htable, TList *L)
          /*========================I_CON===============================================================*/
          case I_CON:
          // nactu id src1,src2 & result z INSTRUKCE
-         src1   = instr->src1;
-         src2   = instr->src2;
+         src1 = instr->src1;
+         src2 = instr->src2;
          result = instr->result;
 
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob1 = (TblSearch (global_htable, src1));//global
-         tHsrc1     = (TblSearch (active_htable, src1));
-         tHsrc1     = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
+         tHsrc1 = (TblSearch (active_htable, src1));
+         tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
 
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob2 = (TblSearch (global_htable, src2));//global
-         tHsrc2     = (TblSearch (active_htable, src2));
-         tHsrc2     = (tHsrc2!=NULL) ? tHsrc2 : tHsrcGlob2;
+         tHsrc2 = (TblSearch (active_htable, src2));
+         tHsrc2 = (tHsrc2!=NULL) ? tHsrc2 : tHsrcGlob2;
 
          tHresult = (TblSearch (active_htable, result));
 
@@ -545,7 +555,7 @@ void interpret (tHashTbl *global_htable, TList *L)
          dataType2 = tHsrc2->type;
 
          // overeni jestli data ubec existuji
-         if (tHsrc1==NULL || tHsrc2==NULL)  print_error(E_SEM_OTHER, "item src1 nebo src2 v lokalni ani globalni TS neexistuje [I_CON]");
+         if (tHsrc1==NULL || tHsrc2==NULL) print_error(E_SEM_OTHER, "item src1 nebo src2 v lokalni ani globalni TS neexistuje [I_CON]");
 
          /// cekni typ pro konkatenaci
          if (dataType1==STRING && dataType2==STRING)
@@ -569,7 +579,7 @@ void interpret (tHashTbl *global_htable, TList *L)
               tHsrc1->type=STRING;
               tmp.varString = konkatenace(tHsrc1->data.varString, tHsrc2->data.varString);
          }
-         else    print_error(E_SEM_TYPE, "vadny typ operandu");
+         else print_error(E_SEM_TYPE, "vadny typ operandu");
 
             // pokud result exituje, prepisu data
             if (tHresult!=NULL)
@@ -583,29 +593,29 @@ void interpret (tHashTbl *global_htable, TList *L)
          break;
 
      /*
-       #define IDENTIFIKATOR 1
-       #define VARINT 2
-       #define VARDOUBLE 3
-       #define VARIABLE 4
-       #define STRING 5
-     */
+#define IDENTIFIKATOR 1
+#define VARINT 2
+#define VARDOUBLE 3
+#define VARIABLE 4
+#define STRING 5
+*/
 
      /*
-        typedef union {
-           int varInt;
-           double varDouble;
-           char *varString;
-        }tokenValue;
-      */
+typedef union {
+int varInt;
+double varDouble;
+char *varString;
+}tokenValue;
+*/
 
       /*
-        typedef struct item{
-                    int type;
-                    itemKey key;
-                    tokenValue data;
-                    struct item *nextItem;
-        }item;
-      */
+typedef struct item{
+int type;
+itemKey key;
+tokenValue data;
+struct item *nextItem;
+}item;
+*/
 
 //---------------------------- POROVNAVANI ----------------------------------------------------------------
 
@@ -613,8 +623,8 @@ void interpret (tHashTbl *global_htable, TList *L)
          case I_G:
 
          // nactu id src1,src2 & result z INSTRUKCE
-         src1   = instr->src1;
-         src2   = instr->src2;
+         src1 = instr->src1;
+         src2 = instr->src2;
          result = instr->result;
 
 
@@ -622,24 +632,24 @@ void interpret (tHashTbl *global_htable, TList *L)
          
 
          tHsrcGlob1 = (TblSearch (global_htable, src1));//global
-         tHsrc1     = (TblSearch (active_htable, src1));
-         tHsrc1     = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
+         tHsrc1 = (TblSearch (active_htable, src1));
+         tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
 
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob2 = (TblSearch (global_htable, src2));//global
-         tHsrc2     = (TblSearch (active_htable, src2));
-         tHsrc2     = (tHsrc2!=NULL) ? tHsrc2 : tHsrcGlob2;
+         tHsrc2 = (TblSearch (active_htable, src2));
+         tHsrc2 = (tHsrc2!=NULL) ? tHsrc2 : tHsrcGlob2;
 
          tHresult = (TblSearch (active_htable, result));
 
         // tmp
         tokenValue tmp;
 
-         // typ: tHsrc1->type   data:   tHsrc1->data   item:  tHsrc1 , tHsrc2 , tHresult
+         // typ: tHsrc1->type data: tHsrc1->data item: tHsrc1 , tHsrc2 , tHresult
 
          datTyp=0;
 
-         if (tHsrc1==NULL || tHsrc2==NULL)  print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje I_G");
+         if (tHsrc1==NULL || tHsrc2==NULL) print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje I_G");
 
          if (tHsrc1->type==tHsrc2->type)
          {
@@ -647,24 +657,24 @@ void interpret (tHashTbl *global_htable, TList *L)
 
               if (tHsrc1->type==VARINT)
               {
-                 if (tHsrc1->data.varInt > tHsrc2->data.varInt)  datTyp = 1;
+                 if (tHsrc1->data.varInt > tHsrc2->data.varInt) datTyp = 1;
                  else datTyp = 0;
               }
 
               else if (tHsrc1->type==VARDOUBLE)
               {
-                 if (tHsrc1->data.varDouble > tHsrc2->data.varDouble)  datTyp = 1;
+                 if (tHsrc1->data.varDouble > tHsrc2->data.varDouble) datTyp = 1;
                  else datTyp = 0;
               }
 
               else if (tHsrc1->type==STRING)
               {
-                 if (strcmp(tHsrc1->data.varString,tHsrc2->data.varString)>0)  datTyp = 1;
+                 if (strcmp(tHsrc1->data.varString,tHsrc2->data.varString)>0) datTyp = 1;
                  else datTyp = 0;
               }
               else if (tHsrc1->type==VARBOOL)
               {
-                 if (tHsrc1->data.varInt > tHsrc2->data.varInt)  datTyp = 1;
+                 if (tHsrc1->data.varInt > tHsrc2->data.varInt) datTyp = 1;
                  else datTyp = 0;
               }
 
@@ -689,24 +699,24 @@ void interpret (tHashTbl *global_htable, TList *L)
          case I_GE:
 
          // nactu id src1,src2 & result z INSTRUKCE
-         src1   = instr->src1;
-         src2   = instr->src2;
+         src1 = instr->src1;
+         src2 = instr->src2;
          result = instr->result;
 
 
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob1 = (TblSearch (global_htable, src1));//global
-         tHsrc1     = (TblSearch (active_htable, src1));
-         tHsrc1     = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
+         tHsrc1 = (TblSearch (active_htable, src1));
+         tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
 
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob2 = (TblSearch (global_htable, src2));//global
-         tHsrc2     = (TblSearch (active_htable, src2));
-         tHsrc2     = (tHsrc2!=NULL) ? tHsrc2 : tHsrcGlob2;
+         tHsrc2 = (TblSearch (active_htable, src2));
+         tHsrc2 = (tHsrc2!=NULL) ? tHsrc2 : tHsrcGlob2;
 
          tHresult = (TblSearch (active_htable, result));
 
-         // typ: tHsrc1->type   data:   tHsrc1->data   item:  tHsrc1 , tHsrc2 , tHresult
+         // typ: tHsrc1->type data: tHsrc1->data item: tHsrc1 , tHsrc2 , tHresult
 
          datTyp=0;
 
@@ -718,24 +728,24 @@ void interpret (tHashTbl *global_htable, TList *L)
 
               if (tHsrc1->type==VARINT)
               {
-                 if (tHsrc1->data.varInt >= tHsrc2->data.varInt)  datTyp = 1;
+                 if (tHsrc1->data.varInt >= tHsrc2->data.varInt) datTyp = 1;
                  else datTyp = 0;
               }
 
               else if (tHsrc1->type==VARDOUBLE)
               {
-                 if (tHsrc1->data.varDouble >= tHsrc2->data.varDouble)  datTyp = 1;
+                 if (tHsrc1->data.varDouble >= tHsrc2->data.varDouble) datTyp = 1;
                  else datTyp = 0;
               }
 
               else if (tHsrc1->type==STRING)
               {
-                 if (strcmp(tHsrc1->data.varString,tHsrc2->data.varString)>=0)  datTyp = 1;
+                 if (strcmp(tHsrc1->data.varString,tHsrc2->data.varString)>=0) datTyp = 1;
                  else datTyp = 0;
               }
               else if (tHsrc1->type==VARBOOL)
               {
-                 if (tHsrc1->data.varInt >= tHsrc2->data.varInt)  datTyp = 1;
+                 if (tHsrc1->data.varInt >= tHsrc2->data.varInt) datTyp = 1;
                  else datTyp = 0;
               }
          }
@@ -759,24 +769,24 @@ void interpret (tHashTbl *global_htable, TList *L)
          case I_L:
 
          // nactu id src1,src2 & result z INSTRUKCE
-         src1   = instr->src1;
-         src2   = instr->src2;
+         src1 = instr->src1;
+         src2 = instr->src2;
          result = instr->result;
 
 
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob1 = (TblSearch (global_htable, src1));//global
-         tHsrc1     = (TblSearch (active_htable, src1));
-         tHsrc1     = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
+         tHsrc1 = (TblSearch (active_htable, src1));
+         tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
 
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob2 = (TblSearch (global_htable, src2));//global
-         tHsrc2     = (TblSearch (active_htable, src2));
-         tHsrc2     = (tHsrc2!=NULL) ? tHsrc2 : tHsrcGlob2;
+         tHsrc2 = (TblSearch (active_htable, src2));
+         tHsrc2 = (tHsrc2!=NULL) ? tHsrc2 : tHsrcGlob2;
 
          tHresult = (TblSearch (active_htable, result));
 
-         // typ: tHsrc1->type   data:   tHsrc1->data   item:  tHsrc1 , tHsrc2 , tHresult
+         // typ: tHsrc1->type data: tHsrc1->data item: tHsrc1 , tHsrc2 , tHresult
 
          datTyp=0;
 
@@ -788,25 +798,25 @@ void interpret (tHashTbl *global_htable, TList *L)
 
               if (tHsrc1->type==VARINT)
               {
-                 if (tHsrc1->data.varInt < tHsrc2->data.varInt)  datTyp = 1;
+                 if (tHsrc1->data.varInt < tHsrc2->data.varInt) datTyp = 1;
                  else datTyp = 0;
               }
 
               else if (tHsrc1->type==VARDOUBLE)
               {
-                 if (tHsrc1->data.varDouble < tHsrc2->data.varDouble)  datTyp = 1;
+                 if (tHsrc1->data.varDouble < tHsrc2->data.varDouble) datTyp = 1;
                  else datTyp = 0;
               }
 
               else if (tHsrc1->type==STRING)
               {
-                 if (strcmp(tHsrc1->data.varString,tHsrc2->data.varString)<0)  datTyp = 1;
+                 if (strcmp(tHsrc1->data.varString,tHsrc2->data.varString)<0) datTyp = 1;
                  else datTyp = 0;
               }
 
               else if (tHsrc1->type==VARBOOL)
               {
-                 if (tHsrc1->data.varInt < tHsrc2->data.varInt)  datTyp = 1;
+                 if (tHsrc1->data.varInt < tHsrc2->data.varInt) datTyp = 1;
                  else datTyp = 0;
               }
 
@@ -831,23 +841,23 @@ void interpret (tHashTbl *global_htable, TList *L)
          case I_LE:
 
          // nactu id src1,src2 & result z INSTRUKCE
-         src1   = instr->src1;
-         src2   = instr->src2;
+         src1 = instr->src1;
+         src2 = instr->src2;
          result = instr->result;
 
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob1 = (TblSearch (global_htable, src1));//global
-         tHsrc1     = (TblSearch (active_htable, src1));
-         tHsrc1     = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
+         tHsrc1 = (TblSearch (active_htable, src1));
+         tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
 
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob2 = (TblSearch (global_htable, src2));//global
-         tHsrc2     = (TblSearch (active_htable, src2));
-         tHsrc2     = (tHsrc2!=NULL) ? tHsrc2 : tHsrcGlob2;
+         tHsrc2 = (TblSearch (active_htable, src2));
+         tHsrc2 = (tHsrc2!=NULL) ? tHsrc2 : tHsrcGlob2;
 
          tHresult = (TblSearch (active_htable, result));
 
-         // typ: tHsrc1->type   data:   tHsrc1->data   item:  tHsrc1 , tHsrc2 , tHresult
+         // typ: tHsrc1->type data: tHsrc1->data item: tHsrc1 , tHsrc2 , tHresult
 
          datTyp=0;
 
@@ -859,24 +869,24 @@ void interpret (tHashTbl *global_htable, TList *L)
 
               if (tHsrc1->type==VARINT)
               {
-                 if (tHsrc1->data.varInt <= tHsrc2->data.varInt)  datTyp = 1;
+                 if (tHsrc1->data.varInt <= tHsrc2->data.varInt) datTyp = 1;
                  else datTyp = 0;
               }
 
               else if (tHsrc1->type==VARDOUBLE)
               {
-                 if (tHsrc1->data.varDouble <= tHsrc2->data.varDouble)  datTyp = 1;
+                 if (tHsrc1->data.varDouble <= tHsrc2->data.varDouble) datTyp = 1;
                  else datTyp = 0;
               }
 
               else if (tHsrc1->type==STRING)
               {
-                 if (strcmp(tHsrc1->data.varString,tHsrc2->data.varString)<=0)  datTyp = 1;
+                 if (strcmp(tHsrc1->data.varString,tHsrc2->data.varString)<=0) datTyp = 1;
                  else datTyp = 0;
               }
               else if (tHsrc1->type==VARBOOL)
               {
-                 if (tHsrc1->data.varInt <= tHsrc2->data.varInt)  datTyp = 1;
+                 if (tHsrc1->data.varInt <= tHsrc2->data.varInt) datTyp = 1;
                  else datTyp = 0;
               }
 
@@ -902,24 +912,24 @@ void interpret (tHashTbl *global_htable, TList *L)
          case I_ET:
 
          // nactu id src1,src2 & result z INSTRUKCE
-         src1   = instr->src1;
-         src2   = instr->src2;
+         src1 = instr->src1;
+         src2 = instr->src2;
          result = instr->result;
 
 
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob1 = (TblSearch (global_htable, src1));//global
-         tHsrc1     = (TblSearch (active_htable, src1));
-         tHsrc1     = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
+         tHsrc1 = (TblSearch (active_htable, src1));
+         tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
 
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob2 = (TblSearch (global_htable, src2));//global
-         tHsrc2     = (TblSearch (active_htable, src2));
-         tHsrc2     = (tHsrc2!=NULL) ? tHsrc2 : tHsrcGlob2;
+         tHsrc2 = (TblSearch (active_htable, src2));
+         tHsrc2 = (tHsrc2!=NULL) ? tHsrc2 : tHsrcGlob2;
 
          tHresult = (TblSearch (active_htable, result));
 
-         // typ: tHsrc1->type   data:   tHsrc1->data   item:  tHsrc1 , tHsrc2 , tHresult
+         // typ: tHsrc1->type data: tHsrc1->data item: tHsrc1 , tHsrc2 , tHresult
 
          datTyp=0;
 
@@ -931,24 +941,24 @@ void interpret (tHashTbl *global_htable, TList *L)
 
               if (tHsrc1->type==VARINT)
               {
-                 if (tHsrc1->data.varInt == tHsrc2->data.varInt)  datTyp = 1;
+                 if (tHsrc1->data.varInt == tHsrc2->data.varInt) datTyp = 1;
                  else datTyp = 0;
               }
 
               else if (tHsrc1->type==VARDOUBLE)
               {
-                 if (tHsrc1->data.varDouble == tHsrc2->data.varDouble)  datTyp = 1;
+                 if (tHsrc1->data.varDouble == tHsrc2->data.varDouble) datTyp = 1;
                  else datTyp = 0;
               }
 
               else if (tHsrc1->type==STRING)
               {
-                 if (strcmp(tHsrc1->data.varString,tHsrc2->data.varString)==0)  datTyp = 1;
+                 if (strcmp(tHsrc1->data.varString,tHsrc2->data.varString)==0) datTyp = 1;
                  else datTyp = 0;
               }
               else if (tHsrc1->type==VARBOOL)
               {
-                 if (tHsrc1->data.varInt == tHsrc2->data.varInt)  datTyp = 1;
+                 if (tHsrc1->data.varInt == tHsrc2->data.varInt) datTyp = 1;
                  else datTyp = 0;
               }
          }
@@ -973,23 +983,23 @@ void interpret (tHashTbl *global_htable, TList *L)
          case I_NET:
 
          // nactu id src1,src2 & result z INSTRUKCE
-         src1   = instr->src1;
-         src2   = instr->src2;
+         src1 = instr->src1;
+         src2 = instr->src2;
          result = instr->result;
 
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob1 = (TblSearch (global_htable, src1));//global
-         tHsrc1     = (TblSearch (active_htable, src1));
-         tHsrc1     = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
+         tHsrc1 = (TblSearch (active_htable, src1));
+         tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
 
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrcGlob2 = (TblSearch (global_htable, src2));//global
-         tHsrc2     = (TblSearch (active_htable, src2));
-         tHsrc2     = (tHsrc2!=NULL) ? tHsrc2 : tHsrcGlob2;
+         tHsrc2 = (TblSearch (active_htable, src2));
+         tHsrc2 = (tHsrc2!=NULL) ? tHsrc2 : tHsrcGlob2;
 
          tHresult = (TblSearch (active_htable, result));
 
-         // typ: tHsrc1->type   data:   tHsrc1->data   item:  tHsrc1 , tHsrc2 , tHresult
+         // typ: tHsrc1->type data: tHsrc1->data item: tHsrc1 , tHsrc2 , tHresult
 
          datTyp=0;
 
@@ -1001,24 +1011,24 @@ void interpret (tHashTbl *global_htable, TList *L)
 
               if (tHsrc1->type==VARINT)
               {
-                 if (tHsrc1->data.varInt != tHsrc2->data.varInt)  datTyp = 1;
+                 if (tHsrc1->data.varInt != tHsrc2->data.varInt) datTyp = 1;
                  else datTyp = 0;
               }
 
               else if (tHsrc1->type==VARDOUBLE)
               {
-                 if (tHsrc1->data.varDouble != tHsrc2->data.varDouble)  datTyp = 1;
+                 if (tHsrc1->data.varDouble != tHsrc2->data.varDouble) datTyp = 1;
                  else datTyp = 0;
               }
 
               else if (tHsrc1->type==STRING)
               {
-                 if (strcmp(tHsrc1->data.varString,tHsrc2->data.varString)!=0)  datTyp = 1;
+                 if (strcmp(tHsrc1->data.varString,tHsrc2->data.varString)!=0) datTyp = 1;
                  else datTyp = 0;
               }
               else if (tHsrc1->type==VARBOOL)
               {
-                 if (tHsrc1->data.varInt != tHsrc2->data.varInt)  datTyp = 1;
+                 if (tHsrc1->data.varInt != tHsrc2->data.varInt) datTyp = 1;
                  else datTyp = 0;
               }
 
@@ -1039,7 +1049,7 @@ void interpret (tHashTbl *global_htable, TList *L)
                }
          break;
 
-//----------------------------  FUNKCE  --------------------------------------------------------------
+//---------------------------- FUNKCE --------------------------------------------------------------
 
          /*========================I_CALL=========================*/
          case I_CALL:
@@ -1049,12 +1059,12 @@ void interpret (tHashTbl *global_htable, TList *L)
          case I_RETURN:
          break;
 
-//----------------------------  PREPNUTI KONTEXTU  --------------------------------------------------------------
+//---------------------------- PREPNUTI KONTEXTU --------------------------------------------------------------
 
 
 /**********************************************
 *
-*     PREPNUTI KONTEXTU & DALSI INSTRUKCE
+* PREPNUTI KONTEXTU & DALSI INSTRUKCE
 *
 **************************************************/
 
@@ -1064,14 +1074,14 @@ void interpret (tHashTbl *global_htable, TList *L)
          /*========================I_BOOLVAL=========================*/
          case I_BOOLVAL:
 
-         // nactu id src1  z INSTRUKCE
-         src1   = instr->src1;
+         // nactu id src1 z INSTRUKCE
+         src1 = instr->src1;
 
-         // nactu id src1  z HASH tabulky
-         tHsrc1   = (TblSearch (active_htable, src1));
+         // nactu id src1 z HASH tabulky
+         tHsrc1 = (TblSearch (active_htable, src1));
 
          if (tHsrc1==NULL) print_error(E_SEM_OTHER, "item v lokalni TS neexistuje [I_BOOLVAL]");
-         else 
+         else
          {
             toVARBOOL(tHsrc1);
          }
@@ -1080,14 +1090,14 @@ void interpret (tHashTbl *global_htable, TList *L)
          /*========================I_DOUBLEVAL=========================*/
          case I_DOUBLEVAL:
 
-         // nactu id src1  z INSTRUKCE
-         src1   = instr->src1;
+         // nactu id src1 z INSTRUKCE
+         src1 = instr->src1;
 
-         // nactu id src1  z HASH tabulky
-         tHsrc1   = (TblSearch (active_htable, src1));
+         // nactu id src1 z HASH tabulky
+         tHsrc1 = (TblSearch (active_htable, src1));
 
          if (tHsrc1==NULL) print_error(E_SEM_OTHER, "item v lokalni TS neexistuje [I_DOUBLEVAL]");
-         else 
+         else
          {
             todouble(tHsrc1);
          }
@@ -1096,14 +1106,14 @@ void interpret (tHashTbl *global_htable, TList *L)
          /*========================I_INTVAL=========================*/
          case I_INTVAL:
 
-         // nactu id src1  z INSTRUKCE
-         src1   = instr->src1;
+         // nactu id src1 z INSTRUKCE
+         src1 = instr->src1;
 
-         // nactu id src1  z HASH tabulky
-         tHsrc1   = (TblSearch (active_htable, src1));
+         // nactu id src1 z HASH tabulky
+         tHsrc1 = (TblSearch (active_htable, src1));
 
-         if (tHsrc1==NULL) print_error(E_SEM_OTHER, "item v lokalni  TS neexistuje [I_INTVAL]");
-         else 
+         if (tHsrc1==NULL) print_error(E_SEM_OTHER, "item v lokalni TS neexistuje [I_INTVAL]");
+         else
          {
             tovarint(tHsrc1);
          }
@@ -1112,14 +1122,14 @@ void interpret (tHashTbl *global_htable, TList *L)
          /*========================I_STRVAL=========================*/
          case I_STRVAL:
 
-         // nactu id src1  z INSTRUKCE
-         src1   = instr->src1;
+         // nactu id src1 z INSTRUKCE
+         src1 = instr->src1;
 
-         // nactu id src1  z HASH tabulky
-         tHsrc1   = (TblSearch (active_htable, src1));
+         // nactu id src1 z HASH tabulky
+         tHsrc1 = (TblSearch (active_htable, src1));
 
          if (tHsrc1==NULL) print_error(E_SEM_OTHER, "item v lokalni TS neexistuje [I_STRVAL]");
-         else 
+         else
          {
             tostring(tHsrc1);
          }
@@ -1167,7 +1177,7 @@ void interpret (tHashTbl *global_htable, TList *L)
 
          // pokud by cil skoku nebyl v globalni tabulce ->chyba
          if (tHresult==NULL) print_error(E_SEM_OTHER, "cil skoku v lokalni TS neexistuje [I_JMP]");
-         else 
+         else
          {
 
               // aktivuje instrukci v prave aktivnim listu, nejsu si jistej typama
@@ -1179,13 +1189,13 @@ void interpret (tHashTbl *global_htable, TList *L)
          /*========================I_JZ=========================*/
          case I_JZ:
          // nactu id src1,src2 & result z INSTRUKCE
-         src1   = instr->src1;
+         src1 = instr->src1;
          result = instr->result;
 
           // nactu id src1,src2 & result z HASH tabulky
           tHsrcGlob1 = (TblSearch (global_htable, src1));//global
-          tHsrc1     = (TblSearch(active_htable,src1));
-          tHsrc1     = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
+          tHsrc1 = (TblSearch(active_htable,src1));
+          tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
 
          // nactu id src1,src2 & result z GLOBALNI HASH tabulky
          tHresult = (TblSearch (global_htable, result));
@@ -1195,37 +1205,37 @@ void interpret (tHashTbl *global_htable, TList *L)
 
          // pokud by cil skoku, nebo zdrojova promenna nebyla v globalni tabulce ->chyba
          if (tHresult==NULL || tHsrc1==NULL) print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje I_JZ");
-         else 
+         else
          {
-             switch (tHsrc1->type) 
+             switch (tHsrc1->type)
              {
                 case VARINT: // pokud je true, aktivuj zaznam
                   if (tHsrc1->data.varInt==0) jump = 1;
-                  else  jump = 0;
+                  else jump = 0;
                 break;
 
                 case VARBOOL:
                   printf("NIGGGAAAA\n");
-                  if (tHsrc1->data.varInt==0)  jump = 1;
-                  else  jump = 0;
+                  if (tHsrc1->data.varInt==0) jump = 1;
+                  else jump = 0;
                 break;
 
-                case VARDOUBLE:  
-                  if (tHsrc1->data.varDouble==0.0)  jump = 1; 
-                  else  jump = 0;
+                case VARDOUBLE:
+                  if (tHsrc1->data.varDouble==0.0) jump = 1;
+                  else jump = 0;
                 break;
 
-                case STRING:   
-                  if (strcmp(tHsrc1->data.varString,"")==0)  jump = 1;
-                  else  jump = 0;
+                case STRING:
+                  if (strcmp(tHsrc1->data.varString,"")==0) jump = 1;
+                  else jump = 0;
                 break;
 
                 default: // chyba
                 break;
              }
 
-           if (jump) 
-            {  // proved skok - nejsu si jistej typama
+           if (jump)
+            { // proved skok - nejsu si jistej typama
                ActivePtrItem (ActiveList,((TLItem *)tHresult->data.pointer));
             }
          }
@@ -1235,46 +1245,46 @@ void interpret (tHashTbl *global_htable, TList *L)
          /*========================I_JNZ=========================*/
          case I_JNZ:
          // nactu id src1,src2 & result z INSTRUKCE
-         src1   = instr->src1;
+         src1 = instr->src1;
          result = instr->result;
 
           // nactu id src1,src2 & result z HASH tabulky
           tHsrcGlob1 = (TblSearch (global_htable, src1));//global
-          tHsrc1     = (TblSearch(active_htable,src1));
-          tHsrc1     = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
+          tHsrc1 = (TblSearch(active_htable,src1));
+          tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
 
          // pokud by cil skoku, nebo zdrojova promenna nebyla v globalni tabulce ->chyba
          if (tHresult==NULL || tHsrc1==NULL) print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje I_JNZ");
-         else 
+         else
          {
-             switch (tHsrc1->type) 
+             switch (tHsrc1->type)
              {
                 case VARINT: // pokud je true, aktivuj zaznam
                   if (tHsrc1->data.varInt!=0) jump = 1;
-                  else  jump = 0;
+                  else jump = 0;
                 break;
 
                 case VARBOOL:
-                  if (tHsrc1->data.varInt!=0)  jump = 1;
-                  else  jump = 0;
+                  if (tHsrc1->data.varInt!=0) jump = 1;
+                  else jump = 0;
                 break;
 
-                case VARDOUBLE:  
-                  if (tHsrc1->data.varDouble!=0.0)  jump = 1; 
-                  else  jump = 0;
+                case VARDOUBLE:
+                  if (tHsrc1->data.varDouble!=0.0) jump = 1;
+                  else jump = 0;
                 break;
 
-                case STRING:   
-                  if (strcmp(tHsrc1->data.varString,"")!=0)  jump = 1;
-                  else  jump = 0;
+                case STRING:
+                  if (strcmp(tHsrc1->data.varString,"")!=0) jump = 1;
+                  else jump = 0;
                 break;
 
                 default: // chyba
                 break;
              }
 
-           if (jump) 
-            {  // proved skok - nejsu si jistej typama
+           if (jump)
+            { // proved skok - nejsu si jistej typama
                ActivePtrItem (ActiveList,((TLItem *)tHresult->data.pointer));
             }
          }
