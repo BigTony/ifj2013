@@ -370,7 +370,7 @@ TExpType skipNonTerm(TStack *stack){
 	return b;
 }
 
-void ExEx(int ifYes,char * result){
+int ExEx(int ifYes,char * result){
 
 	tokenValue value;
 	if(ifYes == IF){
@@ -378,9 +378,12 @@ void ExEx(int ifYes,char * result){
 			print_error(E_SYN,"chyby ( v ifu");
 		}
 	}else{
-		if(getToken_test(g_ptrs->source,g_ptrs->token) == STREDNIK){
+		int c = getToken_test(g_ptrs->source,g_ptrs->token);
+		if((c == STREDNIK) || (c == ZAV_SLOZ_L)){
 			print_error(E_SYN,"syntax error $a = ;");
 		}
+		if(c == IDENTIFIKATOR)
+			return 1;
 
 	}
 
@@ -455,10 +458,8 @@ void ExEx(int ifYes,char * result){
 			SPopAll(&stack);
 			print_error(E_SYN,"chyba tabulka vratila neexistujici hodnotu");
 		}
-				printf("-------\n");
-		printstack(&stack);
-		printf("-------\n");
 	}
+	return 0;
 
 }
 

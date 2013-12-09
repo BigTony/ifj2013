@@ -56,7 +56,9 @@ void defVar(tokenValue value){
 		print_error(E_SYN,"chyba v syntaxi ocekavano = pri prirazeni promene");
 	}else{
 		printf("lezu do vyrazu\n");
-		ExEx(0,var_name);
+		if(ExEx(0,var_name)){
+			// je tam identifikator
+		}
 		printf("jsem zpet z vyrazu\n");
 	}
 }
@@ -94,9 +96,6 @@ void defIf(){
 
 // cyklus while
 void defWhile(){
-	if(getToken_test(g_ptrs->source,g_ptrs->token) != ZAV_JEDN_L){
-		print_error(E_SYN,"chyba leva zavorka u while");
-	}else{
 		char* TmpExp=gen_id(g_ptrs->counter);
 		char* TmpJmp=gen_id(g_ptrs->counter);
 		char* TmpJmp1=gen_id(g_ptrs->counter);
@@ -104,16 +103,11 @@ void defWhile(){
 		ExEx(IF,TmpExp); // vyhodnoceni vyrazu	
 		InsertInstLast (g_ptrs->act_list_inst,TmpExp,NULL,TmpJmp1,I_JZ);
 		
-		if(getToken_test(g_ptrs->source,g_ptrs->token) != ZAV_SLOZ_L){
-			print_error(E_SYN,"chyby slozena leva zavorka u while");
-		}else{
-			classify();
+		classify();
 		InsertInstLast (g_ptrs->act_list_inst,TmpExp,NULL,TmpJmp,I_JZ);
 		InsertInstLast (g_ptrs->act_list_inst,NULL,NULL,NULL,I_LAB);
 		add_const_hashtbl(g_ptrs->main_symobol_tbl, IDENTIFIKATOR, (tokenValue)(void*)g_ptrs->act_list_inst->Last, TmpJmp1);			
 		return;
-		}
-	}
 }
 
 // retuuurn
