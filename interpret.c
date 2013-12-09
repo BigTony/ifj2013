@@ -471,9 +471,15 @@ void interpret (tHashTbl *global_htable, TList *L)
                {
                    // vysledek bude int
                    TypeOF = VARDOUBLE;
+<<<<<<< HEAD
+                   todouble(tHsrc1);
+                   todouble(tHsrc2);
+                   tmp.varDouble = (double)(tHsrc1->data.varDouble / tHsrc2->data.varDouble);
+=======
                   // todouble(tHsrc1);
                   // todouble(tHsrc2);
                    tmp.varDouble = (double)((double)(tHsrc1->data.varInt) / (double)(tHsrc2->data.varInt));
+>>>>>>> b921eb48732c217c4fa50d9eb3c8b6e13b380f0d
                }
               else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
                {
@@ -1158,6 +1164,7 @@ void interpret (tHashTbl *global_htable, TList *L)
 
          /*========================I_JMP=========================*/
          case I_JMP:
+         printf("==========================================================================\n");
          // nactu result z INSTRUKCE
          result = instr->result;
 
@@ -1168,6 +1175,7 @@ void interpret (tHashTbl *global_htable, TList *L)
          if (tHresult==NULL) print_error(E_SEM_OTHER, "cil skoku v lokalni TS neexistuje [I_JMP]");
          else 
          {
+
               // aktivuje instrukci v prave aktivnim listu, nejsu si jistej typama
               ActivePtrItem (ActiveList,((TLItem *)tHresult->data.pointer));
          }
@@ -1203,6 +1211,7 @@ void interpret (tHashTbl *global_htable, TList *L)
                 break;
 
                 case VARBOOL:
+                  printf("NIGGGAAAA\n");
                   if (tHsrc1->data.varInt==0)  jump = 1;
                   else  jump = 0;
                 break;
