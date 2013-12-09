@@ -471,22 +471,33 @@ void interpret (tHashTbl *global_htable, TList *L)
                {
                    // vysledek bude int
                    TypeOF = VARDOUBLE;
-
-
                   // todouble(tHsrc1);
                   // todouble(tHsrc2);
                    tmp.varDouble = (double)((double)(tHsrc1->data.varInt) / (double)(tHsrc2->data.varInt));
+
+
                }
               else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
                {
                    // vysledek bude double
                    TypeOF = VARDOUBLE;
+                   printf("======\n");
+                   printf("%g\n",tHsrc1->data.varDouble);
+                   printf("%g\n",tHsrc2->data.varDouble);
+                   printf("======\n");
 
                    // pokud prvni double a druhy int, int pretypuju a naopak
-                   if (dataType1==VARDOUBLE && dataType2==VARINT)
+                   if (dataType1==VARDOUBLE && dataType2==VARINT){
                        tmp.varDouble = (tHsrc1->data.varDouble / (double) (tHsrc2->data.varInt));
-                   else
-                       tmp.varDouble = ( (double) (tHsrc1->data.varInt) / tHsrc2->data.varDouble);
+                    }
+                   else if(dataType1==VARINT && dataType2==VARDOUBLE)
+                       tmp.varDouble = (  (double)(tHsrc1->data.varInt) / tHsrc2->data.varDouble);
+                    else if(dataType1==VARDOUBLE && dataType2==VARDOUBLE)
+                      tmp.varDouble = (tHsrc1->data.varDouble / tHsrc2->data.varDouble);
+
+                  printf("-----------KOKOT\n");
+                   printf("%g\n",tmp.varDouble);
+                   printf("PES___________\n");
                }
                else {
                   print_error(E_SEM_TYPE, "vadny typ operandu [I_DIV]");
@@ -497,7 +508,7 @@ void interpret (tHashTbl *global_htable, TList *L)
                 {
                    if (dataType1==VARINT && dataType2==VARINT)
                    {
-                     tHresult->data.varInt = tmp.varInt; // uloim soucet do te exitusjici
+                     tHresult->data.varDouble = tmp.varDouble; // uloim soucet do te exitusjici
                      tHresult->type=TypeOF;
                     }
                    else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
