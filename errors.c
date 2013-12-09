@@ -42,7 +42,7 @@ void print_error(int err_code, char* err_msg){
 	}
 	if (err_msg!=NULL)
 	{	
-		printf ("\nAditional description:\n---------------------------------------\n||    %s     ||\n---------------------------------------\n",err_msg);
+		printf ("\nAditional description:\n---------------------------------------\n||     %s      ||\n---------------------------------------\n",err_msg);
 	}
 	destr_global();
 	exit(err_code);
