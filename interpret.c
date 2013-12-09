@@ -524,7 +524,7 @@ void interpret (tHashTbl *global_htable, TList *L)
          dataType2 = tHsrc2->type;
 
          // overeni jestli data ubec existuji
-         if (tHsrc1!=NULL || tHsrc2!=NULL)  print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje");
+         if (tHsrc1==NULL || tHsrc2==NULL)  print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje");
 
          /// cekni typ pro konkatenaci
          if (dataType1==STRING && dataType2==STRING)
@@ -683,7 +683,7 @@ void interpret (tHashTbl *global_htable, TList *L)
 
          datTyp=0;
 
-         if (tHsrc1!=NULL || tHsrc2!=NULL) print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje");
+         if (tHsrc1==NULL || tHsrc2==NULL) print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje");
 
          if (tHsrc1->type==tHsrc2->type)
          {
@@ -749,7 +749,7 @@ void interpret (tHashTbl *global_htable, TList *L)
 
          datTyp=0;
 
-         if (tHsrc1!=NULL || tHsrc2!=NULL) print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje");
+         if (tHsrc1==NULL || tHsrc2==NULL) print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje");
 
          if (tHsrc1->type==tHsrc2->type)
          {
@@ -814,7 +814,7 @@ void interpret (tHashTbl *global_htable, TList *L)
 
          datTyp=0;
 
-         if (tHsrc1!=NULL || tHsrc2!=NULL) print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje");
+         if (tHsrc1==NULL || tHsrc2==NULL) print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje");
 
          if (tHsrc1->type==tHsrc2->type)
          {
@@ -881,7 +881,7 @@ void interpret (tHashTbl *global_htable, TList *L)
 
          datTyp=0;
 
-         if (tHsrc1!=NULL || tHsrc2!=NULL) print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje");
+         if (tHsrc1==NULL || tHsrc2==NULL) print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje");
 
          if (tHsrc1->type==tHsrc2->type)
          {
@@ -947,7 +947,7 @@ void interpret (tHashTbl *global_htable, TList *L)
 
          datTyp=0;
 
-         if (tHsrc1!=NULL || tHsrc2!=NULL) print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje");
+         if (tHsrc1==NULL || tHsrc2==NULL) print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje");
 
          if (tHsrc1->type!=tHsrc2->type)
          {
