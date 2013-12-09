@@ -15,24 +15,11 @@
 #include "scaner.h"
 #include <stdio.h>
 
-
-char* vestaveneFunkce[10]={
-    "boolval",      //BOOLVAL
-    "doubleval",    //DOUBLEVAL
-    "intval",       //INTVAL
-    "strval",       //STRVAL
-    "get_string",   //GET_STRING
-    "put_string",   //PUT_STRING
-    "strlen",       //STRLEN
-    "get_substring",//GET_SUBSTRING
-    "find_string",  //FIND_STRING
-    "sort_string",  //SORT_STRING
-};
 //test-vypis nacteneho tokenu
 int getToken_test(FILE *fp,Ttoken *token)
 {
 int i= getToken(fp,token);
-printf("Token ID Load:%d\n",i);
+printf("Token ID Load:%d/n",i);
 return i;
 }
 //////
@@ -125,6 +112,8 @@ int getToken(FILE *fp,Ttoken *token){
                 {
                     c=fgetc(fp);
                 }
+                skipSpace(&c,fp);
+                continue;
             }
             else if(c=='*')
             {
@@ -137,15 +126,16 @@ int getToken(FILE *fp,Ttoken *token){
                     cPom[0]=cPom[1];
                     cPom[1]=fgetc(fp);
                 }
-                //skipSpace(&c,fp);
+                skipSpace(&c,fp);
+                continue;
             }
             else
             {
-                print_error(E_LEX,"LexERROR");
-                return E_LEX;
+                ungetc(c,fp);
+                ungetc('/',fp);
+                //skipSpace(&c,fp);
+                c=fgetc(fp);
             }
-            skipSpace(&c,fp);
-            continue;
         }
         ////////////
         //////////////////
@@ -406,8 +396,12 @@ int getToken(FILE *fp,Ttoken *token){
             if( (c=='_') || isalpha(c)!=0)   // IDENTIFIKATOR ?
             {
                 w[len]=c;
-                do
+                len++;
+                c=fgetc(fp);
+                while(isalnum(c)!=0 || c=='_')
                 {
+                    w[len]=c;
+                    len++;
                     if(len%10==9)
                     {
                       if(reallocString(&w)!=E_OK)
@@ -415,11 +409,9 @@ int getToken(FILE *fp,Ttoken *token){
                           print_error(E_LEX,"LexERROR"); return E_LEX;
                       }
                     }
+
                     c=fgetc(fp);
-                    len++;
-                    w[len]=c;
                 }
-                while(isalnum(c)!=0 || c=='_');
                 //navraceni nasledujiciho znaku ZA identifikatorem (kvuli dowhile)
                 //ulozeni a odeslani tokenu
                 ungetc(c,fp);
