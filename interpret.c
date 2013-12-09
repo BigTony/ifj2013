@@ -116,7 +116,7 @@ void interpret (tHashTbl *global_htable, TList *L)
                 if (dataType==VARINT)
                 {
                    // prepisu data operandu result daty operandu src1
-                   tmp.varInt = (TblSearch (active_htable, src1))->data.varInt;
+                   tmp.varInt = (tHsrc1)->data.varInt;
 
                      // POKUD operand do ktereho prirazuju jiz exituje, tak jeho data prepisu
                      if (tHresult!=NULL)
