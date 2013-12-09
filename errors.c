@@ -20,13 +20,19 @@ void print_error(int err_code, char* err_msg){
 			fprintf(stderr, "Chyba v programu v ramci syntakticke analyzy!\n");
 			break;
 		case E_SEM_FCE:
+			break;
 		case E_SEM_PARAM:
+			break;
 		case E_SEM_VAR:
+			break;
 		case E_SEM_DIV_ZERO:
+			break;
 		case E_SEM_DOUBLEVAL:
+			break;
 		case E_SEM_TYPE:
+			break;
 		case E_SEM_OTHER:
-			fprintf(stderr, "Semanticky nebo behova chyba v programu!\n");
+			fprintf(stderr, "Semanticka nebo behova chyba v programu!\n");
 			break;
 		case E_INTERN:
 			fprintf(stderr, "Interni chyba interpretu!\n");
@@ -36,7 +42,7 @@ void print_error(int err_code, char* err_msg){
 	}
 	if (err_msg!=NULL)
 	{	
-		printf ("Aditional description:\n---------------------------------------\n%s\n",err_msg);
+		printf ("\nAditional description:\n---------------------------------------\n||    %s     ||\n---------------------------------------\n",err_msg);
 	}
 	destr_global();
 	exit(err_code);

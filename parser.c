@@ -74,32 +74,46 @@ void defIf(){
 	if(getToken_test(g_ptrs->source,g_ptrs->token) != ZAV_SLOZ_L){
 		print_error(E_SYN,"chyby leva slozena zavorka u if {");
 	}else{
-		pushStackIE(g_ptrs->IEStack,g_ptrs->token->id); // { ulozym na zasobnik
 		classify();
 		InsertInstLast (g_ptrs->act_list_inst,NULL,NULL,NULL,I_LAB);
 		add_const_hashtbl(g_ptrs->main_symobol_tbl, IDENTIFIKATOR, (tokenValue)(void*)g_ptrs->act_list_inst->Last, TmpJmp);
 		//ulozeni nazvu a odkazu navesti do globalni tabulky
-		return;
+		if(getToken_test(g_ptrs->source,g_ptrs->token) != ELSE){
+		print_error(E_SYN,"chyby else i if");
+		}
+		else{
+			if(getToken_test(g_ptrs->source,g_ptrs->token) != ZAV_SLOZ_L){
+				print_error(E_SYN,"chyby leva slozena zavorka u else {");
+			}
+			else{
+				classify();
+			}
+		}		
 	}
+	return;
 }
 
-void defElse(){
-return;
-}
+
 // cyklus while
 void defWhile(){
 	if(getToken_test(g_ptrs->source,g_ptrs->token) != ZAV_JEDN_L){
 		print_error(E_SYN,"chyba leva zavorka u while");
 	}else{
-		// vyhodnoceni vyrazu
-		// vytvoreni 3AC
+		char* TmpExp=gen_id(g_ptrs->counter);
+		char* TmpJmp=gen_id(g_ptrs->counter);
+		char* TmpJmp1=gen_id(g_ptrs->counter);
+		add_const_hashtbl(g_ptrs->main_symobol_tbl, IDENTIFIKATOR, (tokenValue)(void*)g_ptrs->act_list_inst->Last, TmpJmp);
+		ExEx(IF,TmpExp); // vyhodnoceni vyrazu	
+		InsertInstLast (g_ptrs->act_list_inst,TmpExp,NULL,TmpJmp1,I_JZ);
+		
 		if(getToken_test(g_ptrs->source,g_ptrs->token) != ZAV_SLOZ_L){
 			print_error(E_SYN,"chyby slozena leva zavorka u while");
 		}else{
-			// { ulozym na zasobnik
 			classify();
-			// vytvoreni 3AC podmineneho obsahu skoku1
-			return;
+		InsertInstLast (g_ptrs->act_list_inst,TmpExp,NULL,TmpJmp,I_JZ);
+		InsertInstLast (g_ptrs->act_list_inst,NULL,NULL,NULL,I_LAB);
+		add_const_hashtbl(g_ptrs->main_symobol_tbl, IDENTIFIKATOR, (tokenValue)(void*)g_ptrs->act_list_inst->Last, TmpJmp1);			
+		return;
 		}
 	}
 }
@@ -160,33 +174,54 @@ void callFunction(tokenValue value){
 }
 
 // vyber spravnej postup pro token
-void classify(){
-	printf("sem v clasify\n");
+void main_classify(){
+	printf("sem v main clasify\n");
 	while (getToken_test(g_ptrs->source,g_ptrs->token)!=KONEC)
 	{
-		printf("sem ve whilu clasify\n");		
+		printf("sem ve whilu main clasify\n");		
 		// token je bud promena nebo volani fce
 		if(g_ptrs->token->id == VARIABLE){
 			printf("VARIABLE\n");
 			defVar(g_ptrs->token->value);	
-		}else if(g_ptrs->token->id == IDENTIFIKATOR){
-			callFunction(g_ptrs->token->value);
 		}else if(g_ptrs->token->id == FUNCTION){
 			defFunction(g_ptrs->token->value);
 		}else if(g_ptrs->token->id == IF){
 			defIf();
 		}else if(g_ptrs->token->id == WHILE){
 			defWhile();
-			break;
 		}else if(g_ptrs->token->id == RETURN){
 			defReturn();
-		}else if(g_ptrs->token->id == ELSE){
-			defElse();
-		}else if(g_ptrs->token->id == ZAV_SLOZ_P){
-			// zkontroluje jestli je na zasobniku }
+		}else{
+		   print_error(E_SYN,"neocekavany token v main_clasify");
 		}
 	}
-	//zkontroluj jesti je zasobnik prazdny
+}
+
+
+
+// vyber spravnej postup pro token
+void classify(){
+	printf("sem v clasify\n");
+	while (getToken_test(g_ptrs->source,g_ptrs->token)!= ZAV_SLOZ_P)
+	// zkontroluje jestli je token }, kdyz jo tak konci
+	{
+		printf("sem ve whilu clasify\n");		
+		// token je bud promena nebo volani fce
+		if(g_ptrs->token->id == VARIABLE){
+			printf("VARIABLE\n");
+			defVar(g_ptrs->token->value);	
+		}else if(g_ptrs->token->id == IF){
+			defIf();
+		}else if(g_ptrs->token->id == WHILE){
+			defWhile();
+		}else if(g_ptrs->token->id == RETURN){
+			defReturn();
+		}
+			
+		else{
+		   print_error(E_SYN,"neocekavany token v clasify");
+		}
+	}
 }
 
 void parser(tPointers *ptrs){
@@ -197,11 +232,12 @@ void parser(tPointers *ptrs){
 	InitList((g_ptrs->list_instr=CreateList())); // init listu instrukci
 	printf("init listuOK\n");
 	printf("ziskavam token\n");
+	
 	getToken_test(g_ptrs->source,g_ptrs->token);
-	printf("mam token\n");
+
 	if (g_ptrs->token->id == START){
 			printf("clasify?\n");
-			classify();
+			main_classify();
 			printf("clasify end?\n");
 		}
 	else{
