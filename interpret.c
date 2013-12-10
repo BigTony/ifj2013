@@ -1172,6 +1172,7 @@ struct item *nextItem;
          case I_RETURN:
          // nactu id src1 z INSTRUKCE
          src1 = instr->src1;
+         result = instr->result;
 
          // nactu id src1 z HASH nebo GLOBAL hash tabulky
          tHsrcGlob1 = (TblSearch (global_htable, src1));//global
@@ -1181,34 +1182,52 @@ struct item *nextItem;
          if (tHsrc1==NULL) print_error(E_SEM_OTHER, "id v lokalni ani globalni TS neexistuje [I_RETURN]");
          else 
          {
-             switch (tHsrc1->type)
+              switch (tHsrc1->type)
+              {
+                 case VARINT:
+                   TypeOF = VARINT;
+                   tmp.varInt=tHsrc1->data.varInt;
+                 break;
+
+                 case VARBOOL:
+                   TypeOF = VARBOOL;
+                   tmp.varInt=tHsrc1->data.varInt;
+                 break;
+
+                 case VARDOUBLE:
+                   TypeOF = VARDOUBLE;
+                   tmp.varDouble=tHsrc1->data.varDouble;
+                 break;
+
+                 case STRING:
+                   TypeOF = STRING;
+                   tmp.varString=tHsrc1->data.varString;
+                 break;
+
+                 default: // chyba
+                 break;
+              }
+
+              // smazu aktivni tabulku
+              TblDelete (active_htable);
+
+              // pop stack
+              popStack(g_ptrs->function_stack);
+
+              // load active table
+              tHashTbl *local_htable_Fce = &((topStack(g_ptrs->function_stack))->hashTbl);
+
+              //Aktivuj lokalni TS fce
+              active_htable = local_htable_Fce;
+
+             tHresult = (TblSearch (active_htable, result));
+             if (tHresult!=NULL); // neuvazuju
+             else 
              {
-                case VARINT:
-                  TypeOF = VARINT;
-                  tmp.varInt=tHsrc1->data.varInt;
-                break;
-
-                case VARBOOL:
-                  TypeOF = VARBOOL;
-                  tmp.varInt=tHsrc1->data.varInt;
-                break;
-
-                case VARDOUBLE:
-                  TypeOF = VARDOUBLE;
-                  tmp.varDouble=tHsrc1->data.varDouble;
-                break;
-
-                case STRING:
-                  TypeOF = STRING;
-                  tmp.varString=tHsrc1->data.varString;
-                break;
-
-                default: // chyba
-                break;
+                  //vloz polozku
+                  TblInsert (active_htable, result, tmp, TypeOF);
              }
 
-             // pop
-             TblInsert (local_htable_Fce, src1, tmp, TypeOF);
          }
          break;
 
@@ -1345,9 +1364,6 @@ struct item *nextItem;
          // nactu id src1,src2 & result z GLOBALNI HASH tabulky
          tHresult = (TblSearch (global_htable, result));
 
-
-         printf("%s kokotihlava %s \n",src1,result);
-
          // pokud by cil skoku, nebo zdrojova promenna nebyla v globalni tabulce ->chyba
          if (tHresult==NULL || tHsrc1==NULL) 
             print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje I_JZ");
@@ -1382,7 +1398,6 @@ struct item *nextItem;
 
            if (jump)
             { // proved skok - nejsu si jistej typama
-              printf("SKACU!\n");
                ActivePtrItem (ActiveList,((TLItem *)tHresult->data.pointer));
             }
          }
