@@ -24,6 +24,8 @@ void print_error(int err_code,char* err_msg);
 struct tPointers;
 // typedef tPointers tPointers;
 
+void destr_global();
+
 #endif
 
 
