@@ -38,7 +38,7 @@ void interpret (tHashTbl *global_htable, TList *L)
    // data aktualni instrukce z HASH table
    item *tHsrc1, *tHsrcGlob1;
    item *tHsrc2, *tHsrcGlob2;
-   item *tHresult;
+   item *tHresult = NULL;
 
    // POMOCNE PROMENNE
    int dataType,dataType1,dataType2;
@@ -1314,9 +1314,6 @@ struct item *nextItem;
           /*posun se na dalsi instrukci*/
         ActiveNextItem (ActiveList);
   }
-  printf("======Tabulky po assertu======\n");
-  TblPrint(global_htable);
-  TblPrint(active_htable);
-  printf("============\n");
+
 // end func
 }

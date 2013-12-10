@@ -27,7 +27,7 @@ typedef struct tSHashItem{
 	struct tSHashItem *ptrNext;
 } *tStackItemPtr;
 
-typedef struct {
+typedef struct tHashTblStack{
 	tStackItemPtr top;
 } tHashTblStack;
 
@@ -38,24 +38,6 @@ tStackItemPtr topStack(tHashTblStack *stack);
 int emptyStack(tHashTblStack *stack);
 void freeStack(tHashTblStack *stack);
 
-// struktury pro zasobnik
-// ktery bude pouzivat if else
-//
-typedef struct tSItemIE{
-	int zavorka;
-	struct tSItemIE *ptrNext;
-}*tStackItemIEPtr;
-
-typedef struct {
-	tStackItemIEPtr top;
-} tIfElseStack;
-
-void initStackIE(tIfElseStack *stack);
-void pushStackIE(tIfElseStack *stack,int symbol);
-void popStackIE(tIfElseStack *stack);
-tStackItemIEPtr topStackIE(tIfElseStack *stack);
-int emptyStackIE(tIfElseStack *stack);
-void freeStackIE(tIfElseStack *stack);
 #endif
 
 
