@@ -81,9 +81,10 @@ void TblInsert (tHashTbl *tab, char* key,tokenValue data, int type)
 		AddNew->key = key;
 		AddNew->data = data; /// [**data**]
 		AddNew->type = type;
-		/// navazuju
-	   AddNew->nextItem=tab->tableItems[Hashed];
-      tab->tableItems[Hashed]=AddNew;
+		
+               /// navazuju
+	       AddNew->nextItem=tab->tableItems[Hashed];
+               tab->tableItems[Hashed]=AddNew;
 	}
 	else
 	{

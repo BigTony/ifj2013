@@ -40,8 +40,10 @@ typedef enum {
 
 //===== call & return fce =================
 
-   I_CALL,     // 12
-   I_RETURN,   // 13
+   I_TSW,   //    | src1 ... ...
+   I_PARAM, //    | src1 ... ...
+   I_CALL,  //    | src1 ... ...
+   I_RETURN,//    | src1 ... result
 
 //===== vestavene funkce =================
 
