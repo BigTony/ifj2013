@@ -213,3 +213,54 @@ TInstr * ReturnActiveInstr (TList *L)
  return NULL;
 }
 
+// debug INSTRUKCNIHO SEZNAMU
+void PrintList (TList *L) 
+{
+	char pole[28][15]= 
+	{
+	    "I_ASS\0",
+	    "I_ADD\0",
+	    "I_SUB\0",
+	    "I_MUL\0",
+	    "I_DIV\0",
+	    "I_CON\0",
+
+	    "I_G\0",
+	    "I_GE\0",
+	    "I_L\0",
+	    "I_LE\0",
+	    "I_ET\0",
+	    "I_NET\0",
+
+	    "I_I_CALL\0",
+	    "I_RETURN\0",
+
+	    "I_BOOLVAL\0",
+	    "I_DOUBLEVAL\0",
+	    "I_INTVAL\0",
+	    "I_STRVAL\0",
+
+	    "I_SORT\0",
+	    "I_FIND\0",
+	    "I_STRL\0",
+	    "I_PUTS\0",
+	    "I_GETS\0",
+	    "I_GETSU\0",
+	    "I_JMP\0",
+	    "I_JZ\0",
+	    "I_JNZ\0",
+	    "I_LAB\0",
+	};
+
+TLItem *tmp=NULL;
+
+  while (L->First!=NULL) 
+  {
+         printf (" -----------\n");
+         printf (" |-- %s--|\n", pole[L->First->Instruction->operation]);
+         printf (" -----------\n");
+         L->First =  L->First->Next;
+  }
+
+}
+
