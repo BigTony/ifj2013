@@ -1314,6 +1314,7 @@ struct item *nextItem;
           /*posun se na dalsi instrukci*/
         ActiveNextItem (ActiveList);
   }
-
+  TblPrint(active_htable);
+  TblPrint(global_htable);
 // end func
 }

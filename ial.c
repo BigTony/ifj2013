@@ -124,11 +124,18 @@ void TblDelete (tHashTbl *tab)
 	while (tab->tableItems[key]!=NULL)
 	{
 	    Temp=tab->tableItems[key]->nextItem; /// ulozim nasledujici polozku
+	    free(tab->tableItems[key]->key);
+	    if(tab->tableItems[key]->type < 5){
+	    	if(tab->tableItems[key]->data.varString != NULL){
+	    		free(tab->tableItems[key]->data.varString);
+	    	}
+	    }
 	    free (tab->tableItems[key]);
 	    tab->tableItems[key] = Temp;         /// navazeme na nasledujici polozku
 	}
 	tab->tableItems[key]=NULL;	         /// polozka je jiz prazdna
   }
+  free(tab);
 }
 
 

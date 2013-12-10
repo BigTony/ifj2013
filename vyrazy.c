@@ -49,6 +49,9 @@ void SPop(TStack *stack){
 	TSItemPtr temp;
 	if(stack->top != NULL){
 		temp = stack->top;
+		// if(stack->top->var.varString != 0){
+		// 	free(stack->top->var.varString);
+		// }
 		stack->top = stack->top->ptrNext;
 		free(temp);
 	}
@@ -471,7 +474,9 @@ int ExEx(int ifYes,char * result){
 			print_error(E_SYN,"chyba tabulka vratila neexistujici hodnotu");
 		}
 	}
+
 	InsertInstLast (g_ptrs->act_list_inst,(char *)stack.top->var.varString,NULL,result,I_ASS);
+	SPopAll(&stack);
 	return 0;
 
 }

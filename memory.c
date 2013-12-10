@@ -26,22 +26,29 @@ void init_global()
 	g_ptrs->function_stack=NULL;
 	g_ptrs->list_instr=NULL;
 	g_ptrs->act_list_inst=NULL;
-	g_ptrs->source=NULL;
-   g_ptrs->IEStack=NULL;		
+	g_ptrs->source=NULL;	
 }
 /**Dealokace globalni tabulky pointru
  *@param tPointers: ukazatel na globalni tabuku pointru   
  */   
-void destr_global()
-{	
-
-if (g_ptrs->source!=NULL)
-{
- 	fclose(g_ptrs->source);
-}
-if (	g_ptrs->counter!=NULL)
-{
- 	free(g_ptrs->counter);
-}
- 	free(g_ptrs);
+void destr_global(){	
+	if (g_ptrs->source!=NULL){
+ 		fclose(g_ptrs->source);
+	}
+	if (g_ptrs->counter!=NULL){
+	 	free(g_ptrs->counter);
+	}
+	if (g_ptrs->main_symobol_tbl != NULL){
+		TblDelete(g_ptrs->main_symobol_tbl);
+	}
+	if (g_ptrs->function_stack != NULL){
+		freeStack(g_ptrs->function_stack);
+	}
+	// if (g_ptrs->list_instr != NULL){
+	// 	free(g_ptrs->list_instr);
+	// }
+	// if (g_ptrs->act_list_inst != NULL){
+	// 	free(g_ptrs->act_list_inst);
+	// }
+	free(g_ptrs);
 }

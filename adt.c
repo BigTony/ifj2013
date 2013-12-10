@@ -58,8 +58,15 @@ int emptyStack(tHashTblStack *stack){
 }
 
 void freeStack(tHashTblStack *stack){
+	tStackItemPtr temp;
 	while(!emptyStack(stack)){
-		popStack(stack);
+		while(stack->top != NULL){
+			TblDelete(stack->top->hashTbl);
+			// uvolneni polozky stacku a prepnuti na dalsi
+			temp = stack->top;
+			stack->top = stack->top->ptrNext;
+			free(temp);
+		}
 	}        
 	free(stack);
 }
