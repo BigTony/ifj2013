@@ -1099,7 +1099,7 @@ struct item *nextItem;
          src1 = instr->src1;
          
          // lokalni TS funkce
-         //tHashTbl *local_htable_Fce = &((topStack(g_ptrs->function_stack))->hashTbl);
+         tHashTbl *local_htable_Fce = &((topStack(g_ptrs->function_stack))->hashTbl);
 
          // nactu data na prohledani 3 TS
          tHsrcGlob1 = (TblSearch (global_htable, src1));//global
