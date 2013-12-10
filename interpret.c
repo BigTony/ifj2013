@@ -1362,14 +1362,9 @@ struct item *nextItem;
           /*posun se na dalsi instrukci*/
         ActiveNextItem (ActiveList);
   }
-<<<<<<< HEAD
-  TblPrint(active_htable);
-  TblPrint(global_htable);
-=======
   printf("======Tabulky po assertu======\n");
   TblPrint(global_htable);
   TblPrint(active_htable);
   printf("============\n");
->>>>>>> b8b7edf8b75637e444d69843725e27f881bcd580
 // end func
 }
