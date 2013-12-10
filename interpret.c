@@ -37,7 +37,8 @@ void interpret (tHashTbl *global_htable, TList *L)
 
    // data aktualni instrukce z HASH table
    item *tHsrc1, *tHsrcGlob1;
-   item *tHsrc2, *tHsrcGlob2, *tHsrcGlob3;
+   item *tHsrc2, *tHsrcGlob2;
+   item *tHsrcLocF1,*tHsrcLocF2;
    item *tHresult = NULL;
 
    // POMOCNE PROMENNE
@@ -89,13 +90,17 @@ void interpret (tHashTbl *global_htable, TList *L)
 
       /// item* TblSearch (tHashTbl *tab, itemKey key);
       /// void TblInsert (tHashTbl *tab, itemKey key, tokenValue data, int type);
-
+/*
           printf("====PROVADENA INSTRUKCE=====\n");
           printf("%i\n",instr->operation);
           printf("%s\n",instr->src1);
           printf("%s\n",instr->src2);
           printf("%s\n",instr->result);
           printf("============================\n");
+*/
+
+// PrintList píčo.
+PrintList (L);
 
       switch (instr->operation)
       {
@@ -1092,17 +1097,52 @@ struct item *nextItem;
          case I_PARAM:
          // nactu id src1,src2 & result z INSTRUKCE
          src1 = instr->src1;
+         
+         // lokalni TS funkce
+         //tHashTbl *local_htable_Fce = &((topStack(g_ptrs->function_stack))->hashTbl);
 
-         // nactu id src1 z HASH nebo GLOBAL hash tabulky
+         // nactu data na prohledani 3 TS
          tHsrcGlob1 = (TblSearch (global_htable, src1));//global
+         //tHsrcLocF1 = (TblSearch (local_htable_Fce, src1));
          tHsrc1 = (TblSearch (active_htable, src1));
-         tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
-         break;
+         tHsrc1 =  (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
 
+         if (tHsrc1==NULL) print_error(E_SEM_OTHER, "id funkce v lokalni ani globalni TS neexistuje [I_PARAM]");
+         else 
+         {
+             switch (tHsrc1->type)
+             {
+                case VARINT:
+                  TypeOF = VARINT;
+                  tmp.varInt=tHsrc1->data.varInt;
+                break;
+
+                case VARBOOL:
+                  TypeOF = VARBOOL;
+                  tmp.varInt=tHsrc1->data.varInt;
+                break;
+
+                case VARDOUBLE:
+                  TypeOF = VARDOUBLE;
+                  tmp.varDouble=tHsrc1->data.varDouble;
+                break;
+
+                case STRING:
+                  TypeOF = STRING;
+                  tmp.varString=tHsrc1->data.varString;
+                break;
+
+                default: // chyba
+                break;
+             }
+
+            TblInsert (local_htable_Fce, src1, tmp, TypeOF);
+         }
+         break;
 
          /*========================I_CALL=========================*/
          case I_CALL:
-         // nactu id src1,src2 & result z INSTRUKCE
+         // nactu id src1 z INSTRUKCE
          src1 = instr->src1;
 
          // nactu id src1 z HASH nebo GLOBAL hash tabulky
@@ -1110,17 +1150,66 @@ struct item *nextItem;
          tHsrc1 = (TblSearch (active_htable, src1));
          tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
  
+         // lokalni TS dane funkce
+         tHashTbl *local_htable_Fce = &((topStack(g_ptrs->function_stack))->hashTbl);
+
          if (tHsrc1==NULL) print_error(E_SEM_OTHER, "id funkce v lokalni ani globalni TS neexistuje [I_CALL]");
          else 
          {
+              //ulozeni navratove adresy na stack
+              (TLItem*)(/*&*/((topStack(g_ptrs->function_stack)).hashTbl->data.pointer)) = L->Act->Next;
 
+              // prepnu listy
+              ActiveList = (TLItem*)tHsrc1->data.pointer;
 
+              // prepnuti kontextu
+              active_htable = local_htable_Fce;
          }
          break;
 
 
          /*========================I_RETURN=========================*/
          case I_RETURN:
+         // nactu id src1 z INSTRUKCE
+         src1 = instr->src1;
+
+         // nactu id src1 z HASH nebo GLOBAL hash tabulky
+         tHsrcGlob1 = (TblSearch (global_htable, src1));//global
+         tHsrc1 = (TblSearch (active_htable, src1));
+         tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
+
+         if (tHsrc1==NULL) print_error(E_SEM_OTHER, "id v lokalni ani globalni TS neexistuje [I_RETURN]");
+         else 
+         {
+             switch (tHsrc1->type)
+             {
+                case VARINT:
+                  TypeOF = VARINT;
+                  tmp.varInt=tHsrc1->data.varInt;
+                break;
+
+                case VARBOOL:
+                  TypeOF = VARBOOL;
+                  tmp.varInt=tHsrc1->data.varInt;
+                break;
+
+                case VARDOUBLE:
+                  TypeOF = VARDOUBLE;
+                  tmp.varDouble=tHsrc1->data.varDouble;
+                break;
+
+                case STRING:
+                  TypeOF = STRING;
+                  tmp.varString=tHsrc1->data.varString;
+                break;
+
+                default: // chyba
+                break;
+             }
+
+             // pop
+             TblInsert (local_htable_Fce, src1, tmp, TypeOF);
+         }
          break;
 
 
