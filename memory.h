@@ -17,6 +17,7 @@ typedef struct tPointers{
 	struct tIfElseStack *IEStack; //Ukazatel na If else stack 
 	FILE *source;	//ukazatel na v vstupni soubor
 	char * counter;
+	char * param;
 }tPointers;
 
 extern tPointers* g_ptrs;

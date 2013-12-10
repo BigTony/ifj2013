@@ -16,7 +16,9 @@ void init_global()
 		print_error(E_INTERN,"Chyba alokace pameti: init_global");
 	}
 	g_ptrs->counter=allocString();
-	strcpy(g_ptrs->counter,"$$aaaaa\0" );
+	strcpy(g_ptrs->counter,"$$00000\0" );
+	g_ptrs->params=allocString();
+	strcpy(g_ptrs->params,"0000000\0" );
 	//nastavit na $$aaaaa\0
 	if (NULL == (g_ptrs->token=(Ttoken*)malloc(sizeof(Ttoken))))
 	{
