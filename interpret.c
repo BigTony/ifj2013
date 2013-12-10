@@ -1342,7 +1342,6 @@ struct item *nextItem;
          if (tHresult==NULL) print_error(E_SEM_OTHER, "cil skoku v lokalni TS neexistuje [I_JMP]");
          else
          {
-
               // aktivuje instrukci v prave aktivnim listu, nejsu si jistej typama
               ActivePtrItem (ActiveList,((TLItem *)tHresult->data.pointer));
          }
