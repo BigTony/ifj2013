@@ -256,9 +256,9 @@ TLItem *tmp=NULL;
 
   while (L->First!=NULL) 
   {
-         printf (" -----------\n");
-         printf (" |-- %s--|\n", pole[L->First->Instruction->operation]);
-         printf (" -----------\n");
+         printf (" -------------\n");
+         printf (" |-- %s --|\n", pole[L->First->Instruction->operation]);
+         printf (" -------------\n\n");
          L->First =  L->First->Next;
   }
 
