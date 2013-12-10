@@ -88,13 +88,15 @@ void defIf(){
 	ExEx(IF,TmpExp); // vyhodnoceni vyrazu	
 
 	InsertInstLast (g_ptrs->act_list_inst,TmpExp,NULL,TmpJmp,I_JZ);
-	TLItem *tmpItem = g_ptrs->list_instr->Last;
+	// TLItem *tmpItem = g_ptrs->list_instr->Last;
 	// vytvoreni 3AC
 	// vytvoreni 3AC podmineneho skoku1
 	classify();
 	InsertInstLast (g_ptrs->act_list_inst,NULL,NULL,TmpJmp1,I_JMP);
 	InsertInstLast (g_ptrs->act_list_inst,NULL,NULL,NULL,I_LAB);
-	add_const_hashtbl(g_ptrs->main_symobol_tbl, IDENTIFIKATOR, (tokenValue)(void*)g_ptrs->act_list_inst->Last, TmpJmp);
+	tokenValue pretyp;
+	pretyp.varString = (char *) g_ptrs->act_list_inst->Last;
+	add_const_hashtbl(g_ptrs->main_symobol_tbl, IDENTIFIKATOR,pretyp, TmpJmp);
 	//ulozeni nazvu a odkazu navesti do globalni tabulky
 	if(getToken_test(g_ptrs->source,g_ptrs->token) != ELSE){
 	print_error(E_SYN,"chyby else u if");
@@ -105,7 +107,10 @@ void defIf(){
 		}
 		else{
 			classify();
-			add_const_hashtbl(g_ptrs->main_symobol_tbl, IDENTIFIKATOR, (tokenValue)(void*)g_ptrs->act_list_inst->Last, TmpJmp1);
+			InsertInstLast (g_ptrs->act_list_inst,NULL,NULL,NULL,I_LAB);
+			tokenValue pretyp2;
+			pretyp2.varString = (char *) g_ptrs->act_list_inst->Last;
+			add_const_hashtbl(g_ptrs->main_symobol_tbl, IDENTIFIKATOR,pretyp2, TmpJmp1);
 		}
 	}		
 
@@ -118,14 +123,17 @@ void defWhile(){
 		char* TmpExp=gen_id(g_ptrs->counter);
 		char* TmpJmp=gen_id(g_ptrs->counter);
 		char* TmpJmp1=gen_id(g_ptrs->counter);
-		add_const_hashtbl(g_ptrs->main_symobol_tbl, IDENTIFIKATOR, (tokenValue)(void*)g_ptrs->act_list_inst->Last, TmpJmp);
+		tokenValue pretyp;
+		pretyp.varString = (char *) g_ptrs->act_list_inst->Last;
+		add_const_hashtbl(g_ptrs->main_symobol_tbl, IDENTIFIKATOR, pretyp, TmpJmp);
 		ExEx(IF,TmpExp); // vyhodnoceni vyrazu	
 		InsertInstLast (g_ptrs->act_list_inst,TmpExp,NULL,TmpJmp1,I_JZ);
-		
 		classify();
 		InsertInstLast (g_ptrs->act_list_inst,NULL,NULL,TmpJmp,I_JMP);
 		InsertInstLast (g_ptrs->act_list_inst,NULL,NULL,NULL,I_LAB);
-		add_const_hashtbl(g_ptrs->main_symobol_tbl, IDENTIFIKATOR, (tokenValue)(void*)g_ptrs->act_list_inst->Last, TmpJmp1);			
+		tokenValue pretyp2;
+		pretyp2.varString = (char *) g_ptrs->act_list_inst->Last;
+		add_const_hashtbl(g_ptrs->main_symobol_tbl, IDENTIFIKATOR, pretyp2, TmpJmp1);			
 		return;
 }
 
@@ -260,21 +268,15 @@ void classify(){
 
 void parser(tPointers *ptrs){
 	tableInit(&(g_ptrs->main_symobol_tbl)); // init globalni tabulky symbolu
-	printf("init tabulkyOK\n");
-	printf("init stackuOK\n");
 	InitList((g_ptrs->list_instr=CreateList())); // init listu instrukci
-	g_ptrs->act_list_inst = g_ptrs->list_instr;
-	printf("init listuOK\n");
-	printf("ziskavam token\n");
-	
+	g_ptrs->act_list_inst = g_ptrs->list_instr;	
 	getToken_test(g_ptrs->source,g_ptrs->token);
-
 	if (g_ptrs->token->id == START){
 			printf("clasify?\n");
 			main_classify();
 			printf("clasify end?\n");
 			printf("-----zaciname interpretovat------\n");
-			interpret (g_ptrs->main_symobol_tbl, g_ptrs->list_instr);
+			interpret(g_ptrs->main_symobol_tbl, g_ptrs->list_instr);
 		}
 	else{
 		print_error(E_SYN,"nazacatku neni <php");

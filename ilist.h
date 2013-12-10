@@ -19,50 +19,53 @@ typedef enum {
 
 //===== aritmeticke operace ==============
 		 // src1 src2 result
-   I_ASS,  // =   | src1 ...  result 
-   I_ADD,  // +   | src1 src2 result
-   I_SUB,  // -   | src1 src2 result
-   I_MUL,  // *   | src1 src2 result
-   I_DIV,  // /   | src1 src2 result
+   I_ASS,  // =   | src1 ...  result 0
+   I_ADD,  // +   | src1 src2 result 1
+   I_SUB,  // -   | src1 src2 result 2
+   I_MUL,  // *   | src1 src2 result 3
+   I_DIV,  // /   | src1 src2 result 4
 
 //===== Řetězcový operátor, konkatenace ==
 
-   I_CON,  // .   | src1 src2 result 
+   I_CON,  // .   | src1 src2 result 5
 
 //===== logické operace ==================
 
-   I_G,    // >   | src1 src2 result
-   I_GE,   // >=  | src1 src2 result
-   I_L,    // <   | src1 src2 result
-   I_LE,   // <=  | src1 src2 result
-   I_ET,   // === | src1 src2 result
-   I_NET,  // !== | src1 src2 result
+   I_G,    // >   | src1 src2 result 6
+   I_GE,   // >=  | src1 src2 result 7
+   I_L,    // <   | src1 src2 result 8 
+   I_LE,   // <=  | src1 src2 result 9
+   I_ET,   // === | src1 src2 result 10
+   I_NET,  // !== | src1 src2 result 11
 
 //===== call & return fce =================
 
-   I_CALL,     // 
-   I_RETURN,   // 
+   I_TSW,     //    | src1 ... ...
+   I_PARAM,   //    | src1 ... ...
+   I_CHCKPAR, //    | src1 ... ...
+   I_CALL,    //    | src1 ... ...
+   I_RETURN,  //    | src1 ... result
 
 //===== vestavene funkce =================
 
-   I_BOOLVAL,  // | src1 ... ...
-   I_DOUBLEVAL,// | src1 ... ...   
-   I_INTVAL,   // | src1 ... ...
-   I_STRVAL,   // | src1 ... ...
+   I_BOOLVAL,  // | src1 ... ... 14
+   I_DOUBLEVAL,// | src1 ... ... 15
+   I_INTVAL,   // | src1 ... ... 16
+   I_STRVAL,   // | src1 ... ... 17
 
-   I_SORT, // sort string
-   I_FIND, // find string
-   I_STRL, // str.lenght
-   I_PUTS, // put string
-   I_GETS, // GET string
-   I_GETSU,// GET SUBstring
+   I_SORT, // sort string 18
+   I_FIND, // find string 19
+   I_STRL, // str.lenght 20
+   I_PUTS, // put string 21
+   I_GETS, // GET string 22
+   I_GETSU,// GET SUBstring 23
 
 //===== skoky ==========================
 
-   I_JMP,  // nepodmíněný                 || ...  ... result  
-   I_JZ,   // jump if zero        (false) || src1 ... result
-   I_JNZ,  // jump if not zero    (true)  || src1 ... result
-   I_LAB,  // znacka, no effect           || ...  ...  ...   
+   I_JMP,  // nepodmíněný                 || ...  ... result 24
+   I_JZ,   // jump if zero        (false) || src1 ... result 25
+   I_JNZ,  // jump if not zero    (true)  || src1 ... result 26
+   I_LAB,  // znacka, no effect           || ...  ...  ...   27
 
 } TIType;
 

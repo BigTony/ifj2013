@@ -18,6 +18,7 @@
 #include "errors.h"
 #include "memory.h"
 #include "vyrazy.h"
+#include "interpret.h"
 /**
 * Hlavickovy soubor pro syntakticky analyzator
 */
@@ -27,6 +28,15 @@ void parser(tPointers *ptrs);
 void add_hash_tbl(tHashTbl *hashTbl, int type, tokenValue value);
 //hlavni funkce parseru
 void classify();
+// vyber spravneho postupu pro token
+void main_classify();
+
+void defFunction();
+void defReturn();
+void defWhile();
+void defIf();
+char* gen_id(char *counter);
+void add_const_hashtbl(tHashTbl *hashTbl, int type,tokenValue value, char *id);
 //funkce na vlozeni instrukce do ilist v ExEx
 tokenValue CreateExInstruction(tokenValue value1,tokenValue value2,TIType op);
 void callFunction(char* dest);

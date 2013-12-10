@@ -58,61 +58,15 @@ int emptyStack(tHashTblStack *stack){
 }
 
 void freeStack(tHashTblStack *stack){
+	tStackItemPtr temp;
 	while(!emptyStack(stack)){
-		popStack(stack);
-	}        
-	free(stack);
-}
-
-// zasobnik pro if else
-// 
-// ZAV_SLOZ_L
-// ZAV_SLOZ_P
-
-void initStackIE(tIfElseStack *stack){
-	if((stack = (tIfElseStack*)malloc(sizeof(tIfElseStack))) == NULL){
-		print_error(E_INTERN,"chyba pri alokaci stacku IE");
-	}
-	stack->top = NULL;
-}
-
-void pushStackIE(tIfElseStack *stack,int symbol){
-	tStackItemIEPtr temp;
-	if((temp = (tStackItemIEPtr)malloc(sizeof(tStackItemIEPtr))) == NULL){
-		print_error(E_INTERN,"chyba pri alokaci itemu stacku IE");
-	}
-	temp->zavorka = symbol;
-
-	temp->ptrNext = stack->top;
-    stack->top = temp;
-}
-
-void popStackIE(tIfElseStack *stack){
-	tStackItemIEPtr temp;
-	if (stack->top != NULL){
-		temp = stack->top;
-		stack->top = stack->top->ptrNext;
-		free(temp);
-	}
-}
-
-tStackItemIEPtr topStackIE(tIfElseStack *stack){
-	if(stack->top != NULL){
-		return stack->top;
-	}
-	return NULL;
-}
-
-int emptyStackIE(tIfElseStack *stack){
-	if(stack->top == NULL)
-		return 1;
-	else
-		return 0;
-}
-
-void freeStackIE(tIfElseStack *stack){
-	while(!emptyStackIE(stack)){
-		popStackIE(stack);
+		while(stack->top != NULL){
+			TblDelete(stack->top->hashTbl);
+			// uvolneni polozky stacku a prepnuti na dalsi
+			temp = stack->top;
+			stack->top = stack->top->ptrNext;
+			free(temp);
+		}
 	}        
 	free(stack);
 }

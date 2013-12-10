@@ -49,6 +49,9 @@ void SPop(TStack *stack){
 	TSItemPtr temp;
 	if(stack->top != NULL){
 		temp = stack->top;
+		// if(stack->top->var.varString != 0){
+		// 	free(stack->top->var.varString);
+		// }
 		stack->top = stack->top->ptrNext;
 		free(temp);
 	}
@@ -111,6 +114,7 @@ TExpType TokenToExpresion(int token){
 		case VARIABLE:
 		case VARINT:
 		case VARDOUBLE:
+		case STRING:
 			return VALUE;
 		// case FUNCTION_CALL:
 		// 	return FUNC;
@@ -172,8 +176,11 @@ void ExLess(TStack *stack,TExpType input){
 			add_const_hashtbl(g_ptrs->main_symobol_tbl,g_ptrs->token->id,g_ptrs->token->value,(char *)value.varString);
 			break;
 		case VARIABLE:
-		case STRING:
 			value = g_ptrs->token->value;
+			break;
+		case STRING:
+			value.varString = gen_id(g_ptrs->counter);
+			add_const_hashtbl(g_ptrs->main_symobol_tbl,g_ptrs->token->id,g_ptrs->token->value,(char *)value.varString);
 			break;
 		default:
 			break;
@@ -214,7 +221,6 @@ void ExLess(TStack *stack,TExpType input){
 
 // >
 void ExGreater(TStack *stack){
-	tokenValue value = g_ptrs->token->value;
 	TStack *cur_ptr = stack;
 	TStack temp;
 	SInit(&temp);
@@ -342,10 +348,6 @@ void ExGreater(TStack *stack){
 						print_error(E_SYN,"chyba pri E->E op E , stack neni prazdny )");
 					}
 					// value musi bejt kam se uklada instrukce aww yeaaah
-					printf("-----------create instr\n");
-					printf("%s\n",value1);
-					printf("%s\n",value2);
-					printf("%i\n",op);
 					value=CreateExInstruction(value1,value2,op);
 					SPush(cur_ptr,NONTERM,value);
 					break;
@@ -366,7 +368,6 @@ void ExGreater(TStack *stack){
 TExpType skipNonTerm(TStack *stack){
 	TStack tempstack;
 	SInit(&tempstack);
-	tokenValue value;
 	TExpType b;
 
 	while(1){	
@@ -473,9 +474,9 @@ int ExEx(int ifYes,char * result){
 			print_error(E_SYN,"chyba tabulka vratila neexistujici hodnotu");
 		}
 	}
-	printf("%s\n",stack.top->var);
-	printf("%s\n",result);
+
 	InsertInstLast (g_ptrs->act_list_inst,(char *)stack.top->var.varString,NULL,result,I_ASS);
+	SPopAll(&stack);
 	return 0;
 
 }

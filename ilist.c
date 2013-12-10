@@ -216,7 +216,7 @@ TInstr * ReturnActiveInstr (TList *L)
 // debug INSTRUKCNIHO SEZNAMU
 void PrintList (TList *L) 
 {
-	char pole[28][15]= 
+	char pole[31][15]= 
 	{
 	    "I_ASS\0",
 	    "I_ADD\0",
@@ -232,7 +232,10 @@ void PrintList (TList *L)
 	    "I_ET\0",
 	    "I_NET\0",
 
-	    "I_I_CALL\0",
+	    "I_TSW\0",
+	    "I_PARAM\0",
+	    "I_CHCKPAR\0",
+	    "I_CALL\0",
 	    "I_RETURN\0",
 
 	    "I_BOOLVAL\0",
@@ -246,17 +249,17 @@ void PrintList (TList *L)
 	    "I_PUTS\0",
 	    "I_GETS\0",
 	    "I_GETSU\0",
+
 	    "I_JMP\0",
 	    "I_JZ\0",
 	    "I_JNZ\0",
 	    "I_LAB\0",
 	};
 
-TLItem *tmp=NULL;
 
   while (L->First!=NULL) 
   {
-      if L->First==L->Act)
+      if (L->First==L->Act)
       { 
            printf ("---------------------\n");
            printf (" |--- %s ---|     <-- AKTIVNI INSTRUKCE\n", pole[L->First->Instruction->operation]);
