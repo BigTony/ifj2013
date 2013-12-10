@@ -256,10 +256,18 @@ TLItem *tmp=NULL;
 
   while (L->First!=NULL) 
   {
-         printf (" -------------\n");
-         printf (" |-- %s --|\n", pole[L->First->Instruction->operation]);
-         printf (" -------------\n\n");
-         L->First =  L->First->Next;
+      if L->First==L->Act)
+      { 
+           printf ("---------------------\n");
+           printf (" |--- %s ---|     <-- AKTIVNI INSTRUKCE\n", pole[L->First->Instruction->operation]);
+           L->First =  L->First->Next;
+      } 
+      else 
+      {
+           printf ("---------------------\n");
+           printf (" |--- %s ---|\n", pole[L->First->Instruction->operation]);
+           L->First =  L->First->Next;
+      }
   }
 
 }
