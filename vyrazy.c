@@ -111,6 +111,7 @@ TExpType TokenToExpresion(int token){
 		case VARIABLE:
 		case VARINT:
 		case VARDOUBLE:
+		case STRING:
 			return VALUE;
 		// case FUNCTION_CALL:
 		// 	return FUNC;
@@ -172,8 +173,11 @@ void ExLess(TStack *stack,TExpType input){
 			add_const_hashtbl(g_ptrs->main_symobol_tbl,g_ptrs->token->id,g_ptrs->token->value,(char *)value.varString);
 			break;
 		case VARIABLE:
-		case STRING:
 			value = g_ptrs->token->value;
+			break;
+		case STRING:
+			value.varString = gen_id(g_ptrs->counter);
+			add_const_hashtbl(g_ptrs->main_symobol_tbl,g_ptrs->token->id,g_ptrs->token->value,(char *)value.varString);
 			break;
 		default:
 			break;

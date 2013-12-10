@@ -67,10 +67,11 @@ void defIf(){
 	char* TmpExp=gen_id(g_ptrs->counter);
 	char* TmpJmp=gen_id(g_ptrs->counter);
 	char* TmpJmp1=gen_id(g_ptrs->counter);
+			printf("%s %s %s\n",TmpExp,TmpJmp,TmpJmp1);
 	ExEx(IF,TmpExp); // vyhodnoceni vyrazu	
 
 	InsertInstLast (g_ptrs->act_list_inst,TmpExp,NULL,TmpJmp,I_JZ);
-	TLItem *tmpItem = g_ptrs->list_instr->Last;
+	// TLItem *tmpItem = g_ptrs->list_instr->Last;
 	// vytvoreni 3AC
 	// vytvoreni 3AC podmineneho skoku1
 	classify();
@@ -87,6 +88,7 @@ void defIf(){
 		}
 		else{
 			classify();
+			InsertInstLast (g_ptrs->act_list_inst,NULL,NULL,NULL,I_LAB);
 			add_const_hashtbl(g_ptrs->main_symobol_tbl, IDENTIFIKATOR, (tokenValue)(void*)g_ptrs->act_list_inst->Last, TmpJmp1);
 		}
 	}		
@@ -100,7 +102,6 @@ void defWhile(){
 		char* TmpExp=gen_id(g_ptrs->counter);
 		char* TmpJmp=gen_id(g_ptrs->counter);
 		char* TmpJmp1=gen_id(g_ptrs->counter);
-		printf("%s %s %s\n",TmpExp,TmpJmp,TmpJmp1);
 		add_const_hashtbl(g_ptrs->main_symobol_tbl, IDENTIFIKATOR, (tokenValue)(void*)g_ptrs->act_list_inst->Last, TmpJmp);
 		ExEx(IF,TmpExp); // vyhodnoceni vyrazu	
 		InsertInstLast (g_ptrs->act_list_inst,TmpExp,NULL,TmpJmp1,I_JZ);
@@ -238,6 +239,7 @@ void parser(tPointers *ptrs){
 			printf("clasify end?\n");
 			printf("-----zaciname interpretovat------\n");
 			interpret (g_ptrs->main_symobol_tbl, g_ptrs->list_instr);
+			
 		}
 	else{
 		print_error(E_SYN,"nazacatku neni <php");

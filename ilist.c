@@ -182,6 +182,8 @@ void ActiveLastItem (TList *L)
 // POSUN AKTIVITY NA DALSI PRVEK
 void ActiveNextItem (TList *L) 
 {
+  printf("-------\n");
+  printf("%i\n",L->Act);
   if (L->Act!=NULL) 
   {
 	L->Act = L->Act->Next;

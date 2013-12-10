@@ -23,7 +23,7 @@
 */
 void interpret (tHashTbl *global_htable, TList *L)
 {
-  TblPrint(global_htable);
+  // TblPrint(global_htable);
 
 //------------------- INIT -------------------------------------------------------------
 
@@ -90,6 +90,13 @@ void interpret (tHashTbl *global_htable, TList *L)
       /// item* TblSearch (tHashTbl *tab, itemKey key);
       /// void TblInsert (tHashTbl *tab, itemKey key, tokenValue data, int type);
 
+          printf("====PROVADENA INSTRUKCE=====\n");
+          printf("%i\n",instr->operation);
+          printf("%s\n",instr->src1);
+          printf("%s\n",instr->src2);
+          printf("%s\n",instr->result);
+          printf("============================\n");
+
       switch (instr->operation)
       {
 
@@ -138,7 +145,6 @@ void interpret (tHashTbl *global_htable, TList *L)
                 {
                     
                     tmp.varDouble = (tHsrc1)->data.varDouble;
-                    printf("zmrding\n");
                      // POKUD operand do ktereho prirazuju jiz exituje, tak jeho data prepisu
                      if (tHresult!=NULL)
                      {
@@ -184,6 +190,7 @@ void interpret (tHashTbl *global_htable, TList *L)
                      }
                 }
          }
+
          break;
 
 //---------------------------- ARITMETICKE OPERACE -----------------------------------------------------
@@ -1171,7 +1178,7 @@ struct item *nextItem;
          printf("==========================================================================\n");
          // nactu result z INSTRUKCE
          result = instr->result;
-
+         printf("%s\n",result);
          // nactu result z GLOBALNI HASH tabulky
          tHresult = (TblSearch (global_htable, result));
 
@@ -1183,6 +1190,7 @@ struct item *nextItem;
               // aktivuje instrukci v prave aktivnim listu, nejsu si jistej typama
               ActivePtrItem (ActiveList,((TLItem *)tHresult->data.pointer));
          }
+         printf("==========================================================================\n");
          break;
 
 
@@ -1200,11 +1208,12 @@ struct item *nextItem;
          // nactu id src1,src2 & result z GLOBALNI HASH tabulky
          tHresult = (TblSearch (global_htable, result));
 
-         TblPrint(active_htable);
-         TblPrint(global_htable);
+
+         printf("%s kokotihlava %s \n",src1,result);
 
          // pokud by cil skoku, nebo zdrojova promenna nebyla v globalni tabulce ->chyba
-         if (tHresult==NULL || tHsrc1==NULL) print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje I_JZ");
+         if (tHresult==NULL || tHsrc1==NULL) 
+            print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje I_JZ");
          else
          {
              switch (tHsrc1->type)
@@ -1236,9 +1245,12 @@ struct item *nextItem;
 
            if (jump)
             { // proved skok - nejsu si jistej typama
+              printf("SKACU!\n");
                ActivePtrItem (ActiveList,((TLItem *)tHresult->data.pointer));
             }
          }
+         // TblPrint(active_htable);
+         // TblPrint(global_htable);
          break;
 
 
@@ -1302,6 +1314,9 @@ struct item *nextItem;
           /*posun se na dalsi instrukci*/
         ActiveNextItem (ActiveList);
   }
-
+  printf("======Tabulky po assertu======\n");
+  TblPrint(global_htable);
+  TblPrint(active_htable);
+  printf("============\n");
 // end func
 }
