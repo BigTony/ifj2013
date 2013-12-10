@@ -52,8 +52,8 @@ void interpret (tHashTbl *global_htable, TList *L)
 
 //____________________LOKALNI TS_____________________________________________
 
-   // Lokalni TS
-   tHashTbl *local_htable_main;
+   // Lokalni TS pro MAIN & FCE
+   tHashTbl *local_htable_main,*local_htable_Fce;
 
    // naalokovani a inicializaci LOKALNI TS
    tableInit(&local_htable_main);
@@ -1099,7 +1099,7 @@ struct item *nextItem;
          src1 = instr->src1;
          
          // lokalni TS funkce
-         tHashTbl *local_htable_Fce = &((topStack(g_ptrs->function_stack))->hashTbl);
+         local_htable_Fce = &((topStack(g_ptrs->function_stack))->hashTbl);
 
          // nactu data na prohledani 3 TS
          tHsrcGlob1 = (TblSearch (global_htable, src1));//global
@@ -1140,6 +1140,24 @@ struct item *nextItem;
          }
          break;
 
+
+         /*========================I_CHCKPAR=========================*/
+         case I_CHCKPAR:
+         // nactu id src1 & result z INSTRUKCE
+         src1 = instr->src1;
+         result = instr->result;
+
+         tHsrc1 = (TblSearch (active_htable, src1));
+         tHresult = (TblSearch (active_htable, result));
+
+         if (tHsrc1==NULL) print_error(E_SEM_PARAM, "nespravny pocet parametru funkce [I_CHCKPAR]");
+         else 
+         {
+             tHsrc1->key = tHresult->key;
+         }
+
+         break;
+
          /*========================I_CALL=========================*/
          case I_CALL:
          // nactu id src1 z INSTRUKCE
@@ -1151,7 +1169,7 @@ struct item *nextItem;
          tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
  
          // lokalni TS dane funkce
-         tHashTbl *local_htable_Fce = &((topStack(g_ptrs->function_stack))->hashTbl);
+         local_htable_Fce = &((topStack(g_ptrs->function_stack))->hashTbl);
 
          if (tHsrc1==NULL) print_error(E_SEM_OTHER, "id funkce v lokalni ani globalni TS neexistuje [I_CALL]");
          else 
@@ -1172,7 +1190,6 @@ struct item *nextItem;
          case I_RETURN:
          // nactu id src1 z INSTRUKCE
          src1 = instr->src1;
-         result = instr->result;
 
          // nactu id src1 z HASH nebo GLOBAL hash tabulky
          tHsrcGlob1 = (TblSearch (global_htable, src1));//global
@@ -1215,18 +1232,13 @@ struct item *nextItem;
               popStack(g_ptrs->function_stack);
 
               // load active table
-              tHashTbl *local_htable_Fce = &((topStack(g_ptrs->function_stack))->hashTbl);
+              local_htable_Fce = &((topStack(g_ptrs->function_stack))->hashTbl);
 
               //Aktivuj lokalni TS fce
               active_htable = local_htable_Fce;
 
-             tHresult = (TblSearch (active_htable, result));
-             if (tHresult!=NULL); // neuvazuju
-             else 
-             {
-                  //vloz polozku
-                  TblInsert (active_htable, result, tmp, TypeOF);
-             }
+              //vloz polozku
+              TblInsert (active_htable, "$", tmp, TypeOF);
 
          }
          break;
