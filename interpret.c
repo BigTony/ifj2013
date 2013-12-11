@@ -37,12 +37,11 @@ void interpret (tHashTbl *global_htable, TList *L)
 
    // data aktualni instrukce z HASH table
    item *tHsrc1, *tHsrcGlob1;
-   item *tHsrc2, *tHsrcGlob2;
-   item *tHsrcLocF1,*tHsrcLocF2;
+   item *tHsrc2;
    item *tHresult = NULL;
 
    // POMOCNE PROMENNE
-   int dataType,dataType1,dataType2;
+   int dataType1,dataType2;
    int TypeOF=0;
    int jump=0;
    int datTyp=0;
@@ -102,7 +101,6 @@ void interpret (tHashTbl *global_htable, TList *L)
 
 
    printf("uplnej zacatek====\n");
-   printf("%p\n",active_htable);
    PrintList(ActiveList);
    printf("==============\n");
 //------------------- EXECUTE -------------------------------------------------------------
@@ -111,27 +109,9 @@ void interpret (tHashTbl *global_htable, TList *L)
   while (IsActiveItem(ActiveList))
   {
       int muzuskocit = 1;
+
       // nactu aktivni instrukci z aktualniho instrukcniho listu
       instr = (TInstr*) ReturnActiveInstr (ActiveList);
-
-     /* -------------------------------------------------------------
-*
-* semantic controll
-*
-* ------------------------------------------------------------ */
-
-      /// item* TblSearch (tHashTbl *tab, itemKey key);
-      /// void TblInsert (tHashTbl *tab, itemKey key, tokenValue data, int type);
-/*
-          printf("====PROVADENA INSTRUKCE=====\n");
-          printf("%i\n",instr->operation);
-          printf("%s\n",instr->src1);
-          printf("%s\n",instr->src2);
-          printf("%s\n",instr->result);
-          printf("============================\n");
-*/
-
-
 
       switch (instr->operation)
       {
@@ -1081,18 +1061,14 @@ void interpret (tHashTbl *global_htable, TList *L)
          {
               //ulozeni navratove adresy na stack
               (topStack(g_ptrs->function_stack))->NavrInstrukce = ActiveList->Act;
-              printf("navratova instrukce v callu\n");
-              printf("%p\n",(topStack(g_ptrs->function_stack))->NavrInstrukce);
-              printf("%p\n",ActiveList );
-              printf("============\n");
 
               // prepnu listy
               ActiveList = (TList*)(tHsrc1->data.pointer);
               ActiveFirstItem(ActiveList);
               muzuskocit = 0;
+
               // prepnuti kontextu
               active_htable = local_htable_Fce;
-
          }
          break;
 
@@ -1266,7 +1242,7 @@ void interpret (tHashTbl *global_htable, TList *L)
       }
 
       printf("================KONEC============================\n");
-         printf("%p\n",active_htable);
+         printf("%p\n",(void *)active_htable);
          printf("instruction list\n");
          PrintList(ActiveList);
          printf("================\n");
