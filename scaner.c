@@ -62,7 +62,7 @@ void skipSpace(char *c,FILE *fp)
     do{
         _c=(char)fgetc(fp);
     }
-     while((_c!=EOF) && (isspace(_c)!=0));
+     while((_c!=(char)EOF) && (isspace(_c)!=0));
      *c=_c;
 }
 /////////////////
@@ -90,7 +90,7 @@ int getToken(FILE *fp,Ttoken *token){
             c=fgetc(fp);
             if(c=='/')
             {
-                while((c!='\n') && (c!=(char)-1))
+                while((c!='\n') && (c!=(char)EOF))
                 {
                     c=fgetc(fp);
                 }
@@ -103,7 +103,7 @@ int getToken(FILE *fp,Ttoken *token){
                 char cPom[2];
                 cPom[0]=c;
                 cPom[1]=fgetc(fp);
-                while(!(cPom[0]=='*'&&cPom[1]=='/')&&cPom[1]!=(char)-1)
+                while(!(cPom[0]=='*'&&cPom[1]=='/')&&cPom[1]!=(char)EOF)
                 {
                     cPom[0]=cPom[1];
                     cPom[1]=fgetc(fp);
@@ -123,7 +123,7 @@ int getToken(FILE *fp,Ttoken *token){
         //////////////////
         switch( c )
         {
-            case (char)-1: //KONEC
+            case (char)EOF: //KONEC
                 token->id = KONEC;
                 w[0]=c;
                 freeW(&w); token->value.varString=NULL;
@@ -731,7 +731,7 @@ int getToken(FILE *fp,Ttoken *token){
                     }
                 }
                 else{
-                    print_error(E_LEX,"$ neni predchazen \\");
+                    print_error(E_LEX,"Chyba stringu,EOF?");
                 }
 
             }
