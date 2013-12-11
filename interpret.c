@@ -128,6 +128,7 @@ void interpret (tHashTbl *global_htable, TList *L)
 
               //vloz polozku
               TblInsert (active_htable, "$", nil, NIL);
+              ActiveNextItem(ActiveList);
            }
           else break;
      }

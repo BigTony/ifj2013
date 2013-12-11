@@ -335,7 +335,29 @@ void vs_strlen(tHashTbl *tab,tHashTbl *NavrTab){
 }
 
 void vs_get_substring(tHashTbl *tab,tHashTbl *NavrTab){
+	// prvni parametr
+	item *param1 = (TblSearch(tab,"1000000\0"));
+	if(param1 == NULL)
+    	print_error(E_SEM_PARAM,"Chybny pocet parametru ..  vs_get_substring");
+    if(param1->type != STRING)
+    	print_error(E_SEM_PARAM,"vs_get_substring prvni param neni string");
 
+    // druhy parametr
+	item *param2 = (TblSearch(tab,"2000000\0"));
+	if(param1 == NULL)
+    	print_error(E_SEM_PARAM,"Chybny pocet parametru ..  vs_get_substring");
+    if(param1->type != VARINT)
+    	print_error(E_SEM_PARAM,"vs_get_substring druhy param neni int");
+
+    // treti parametr
+	item *param3 = (TblSearch(tab,"3000000\0"));
+	if(param1 == NULL)
+    	print_error(E_SEM_PARAM,"Chybny pocet parametru ..  vs_get_substring");
+    if(param1->type != VARINT)
+    	print_error(E_SEM_PARAM,"vs_get_substring treti param neni int");
+
+    // beh programu
+    
 }
 
 void vs_find_string(tHashTbl *tab,tHashTbl *NavrTab){
