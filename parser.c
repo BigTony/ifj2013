@@ -224,13 +224,10 @@ void callFunction(char* dest){
 
 // vyber spravnej postup pro token
 void main_classify(){
-	printf("sem v main clasify\n");
 	while (getToken_test(g_ptrs->source,g_ptrs->token)!=KONEC)
 	{
-		printf("sem ve whilu main clasify\n");	
 		// token je bud promena nebo volani fce
 		if(g_ptrs->token->id == VARIABLE){
-			printf("VARIABLE\n");
 			defVar(g_ptrs->token->value);	
 		}else if(g_ptrs->token->id == FUNCTION){
 			defFunction(g_ptrs->token->value);
@@ -239,7 +236,6 @@ void main_classify(){
 		}else if(g_ptrs->token->id == WHILE){
 			defWhile();
 		}else if(g_ptrs->token->id == RETURN){
-			printf("nasel sem return mainclasify\n");
 			defReturn();
 		}else{
 		   print_error(E_SYN,"neocekavany token v main_clasify");
@@ -251,21 +247,17 @@ void main_classify(){
 
 // vyber spravnej postup pro token
 void classify(){
-	printf("sem v clasify\n");
 	while (getToken_test(g_ptrs->source,g_ptrs->token)!= ZAV_SLOZ_P)
 	// zkontroluje jestli je token }, kdyz jo tak konci
-	{
-		printf("sem ve whilu clasify\n");		
+	{	
 		// token je bud promena nebo volani fce
 		if(g_ptrs->token->id == VARIABLE){
-			printf("VARIABLE\n");
 			defVar(g_ptrs->token->value);	
 		}else if(g_ptrs->token->id == IF){
 			defIf();
 		}else if(g_ptrs->token->id == WHILE){
 			defWhile();
 		}else if(g_ptrs->token->id == RETURN){
-			printf("nasel sem return v clasify\n");
 			defReturn();
 		}
 			
@@ -287,10 +279,7 @@ void parser(tPointers *ptrs){
    	}        
 	getToken_test(g_ptrs->source,g_ptrs->token);
 	if (g_ptrs->token->id == START){
-			printf("clasify?\n");
 			main_classify();
-			printf("clasify end?\n");
-			printf("-----zaciname interpretovat------\n");
 			interpret(g_ptrs->main_symobol_tbl, g_ptrs->list_instr);
 		}
 	else{

@@ -49,30 +49,30 @@ void interpret (tHashTbl *global_htable, TList *L)
    // tmp
    tokenValue tmp;
 
-	// Tabulka lokalnich funkci
+        // Tabulka lokalnich funkci
    char* vestaveneFunkce[10]={
-    "boolval",      //BOOLVAL
-    "doubleval",    //DOUBLEVAL
-    "intval",       //INTVAL
-    "strval",       //STRVAL
-    "get_string",   //GET_STRING
-    "put_string",   //PUT_STRING
-    "strlen",       //STRLEN
+    "boolval", //BOOLVAL
+    "doubleval", //DOUBLEVAL
+    "intval", //INTVAL
+    "strval", //STRVAL
+    "get_string", //GET_STRING
+    "put_string", //PUT_STRING
+    "strlen", //STRLEN
     "get_substring",//GET_SUBSTRING
-    "find_string",  //FIND_STRING
-    "sort_string",  //SORT_STRING
+    "find_string", //FIND_STRING
+    "sort_string", //SORT_STRING
 };
    void (*fun[10]) (tHashTbl*tab,tHashTbl*NavrTab)={
-    vs_boolval,      //BOOLVAL
-    vs_doubleval,    //DOUBLEVAL
-    vs_intval,       //INTVAL
-    vs_strval,       //STRVAL
-    vs_get_string,   //GET_STRING
-    vs_put_string,   //PUT_STRING
-    vs_strlen,       //STRLEN
+    vs_boolval, //BOOLVAL
+    vs_doubleval, //DOUBLEVAL
+    vs_intval, //INTVAL
+    vs_strval, //STRVAL
+    vs_get_string, //GET_STRING
+    vs_put_string, //PUT_STRING
+    vs_strlen, //STRLEN
     vs_get_substring,//GET_SUBSTRING
-    vs_find_string,  //FIND_STRING
-    vs_sort_string,  //SORT_STRING
+    vs_find_string, //FIND_STRING
+    vs_sort_string, //SORT_STRING
 };
 
 
@@ -98,20 +98,20 @@ void interpret (tHashTbl *global_htable, TList *L)
 
    // aktivace prvni instrukce z prave provadenyho instrukcniho listu
    ActiveFirstItem (ActiveList);
-/*
-   printf("uplnej zacatek====\n");
-   PrintList(ActiveList);
-   printf("==============\n");
-*/
+
+   // printf("uplnej zacatek====\n");
+   // PrintList(ActiveList);
+   // printf("==============\n");
+
 //------------------- EXECUTE -------------------------------------------------------------
 
   /// cekuju jestli je instrukce aktivni, pokud ano = while (1), jinak = while (0) = end
   while (1) //IsActiveItem(ActiveList)
   {
 
-     if (!(IsActiveItem(ActiveList))) 
+     if (!(IsActiveItem(ActiveList)))
      {
-           if (((topStack(g_ptrs->function_stack))->NavrInstrukce)!=NULL) 
+           if (((topStack(g_ptrs->function_stack))->NavrInstrukce)!=NULL)
            {
               // aktivuju list z vrcholu stacku a nastav aktivni instrukci
               ActiveList = (topStack(g_ptrs->function_stack))->list;
@@ -124,7 +124,7 @@ void interpret (tHashTbl *global_htable, TList *L)
               active_htable = (topStack(g_ptrs->function_stack))->hashTbl;
 
               tokenValue nil;
-              nil.varString =  NULL;
+              nil.varString = NULL;
 
               //vloz polozku
               TblInsert (active_htable, "$", nil, NIL);
@@ -165,7 +165,7 @@ void interpret (tHashTbl *global_htable, TList *L)
                   tHresult->data = tHsrc1->data;
                   tHresult->type = tHsrc1->type;
               }
-              else 
+              else
               {
                  TblInsert (active_htable, result, tHsrc1->data, tHsrc1->type);
               }
@@ -456,11 +456,11 @@ void interpret (tHashTbl *global_htable, TList *L)
                    TypeOF = VARDOUBLE;
 
                    // [===overujeme jestli se nedeli nulou===]
-                   if ((double)(tHsrc2->data.varInt)==0.0) 
+                   if ((double)(tHsrc2->data.varInt)==0.0)
                     {
                            print_error(E_SEM_DIV_ZERO, "NELZE DELIT NULOU! [I_DIV]");
                     }
-                   else 
+                   else
                     {
                         tmp.varDouble = (double)((double)(tHsrc1->data.varInt) / (double)(tHsrc2->data.varInt));
                     }
@@ -474,7 +474,7 @@ void interpret (tHashTbl *global_htable, TList *L)
                    if (dataType1==VARDOUBLE && dataType2==VARINT)
                     {
                            // [===overujeme jestli se nedeli nulou===]
-                          if ((double)(tHsrc2->data.varInt)==0.0) 
+                          if ((double)(tHsrc2->data.varInt)==0.0)
                           {
                               print_error(E_SEM_DIV_ZERO, "NELZE DELIT NULOU! [I_DIV]");
                           }
@@ -482,28 +482,28 @@ void interpret (tHashTbl *global_htable, TList *L)
                              tmp.varDouble = (tHsrc1->data.varDouble / (double) (tHsrc2->data.varInt));
                           }
                     }
-                   else if(dataType1==VARINT && dataType2==VARDOUBLE) 
+                   else if(dataType1==VARINT && dataType2==VARDOUBLE)
                     {
                           // [===overujeme jestli se nedeli nulou===]
-                         if (tHsrc2->data.varDouble==0.0) 
+                         if (tHsrc2->data.varDouble==0.0)
                          {
                              print_error(E_SEM_DIV_ZERO, "NELZE DELIT NULOU! [I_DIV]");
                          }
-                         else  {
+                         else {
                             tmp.varDouble = ( (double)(tHsrc1->data.varInt) / tHsrc2->data.varDouble);
                          }
                     }
-                    else if(dataType1==VARDOUBLE && dataType2==VARDOUBLE) 
+                    else if(dataType1==VARDOUBLE && dataType2==VARDOUBLE)
                     {
                          // [===overujeme jestli se nedeli nulou===]
-                         if (tHsrc2->data.varDouble==0.0) 
+                         if (tHsrc2->data.varDouble==0.0)
                          {
                              print_error(E_SEM_DIV_ZERO, "NELZE DELIT NULOU! [I_DIV]");
                          }
                          else {
                             tmp.varDouble = (tHsrc1->data.varDouble / tHsrc2->data.varDouble);
                          }
-                    } 
+                    }
 
                }
                else {
@@ -1012,13 +1012,13 @@ void interpret (tHashTbl *global_htable, TList *L)
          tHsrc1 = (TblSearch (active_htable, src1));
          tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : (TblSearch (global_htable, src1));
  
-         if (tHsrc1==NULL){ 
+         if (tHsrc1==NULL){
             int i=0;
             while (i<10)
             {
               if (strcmp (src1,vestaveneFunkce[i] )==0)
               {
-                break;  
+                break;
               }
               i++;
             }
@@ -1028,7 +1028,7 @@ void interpret (tHashTbl *global_htable, TList *L)
           }
           
         }
-         else 
+         else
          {
             // Lokalni TS
             tHashTbl *local_htable_func;
@@ -1053,12 +1053,12 @@ void interpret (tHashTbl *global_htable, TList *L)
 
          // nactu data na prohledani 3 TS
          tHsrc1 = (TblSearch (active_htable, src1));
-         tHsrc1 =  (tHsrc1!=NULL) ? tHsrc1 : (TblSearch (global_htable, src1));
+         tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : (TblSearch (global_htable, src1));
 
-         if (tHsrc1==NULL)  {
+         if (tHsrc1==NULL) {
              print_error(E_SEM_VAR, "id funkce v lokalni ani globalni TS neexistuje [I_PARAM]");
          }
-         else 
+         else
          {
             TblInsert (local_htable_Fce, result, tHsrc1->data, tHsrc1->type);
          }
@@ -1074,7 +1074,7 @@ void interpret (tHashTbl *global_htable, TList *L)
          tHsrc1 = (TblSearch (active_htable, src1));
          
          if (tHsrc1==NULL) print_error(E_SEM_PARAM, "nespravny pocet parametru funkce [I_CHCKPAR]");
-         else 
+         else
          {
              TblInsert(active_htable,result,tHsrc1->data,tHsrc1->type);
          }
@@ -1085,21 +1085,21 @@ void interpret (tHashTbl *global_htable, TList *L)
          case I_CALL:
          // nactu id src1 z INSTRUKCE
          src1 = instr->src1;
-			int i=0;
-			while (i<10)
-			{
-				if (strcmp (src1,vestaveneFunkce[i] )==0)
-				{
-					(*fun[i])((topStack(g_ptrs->function_stack))->hashTbl, active_htable);
-					// popStack(g_ptrs->function_stack);
-					break;	
-				}
-				i++;
-			}
-			if (i<10)
-			{
-			break;
-			}
+                        int i=0;
+                        while (i<10)
+                        {
+                                if (strcmp (src1,vestaveneFunkce[i] )==0)
+                                {
+                                        (*fun[i])((topStack(g_ptrs->function_stack))->hashTbl, active_htable);
+                                        // popStack(g_ptrs->function_stack);
+                                        break;        
+                                }
+                                i++;
+                        }
+                        if (i<10)
+                        {
+                        break;
+                        }
 
 
          // nactu id src1 z HASH nebo GLOBAL hash tabulky
@@ -1110,7 +1110,7 @@ void interpret (tHashTbl *global_htable, TList *L)
          local_htable_Fce = (topStack(g_ptrs->function_stack)->hashTbl);
 
          if (tHsrc1==NULL) print_error(E_SEM_FCE, "id funkce v lokalni ani globalni TS neexistuje [I_CALL]");
-         else 
+         else
          {
               //ulozeni navratove adresy na stack
               (topStack(g_ptrs->function_stack))->NavrInstrukce = ActiveList->Act;
@@ -1138,7 +1138,7 @@ void interpret (tHashTbl *global_htable, TList *L)
          if (tHsrc1==NULL) {
             print_error(E_SEM_VAR, "id v lokalni ani globalni TS neexistuje [I_RETURN]");
          }
-         else 
+         else
          {
               // aktivuju list z vrcholu stacku a nastav aktivni instrukci
               ActiveList = (topStack(g_ptrs->function_stack))->list;
@@ -1223,7 +1223,7 @@ void interpret (tHashTbl *global_htable, TList *L)
              }
 
            if (jump)
-            {  // proved skok
+            { // proved skok
                ActivePtrItem (ActiveList,((TLItem *)tHresult->data.pointer));
             }
          }
@@ -1271,7 +1271,7 @@ void interpret (tHashTbl *global_htable, TList *L)
              }
 
            if (jump)
-            {   // proved skok 
+            { // proved skok
                ActivePtrItem (ActiveList,((TLItem *)tHresult->data.pointer));
             }
          }
@@ -1290,18 +1290,18 @@ void interpret (tHashTbl *global_htable, TList *L)
         /*posun se na dalsi instrukci*/
           ActiveNextItem(ActiveList);
       }
-/*
-      printf("================KONEC============================\n");
-         printf("%p\n",(void *)active_htable);
-         printf("instruction list\n");
-         PrintList(ActiveList);
-         printf("================\n");
-         TblPrint(global_htable);
-         TblPrint(active_htable);
-         printf("============================================\n");
-         printf("============================================\n");
-         printf("============================================\n");
-        */     
+
+      // printf("================KONEC============================\n");
+      // printf("%p\n",(void *)active_htable);
+      // printf("instruction list\n");
+      // PrintList(ActiveList);
+      // printf("================\n");
+      // TblPrint(global_htable);
+      // TblPrint(active_htable);
+      // printf("============================================\n");
+      // printf("============================================\n");
+      // printf("============================================\n");
+             
   }
 // end func
 }
