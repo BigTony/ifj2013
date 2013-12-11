@@ -22,15 +22,16 @@ void initStack(tHashTblStack **stack){
 	(*stack)->top = NULL;
 }
 
-void pushStack(tHashTblStack *stack,tHashTbl *hashTbl,TLItem *NavrInstrukce){
+void pushStack(tHashTblStack *stack,tHashTbl *hashTbl,TLItem *NavrInstrukce,TList *list){
 	tStackItemPtr temp;
 	if((temp = (tStackItemPtr )malloc(sizeof(struct tSHashItem))) == NULL){
 		print_error(E_INTERN,"chyba pri alokaci itemu stacku pro tabulku symbolu");
 	}
 	temp->hashTbl = hashTbl;
 	temp->NavrInstrukce = NavrInstrukce;
-
+	temp->list = list;
 	temp->ptrNext = stack->top;
+
     stack->top = temp;
 }
 

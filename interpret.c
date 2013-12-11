@@ -60,7 +60,7 @@ void interpret (tHashTbl *global_htable, TList *L)
 
    // init & push adresy lokalni TS na stack
    initStack(&g_ptrs->function_stack);
-   pushStack(g_ptrs->function_stack,local_htable_main,NULL);
+   pushStack(g_ptrs->function_stack,local_htable_main,NULL,NULL);
 
 //_____________________AKTIVACE TS a INSTRUKCE___________________________________
 
@@ -74,11 +74,16 @@ void interpret (tHashTbl *global_htable, TList *L)
    ActiveFirstItem (ActiveList);
 
 
+   printf("uplnej zacatek====\n");
+   printf("%p\n",active_htable);
+   PrintList(ActiveList);
+   printf("==============\n");
 //------------------- EXECUTE -------------------------------------------------------------
 
   /// cekuju jestli je instrukce aktivni, pokud ano = while (1), jinak = while (0) = end
   while (IsActiveItem(ActiveList))
   {
+      int muzuskocit = 1;
       // nactu aktivni instrukci z aktualniho instrukcniho listu
       instr = (TInstr*) ReturnActiveInstr (ActiveList);
 
@@ -99,8 +104,7 @@ void interpret (tHashTbl *global_htable, TList *L)
           printf("============================\n");
 */
 
-// PrintList píčo.
-PrintList (L);
+
 
       switch (instr->operation)
       {
@@ -108,26 +112,31 @@ PrintList (L);
          /*========================I_ASS=================================================== (EKV.: mov) */
          case I_ASS:
 
-
          // nactu id src1 & result
          src1 = instr->src1;
          result = instr->result;
-
+         
           // nactu id src1,src2 & result z HASH tabulky
           tHsrcGlob1 = (TblSearch (global_htable, src1));//global
           tHsrc1 = (TblSearch(active_htable,src1));
           tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
+          printf("[][][][][]][\n");
+          printf("%s\n",src1);
+          TblPrint(active_htable);
+          printf("%p %p\n",tHsrc1,tHsrcGlob1);
+          printf("[][][][][]][\n");
 
          tHresult = (TblSearch (active_htable, result));
 
          // nactu typ dat src1
-         dataType = (tHsrc1->type);
+         
 
-          if (!dataType) print_error(E_SEM_OTHER, "dat.typ v itemu neni nastaven [I_ASS]");
+          // if (!dataType) print_error(E_SEM_OTHER, "dat.typ v itemu neni nastaven [I_ASS]");
 
-          if (tHsrc1==NULL) print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje [I_ASS]");
+          if (tHsrc1==NULL) print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje [I_ASS] thsrc1");
           else
           {
+            dataType = (tHsrc1->type);
                 if (dataType==VARINT)
                 {
                    // prepisu data operandu result daty operandu src1
@@ -390,15 +399,15 @@ PrintList (L);
 
          tHresult = (TblSearch (active_htable, result));
 
-         // nactu typ dat src1 & src2
-         dataType1 = tHsrc1->type;
-         dataType2 = tHsrc2->type;
-
           // pokud src1 nebo src2 nebudou mit prirazenou hodnotu -> syntax error
           if (tHsrc1==NULL || tHsrc2==NULL)
            {
               print_error(E_SEM_OTHER, "item src1 nebo src2 v lokalni ani globalni TS neexistuje [I_MUL]");
            }
+
+           // nactu typ dat src1 & src2
+          dataType1 = tHsrc1->type;
+          dataType2 = tHsrc2->type;
 
               ///----------- cekuju provadim operace
               if (dataType1==VARINT && dataType2==VARINT)
@@ -565,6 +574,8 @@ PrintList (L);
          // nactu typ dat src1 & src2
          dataType1 = tHsrc1->type;
          dataType2 = tHsrc2->type;
+
+
 
          // overeni jestli data ubec existuji
          if (tHsrc1==NULL || tHsrc2==NULL) print_error(E_SEM_OTHER, "item src1 nebo src2 v lokalni ani globalni TS neexistuje [I_CON]");
@@ -1085,7 +1096,7 @@ struct item *nextItem;
             tableInit(&local_htable_func);
 
             // push adresy lokalni TS fce na stack
-            pushStack(g_ptrs->function_stack,local_htable_func,NULL);//(TLitem*)(tHsrc1->data.pointer)
+            pushStack(g_ptrs->function_stack,local_htable_func,NULL,ActiveList);//(TLitem*)(tHsrc1->data.pointer)
 
             // prepnuti kontextu
            /// active_htable = local_htable_func;
@@ -1097,15 +1108,16 @@ struct item *nextItem;
          case I_PARAM:
          // nactu id src1,src2 & result z INSTRUKCE
          src1 = instr->src1;
-         
+         result = instr->result;
          // lokalni TS funkce
-         local_htable_Fce = &((topStack(g_ptrs->function_stack))->hashTbl);
+         local_htable_Fce = (topStack(g_ptrs->function_stack))->hashTbl;
 
          // nactu data na prohledani 3 TS
          tHsrcGlob1 = (TblSearch (global_htable, src1));//global
          //tHsrcLocF1 = (TblSearch (local_htable_Fce, src1));
          tHsrc1 = (TblSearch (active_htable, src1));
          tHsrc1 =  (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
+
 
          if (tHsrc1==NULL) print_error(E_SEM_OTHER, "id funkce v lokalni ani globalni TS neexistuje [I_PARAM]");
          else 
@@ -1136,7 +1148,7 @@ struct item *nextItem;
                 break;
              }
 
-            TblInsert (local_htable_Fce, src1, tmp, TypeOF);
+            TblInsert (local_htable_Fce, result, tmp, TypeOF);
          }
          break;
 
@@ -1148,12 +1160,12 @@ struct item *nextItem;
          result = instr->result;
 
          tHsrc1 = (TblSearch (active_htable, src1));
-         tHresult = (TblSearch (active_htable, result));
+         
 
          if (tHsrc1==NULL) print_error(E_SEM_PARAM, "nespravny pocet parametru funkce [I_CHCKPAR]");
          else 
          {
-             tHsrc1->key = tHresult->key;
+             TblInsert(active_htable,result,tHsrc1->data,tHsrc1->type);
          }
 
          break;
@@ -1169,19 +1181,25 @@ struct item *nextItem;
          tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
  
          // lokalni TS dane funkce
-         local_htable_Fce = &((topStack(g_ptrs->function_stack))->hashTbl);
+         local_htable_Fce = (topStack(g_ptrs->function_stack))->hashTbl;
 
          if (tHsrc1==NULL) print_error(E_SEM_OTHER, "id funkce v lokalni ani globalni TS neexistuje [I_CALL]");
          else 
          {
               //ulozeni navratove adresy na stack
-              (TLItem*)(/*&*/((topStack(g_ptrs->function_stack)).hashTbl->data.pointer)) = L->Act->Next;
+              (topStack(g_ptrs->function_stack))->NavrInstrukce = ActiveList->Act;
+              printf("navratova instrukce v callu\n");
+              printf("%p\n",(topStack(g_ptrs->function_stack))->NavrInstrukce);
+              printf("%p\n",ActiveList );
+              printf("============\n");
 
               // prepnu listy
-              ActiveList = (TLItem*)tHsrc1->data.pointer;
-
+              ActiveList = (TList*)(tHsrc1->data.pointer);
+              ActiveFirstItem(ActiveList);
+              muzuskocit = 0;
               // prepnuti kontextu
               active_htable = local_htable_Fce;
+
          }
          break;
 
@@ -1196,7 +1214,8 @@ struct item *nextItem;
          tHsrc1 = (TblSearch (active_htable, src1));
          tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
 
-         if (tHsrc1==NULL) print_error(E_SEM_OTHER, "id v lokalni ani globalni TS neexistuje [I_RETURN]");
+         if (tHsrc1==NULL) 
+            print_error(E_SEM_OTHER, "id v lokalni ani globalni TS neexistuje [I_RETURN]");
          else 
          {
               switch (tHsrc1->type)
@@ -1225,22 +1244,28 @@ struct item *nextItem;
                  break;
               }
 
-              // smazu aktivni tabulku
-              TblDelete (active_htable);
 
+              
+              ActiveList = (topStack(g_ptrs->function_stack))->list;
+              ActivePtrItem(ActiveList,(topStack(g_ptrs->function_stack))->NavrInstrukce);
+              printf("navratova instrukce po returnu\n");
+              printf("%p\n",(topStack(g_ptrs->function_stack))->NavrInstrukce);
+              printf("%p\n",ActiveList );
+              printf("=============\n");
               // pop stack
               popStack(g_ptrs->function_stack);
 
-              // load active table
-              local_htable_Fce = &((topStack(g_ptrs->function_stack))->hashTbl);
 
               //Aktivuj lokalni TS fce
-              active_htable = local_htable_Fce;
+              active_htable = (topStack(g_ptrs->function_stack))->hashTbl;
 
               //vloz polozku
               TblInsert (active_htable, "$", tmp, TypeOF);
 
+
          }
+         printf("po returnu ======\n");
+         PrintList(ActiveList);
          break;
 
 
@@ -1343,10 +1368,8 @@ struct item *nextItem;
 
          /*========================I_JMP=========================*/
          case I_JMP:
-         printf("==========================================================================\n");
          // nactu result z INSTRUKCE
          result = instr->result;
-         printf("%s\n",result);
          // nactu result z GLOBALNI HASH tabulky
          tHresult = (TblSearch (global_htable, result));
 
@@ -1357,7 +1380,6 @@ struct item *nextItem;
               // aktivuje instrukci v prave aktivnim listu, nejsu si jistej typama
               ActivePtrItem (ActiveList,((TLItem *)tHresult->data.pointer));
          }
-         printf("==========================================================================\n");
          break;
 
 
@@ -1474,12 +1496,27 @@ struct item *nextItem;
 
      }
 
-          /*posun se na dalsi instrukci*/
-        ActiveNextItem (ActiveList);
+      if(muzuskocit){
+        /*posun se na dalsi instrukci*/
+          ActiveNextItem(ActiveList);
+      }
+
+      printf("================KONEC============================\n");
+         printf("%p\n",active_htable);
+         printf("instruction list\n");
+         PrintList(ActiveList);
+         printf("================\n");
+         TblPrint(global_htable);
+         TblPrint(active_htable);
+         printf("============================================\n");
+         printf("============================================\n");
+         printf("============================================\n");
+          
+        
   }
-  printf("======Tabulky po assertu======\n");
-  TblPrint(global_htable);
-  TblPrint(active_htable);
-  printf("============\n");
+
+         
+
+
 // end func
 }

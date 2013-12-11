@@ -26,11 +26,10 @@
 #define IDENTIFIKATOR 1
 #define STRING 2
 #define VARIABLE 3
-#define JUMP 4 // pro rozliseni skoku
-#define VARINT 5
-#define VARDOUBLE 6
-#define VARBOOL 7
-#define NIL 8   //null
+#define VARINT 4
+#define VARDOUBLE 5
+#define VARBOOL 6
+#define NIL 7   //null
 
 // Znaky
 #define ZAV_JEDN_L  10 // (

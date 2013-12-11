@@ -49,7 +49,7 @@ item* TblSearch (tHashTbl *tab, char* key)
 
   for (Titem=tab->tableItems[Hashed]; Titem!=NULL; Titem=Titem->nextItem)
   {
-	if (strcmp(Titem->key,key)==0)
+	if ((strcmp(Titem->key,key)==0) || (Titem->key == key))
 	{
 		return Titem;
 	}
@@ -119,38 +119,42 @@ return 0;
 /// SMAZU VSECHNO
 void TblDelete (tHashTbl *tab)
 {
-  item* Temp=NULL;
-  for (int key=0;key<ALLOC;key++)
-  {
-	while (tab->tableItems[key]!=NULL)
-	{
-	    Temp=tab->tableItems[key]->nextItem; /// ulozim nasledujici polozku
-	    free(tab->tableItems[key]->key);
-	    if(tab->tableItems[key]->type < 5){
-	    	if(tab->tableItems[key]->data.varString != NULL){
-	    		free(tab->tableItems[key]->data.varString);
-	    	}
-	    }
-	    free (tab->tableItems[key]);
-	    tab->tableItems[key] = Temp;         /// navazeme na nasledujici polozku
-	}
-	tab->tableItems[key]=NULL;	         /// polozka je jiz prazdna
-  }
-  free(tab);
+ //  item* Temp=NULL;
+ //  for (int key=0;key<ALLOC;key++)
+ //  {
+	// while (tab->tableItems[key]!=NULL)
+	// {
+	//     Temp=tab->tableItems[key]->nextItem; /// ulozim nasledujici polozku
+	//     free(tab->tableItems[key]->key);
+	//     if(tab->tableItems[key]->type < 5){
+	//     	if(tab->tableItems[key]->data.varString != NULL){
+	//     		free(tab->tableItems[key]->data.varString);
+	//     	}
+	//     }
+	//     free (tab->tableItems[key]);
+	//     tab->tableItems[key] = Temp;         /// navazeme na nasledujici polozku
+	// }
+	// tab->tableItems[key]=NULL;	         /// polozka je jiz prazdna
+ //  }
+ //  free(tab);
 }
 
 
 /// FOR DEBUG HASH TABLE
 void TblPrint( tHashTbl* tab )
 {
-
+  if (tab == NULL)
+  {
+    printf("je to null\n");
+    return;
+  }
 	char pole[8][15]=
 	{
 	    "IDENTIFIKATOR\0",
+	    "STRING\0",
+	    "VARIABLE\0",
 	    "VARINT\0",
 	    "VARDOUBLE\0",
-	    "VARIABLE\0",
-	    "STRING\0",
 	    "VARBOOL\0",
 	    "NIL\0"
 	};

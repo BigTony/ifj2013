@@ -115,6 +115,7 @@ TExpType TokenToExpresion(int token){
 		case VARINT:
 		case VARDOUBLE:
 		case STRING:
+		case NIL:
 			return VALUE;
 		// case FUNCTION_CALL:
 		// 	return FUNC;
@@ -477,6 +478,7 @@ int ExEx(int ifYes,char * result){
 
 	InsertInstLast (g_ptrs->act_list_inst,(char *)stack.top->var.varString,NULL,result,I_ASS);
 	SPopAll(&stack);
+	printf("KONCIM VE VYRAZECH-------\n");
 	return 0;
 
 }

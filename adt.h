@@ -23,6 +23,7 @@
 //
 typedef struct tSHashItem{
 	tHashTbl *hashTbl;
+	TList *list;
 	TLItem *NavrInstrukce;
 	struct tSHashItem *ptrNext;
 } *tStackItemPtr;
@@ -32,7 +33,7 @@ typedef struct tHashTblStack{
 } tHashTblStack;
 
 void initStack(tHashTblStack **stack);
-void pushStack(tHashTblStack *stack,tHashTbl *hashTbl,TLItem *NavrInstrukce);
+void pushStack(tHashTblStack *stack,tHashTbl *hashTbl,TLItem *NavrInstrukce,TList *list);
 void popStack(tHashTblStack *stack);
 tStackItemPtr topStack(tHashTblStack *stack);
 int emptyStack(tHashTblStack *stack);

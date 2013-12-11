@@ -256,7 +256,7 @@ void PrintList (TList *L)
 	    "I_LAB\0",
 	};
 
-
+	TLItem *temp = L->First;
   while (L->First!=NULL) 
   {
       if (L->First==L->Act)
@@ -272,6 +272,6 @@ void PrintList (TList *L)
            L->First =  L->First->Next;
       }
   }
-
+  L->First = temp;
 }
 

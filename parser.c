@@ -36,6 +36,7 @@ char* gen_id(char *counter)
 		if ((counter[i]<'9'))
 		{
 		counter[i]++;
+		break;
 		}
 		i++;
 	}
@@ -51,6 +52,7 @@ char* gen_param(char *counter)
 		if ((counter[i]<'9'))
 		{
 		counter[i]++;
+		break;
 		}
 		i++;
 	}
@@ -63,7 +65,7 @@ tokenValue CreateExInstruction(tokenValue value1,tokenValue value2,TIType op)
 {
 tokenValue new_id;
 new_id.varString = gen_id(g_ptrs->counter);
-InsertInstLast (g_ptrs->list_instr,value1.varString,value2.varString,(char*)new_id.varString,op);   
+InsertInstLast (g_ptrs->act_list_inst,value1.varString,value2.varString,(char*)new_id.varString,op);   
 return (new_id);
 }
 
@@ -75,6 +77,9 @@ void defVar(tokenValue value){
 	}else{
 		if(ExEx(0,var_name)){
 			callFunction(var_name);
+			if(getToken_test(g_ptrs->source,g_ptrs->token) != STREDNIK){
+				print_error(E_SYN,"chyba v syntaxi ocekavano ; po prirazeni promene nebo funkce");
+			}
 		}
 	}
 }
@@ -140,8 +145,8 @@ void defWhile(){
 // retuuurn
 void defReturn(){
 	   char* TmpExp=gen_id(g_ptrs->counter);
-	   ExEx(IF,TmpExp); // vyhodnoceni vyrazu
-	   InsertInstLast (g_ptrs->act_list_inst,TmpExp,NULL,NULL,I_RET);
+	   ExEx(0,TmpExp); // vyhodnoceni vyrazu
+	   InsertInstLast (g_ptrs->act_list_inst,TmpExp,NULL,NULL,I_RETURN);
 	   return;
 }
 
@@ -151,7 +156,7 @@ void defFunction(){
 		print_error(E_SYN,"pri deklarace funkce chyby jeji nazev");
 	}else{
 	   InitList((g_ptrs->act_list_inst=CreateList())); // init listu instrukci nove
-	   add_const_hashtbl(g_ptrs->main_symobol_tbl, IDENTIFIKATOR, (tokenValue)(void*)g_ptrs->act_list_inst, g_ptrs->token->value);
+	   add_const_hashtbl(g_ptrs->main_symobol_tbl, IDENTIFIKATOR, (tokenValue)(void*)g_ptrs->act_list_inst, g_ptrs->token->value.varString);
 		if(getToken_test(g_ptrs->source,g_ptrs->token) != ZAV_JEDN_L){
 			print_error(E_SYN,"pri deklaraci funkce chyby ( ");
 		}else{
@@ -160,7 +165,7 @@ void defFunction(){
 				if(g_ptrs->token->id != VARIABLE){
 					print_error(E_SYN,"pri deklaraci funkce jsou parametry jine lexemy nez promene");
 				}else{
-					InsertInstLast (g_ptrs->act_list_inst,gen_param(g_ptrs->params),NULL,g_ptrs->token->value,I_CHCKPAR);
+					InsertInstLast (g_ptrs->act_list_inst,gen_param(g_ptrs->params),NULL,g_ptrs->token->value.varString,I_CHCKPAR);
 				}
 				if(getToken_test(g_ptrs->source,g_ptrs->token) != CARKA){
 					break;
@@ -182,13 +187,14 @@ void defFunction(){
 
 // volani funkce
 void callFunction(char* dest){
+	char * nazevFce = g_ptrs->token->value.varString;
 	InsertInstLast (g_ptrs->act_list_inst,(char*)g_ptrs->token->value.varString,NULL,NULL,I_TSW);// vygenerujeme 3AC pro nazev funkce a pro prepnuti tabulky
 	if(getToken_test(g_ptrs->source,g_ptrs->token) != ZAV_JEDN_L){
 		print_error(E_SYN,"pri volani funkce chyby (");
 	}else{
 		strcpy(g_ptrs->params,"0000000\0");
 		while(getToken_test(g_ptrs->source,g_ptrs->token) != ZAV_JEDN_P){
-			if((g_ptrs->token->id > IDENTIFIKATOR) &&(g_ptrs->token->id <= NIL)){
+			if(!((g_ptrs->token->id > IDENTIFIKATOR) && (g_ptrs->token->id <= NIL))){
 				print_error(E_SYN,"pri volani funkce jsou parametry jine termy");
 			}else{
 				if (g_ptrs->token->id==VARIABLE)
@@ -209,7 +215,8 @@ void callFunction(char* dest){
 		if (g_ptrs->token->id != ZAV_JEDN_P){
 			print_error(E_SYN,"pri volani funkce je za poslednim parametetrem ocekavana ) ");	
 		}
-		InsertInstLast (g_ptrs->act_list_inst,"$",dest,NULL,I_ASS)
+		InsertInstLast (g_ptrs->act_list_inst,nazevFce,NULL,NULL,I_CALL);
+		InsertInstLast (g_ptrs->act_list_inst,"$",NULL,dest,I_ASS);
 	}
 	
 	
@@ -220,7 +227,7 @@ void main_classify(){
 	printf("sem v main clasify\n");
 	while (getToken_test(g_ptrs->source,g_ptrs->token)!=KONEC)
 	{
-		printf("sem ve whilu main clasify\n");		
+		printf("sem ve whilu main clasify\n");	
 		// token je bud promena nebo volani fce
 		if(g_ptrs->token->id == VARIABLE){
 			printf("VARIABLE\n");
@@ -232,6 +239,7 @@ void main_classify(){
 		}else if(g_ptrs->token->id == WHILE){
 			defWhile();
 		}else if(g_ptrs->token->id == RETURN){
+			printf("nasel sem return mainclasify\n");
 			defReturn();
 		}else{
 		   print_error(E_SYN,"neocekavany token v main_clasify");
@@ -257,6 +265,7 @@ void classify(){
 		}else if(g_ptrs->token->id == WHILE){
 			defWhile();
 		}else if(g_ptrs->token->id == RETURN){
+			printf("nasel sem return v clasify\n");
 			defReturn();
 		}
 			
