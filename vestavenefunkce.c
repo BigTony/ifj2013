@@ -35,6 +35,7 @@ void tovarint(item *item){
 			int blank= 0;
 			while ((zpracuj[i]!='\0')){
 				if((isspace(zpracuj[i]))&&(cislo==0)) {
+					i++;
 					continue;
 				}
   				if (isdigit(zpracuj[i]) && (cislo<=INT_MAX)){
@@ -120,6 +121,7 @@ void todouble(item *item){
   					}else{
   						cislo=cislo*10+(zpracuj[i]-'0');
   					}
+  					blank = 1;
   					i++;
   				}else if((zpracuj[i] == '.')){
   					if(carka == 0){
@@ -127,17 +129,15 @@ void todouble(item *item){
   					}else{
   						break;
   					}
-
   				}else{
   					break;
   				}
   			}
-  			// free(item->data);
   			free(zpracuj);
   			if(blank == 0)
-  				item->data.varDouble = cislo+desetiny_cislo;
-  			else
   				item->data.varDouble = 0.0;
+  			else
+  				item->data.varDouble = cislo+desetiny_cislo;
 			item->type = VARDOUBLE;
 			break;
 		}
@@ -317,6 +317,7 @@ void vs_put_string(tHashTbl *tab,tHashTbl *NavrTab){
 		if(strlen(tempitem->data.varString) > size){
 			reAllocString(konk,size+strlen(tempitem->data.varString));
 		}
+		size = size+strlen(tempitem->data.varString);
 		strcat (konk,tempitem->data.varString);
 		i.varInt++;
 	}
