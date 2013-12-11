@@ -99,9 +99,9 @@ void interpret (tHashTbl *global_htable, TList *L)
    // aktivace prvni instrukce z prave provadenyho instrukcniho listu
    ActiveFirstItem (ActiveList);
 
-   printf("uplnej zacatek====\n");
-   PrintList(ActiveList);
-   printf("==============\n");
+   // printf("uplnej zacatek====\n");
+   // PrintList(ActiveList);
+   // printf("==============\n");
 
 //------------------- EXECUTE -------------------------------------------------------------
 
@@ -1291,16 +1291,16 @@ void interpret (tHashTbl *global_htable, TList *L)
           ActiveNextItem(ActiveList);
       }
 
-      printf("================KONEC============================\n");
-         printf("%p\n",(void *)active_htable);
-         printf("instruction list\n");
-         PrintList(ActiveList);
-         printf("================\n");
-         TblPrint(global_htable);
-         TblPrint(active_htable);
-         printf("============================================\n");
-         printf("============================================\n");
-         printf("============================================\n");
+      // printf("================KONEC============================\n");
+      //    printf("%p\n",(void *)active_htable);
+      //    printf("instruction list\n");
+      //    PrintList(ActiveList);
+      //    printf("================\n");
+      //    TblPrint(global_htable);
+      //    TblPrint(active_htable);
+      //    printf("============================================\n");
+      //    printf("============================================\n");
+      //    printf("============================================\n");
              
   }
 // end func

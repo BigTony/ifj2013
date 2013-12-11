@@ -183,7 +183,7 @@ void tostring(item *item){
 		case VARDOUBLE:{
 			// delka double cisla?
 			char *vysledek;
-			if((vysledek = malloc((char)sizeof(50))) == NULL){
+			if((vysledek = (char*)malloc(sizeof(char)*50)) == NULL){
 				print_error(E_INTERN,"chyba pri alokace tostring");
 			}
 			sprintf(vysledek, "%g", item->data.varDouble);
@@ -272,11 +272,7 @@ void vs_intval(tHashTbl *tab,tHashTbl *NavrTab){
 	item *tHsrc1 = (TblSearch (tab, "1000000\0"));
 	if(tHsrc1 == NULL)
     	print_error(E_SEM_PARAM,"Chybny pocet parametru ..  vs_intval");
-    printf("pred=======\n");
-    printf("%i\n",tHsrc1->data.varInt);
 	tovarint(tHsrc1);
-	printf("po========\n");
-	printf("%i\n",tHsrc1->data.varInt);
 	TblInsert(NavrTab,"$",tHsrc1->data,tHsrc1->type);
 }
 
@@ -313,12 +309,18 @@ void vs_put_string(tHashTbl *tab,tHashTbl *NavrTab){
 	i.varInt = 0;
 	item *tempitem;
 	strcpy(g_ptrs->params,"0000000\0");
+	char *konk;
+	konk = allocString();
+	int size = ALLOC_SIZE;
 	while((tempitem = TblSearch (tab, gen_param(g_ptrs->params)))!= NULL){
 		tostring(tempitem);
-		printf("%s\n",tempitem->data.varString);
+		if(strlen(tempitem->data.varString) > size){
+			reAllocString(konk,size+strlen(tempitem->data.varString));
+		}
+		strcat (konk,tempitem->data.varString);
 		i.varInt++;
 	}
-
+	printf("%s",konk);
 	TblInsert(NavrTab,"$",i,VARINT);
 }
 

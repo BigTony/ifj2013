@@ -174,7 +174,6 @@ void ExLess(TStack *stack,TExpType input){
 		case VARBOOL:
 		case VARDOUBLE:
 			value.varString = gen_id(g_ptrs->counter);
-printf ("%f\n",g_ptrs->token->value);
 			add_const_hashtbl(g_ptrs->main_symobol_tbl,g_ptrs->token->id,g_ptrs->token->value,(char *)value.varString);
 			break;
 		case VARIABLE:
@@ -291,7 +290,6 @@ void ExGreater(TStack *stack){
 					SPop(&temp);
 					// operator
 					if(STop(&temp) > COM){
-						printf("%i\n",STop(&temp));
 						if(STop(&temp) != KONK){
 							SPopAll(&temp);
 							SPopAll(stack);
@@ -483,7 +481,6 @@ int ExEx(int ifYes,char * result){
 
 	InsertInstLast (g_ptrs->act_list_inst,(char *)stack.top->var.varString,NULL,result,I_ASS);
 	SPopAll(&stack);
-	printf("KONCIM VE VYRAZECH-------\n");
 	return 0;
 
 }
