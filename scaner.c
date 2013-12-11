@@ -246,6 +246,7 @@ int getToken(FILE *fp,Ttoken *token){
             }
             else
             {
+                ungetc(c,fp);
                 w[len]='\0';
                 freeW(&w); token->value.varString=NULL;
                 token->id=PRIRAZENI;
