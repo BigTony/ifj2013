@@ -241,6 +241,54 @@ void VARBOOLval(item *item){
 	}
 }
 
+
+// vestavene funkce z IFJ13
+
+void vs_boolval(){
+
+}
+
+void vs_doubleval(){
+
+}
+
+void vs_intval(){
+
+}
+
+void vs_strval(){
+
+}
+
+void vs_get_string(){
+
+}
+
+void vs_put_string(){
+
+}
+
+void vs_strlen(){
+
+}
+
+void vs_get_substring(){
+
+}
+
+void vs_find_string(){
+
+}
+
+void vs_sort_string(){
+
+}
+
+
+
+
+// konec vestavencyh funkci IFJ13
+
 // int get_substring(char *text,char* word)
 // {
 //     int pozice=getSubstringKmp(text,word);
