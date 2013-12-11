@@ -280,8 +280,8 @@ void parser(tPointers *ptrs){
 	InitList((g_ptrs->list_instr=CreateList())); // init listu instrukci
 	g_ptrs->act_list_inst = g_ptrs->list_instr;	
     if (fgetc(g_ptrs->source)!='<'){
-            print_error(E_SYN,"Expected <?php with no symbol foregoing");
-        }
+        print_error(E_SYN,"Expected <?php with no symbol foregoing");
+    }
 	getToken_test(g_ptrs->source,g_ptrs->token);
 	if (g_ptrs->token->id == START){
 			printf("clasify?\n");

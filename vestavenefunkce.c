@@ -381,7 +381,24 @@ void vs_get_substring(tHashTbl *tab,tHashTbl *NavrTab){
 }
 
 void vs_find_string(tHashTbl *tab,tHashTbl *NavrTab){
-	
+	// prvni parametr
+	item *param1 = (TblSearch(tab,"1000000\0"));
+	if(param1 == NULL)
+    	print_error(E_SEM_PARAM,"Chybny pocet parametru ..  vs_get_substring");
+    if(param1->type != STRING)
+    	print_error(E_SEM_PARAM,"vs_get_substring prvni param neni string");
+
+    // druhy parametr
+	item *param2 = (TblSearch(tab,"2000000\0"));
+	if(param2 == NULL)
+    	print_error(E_SEM_PARAM,"Chybny pocet parametru ..  vs_get_substring");
+    if(param2->type != STRING)
+    	print_error(E_SEM_PARAM,"vs_get_substring prvni param neni string");
+
+    // beh programu
+	tokenValue result;
+	result.varInt = get_substring(param1->data.varString,param2->data.varString);
+	TblInsert(NavrTab,"$",result,VARINT);
 }
 
 void vs_sort_string(tHashTbl *tab,tHashTbl *NavrTab){
