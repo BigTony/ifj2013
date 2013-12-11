@@ -1113,7 +1113,22 @@ struct item *nextItem;
          tHsrc1 = (TblSearch (active_htable, src1));
          tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
  
-         if (tHsrc1==NULL) print_error(E_SEM_OTHER, "id funkce v lokalni ani globalni TS neexistuje [I_TSW]");
+         if (tHsrc1==NULL){ 
+            int i=0;
+            while (i<10)
+            {
+              if (strcmp (src1,vestaveneFunkce[i] )==0)
+              {
+                break;  
+              }
+              i++;
+            }
+          if (i==10)
+          {
+            print_error(E_SEM_OTHER, "id funkce v lokalni ani globalni TS neexistuje [I_TSW]");
+          }
+          
+        }
          else 
          {
             // Lokalni TS

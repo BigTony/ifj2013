@@ -17,7 +17,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "strings.h"
-#define ALLOC_SIZE 8
+
 
 /**
  * Naalokuje jeden string, a vrati ukazatel na nej
