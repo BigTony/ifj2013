@@ -167,7 +167,7 @@ void interpret (tHashTbl *global_htable, TList *L)
               }
               else 
               {
-                 TblInsert (active_htable, result, (tokenValue) tHsrc1->data, tHsrc1->type);
+                 TblInsert (active_htable, result, tHsrc1->data, tHsrc1->type);
               }
          }
 
