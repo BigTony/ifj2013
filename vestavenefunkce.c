@@ -267,10 +267,10 @@ void vs_intval(tHashTbl *tab,tHashTbl *NavrTab){
 	if(tHsrc1 == NULL)
     	print_error(E_SEM_PARAM,"Chybny pocet parametru ..  vs_intval");
     printf("pred=======\n");
-    printf("%i\n",tHsrc1->data);
+    printf("%i\n",tHsrc1->data.varInt);
 	tovarint(tHsrc1);
 	printf("po========\n");
-	printf("%i\n",tHsrc1->data);
+	printf("%i\n",tHsrc1->data.varInt);
 	TblInsert(NavrTab,"$",tHsrc1->data,tHsrc1->type);
 }
 
