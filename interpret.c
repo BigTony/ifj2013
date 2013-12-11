@@ -106,8 +106,33 @@ void interpret (tHashTbl *global_htable, TList *L)
 //------------------- EXECUTE -------------------------------------------------------------
 
   /// cekuju jestli je instrukce aktivni, pokud ano = while (1), jinak = while (0) = end
-  while (IsActiveItem(ActiveList))
+  while (1) //IsActiveItem(ActiveList)
   {
+
+     if (!(IsActiveItem(ActiveList))) 
+     {
+           if (((topStack(g_ptrs->function_stack))->NavrInstrukce)!=NULL) 
+           {
+              // aktivuju list z vrcholu stacku a nastav aktivni instrukci
+              ActiveList = (topStack(g_ptrs->function_stack))->list;
+              ActivePtrItem(ActiveList,(topStack(g_ptrs->function_stack))->NavrInstrukce);
+
+              // pop stack
+              popStack(g_ptrs->function_stack);
+
+              //Aktivuj lokalni TS fce
+              active_htable = (topStack(g_ptrs->function_stack))->hashTbl;
+
+              tokenValue nil;
+              nil.varString =  NULL;
+
+              //vloz polozku
+              TblInsert (active_htable, "$", nil, NIL);
+           }
+          else break;
+     }
+
+
       int muzuskocit = 1;
 
       // nactu aktivni instrukci z aktualniho instrukcniho listu
@@ -141,7 +166,6 @@ void interpret (tHashTbl *global_htable, TList *L)
               }
               else 
               {
-                 printf ("jsem tady %d\n",tHsrc1->data);
                  TblInsert (active_htable, result, (tokenValue) tHsrc1->data, tHsrc1->type);
               }
          }
