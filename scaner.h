@@ -60,22 +60,6 @@
 #define WHILE		42
 #define RETURN		43
 #define FUNCTION 	44
-
-// Konstanty
-
-//=========================
-//Vestavene funkce
-#define BOOLVAL         50
-#define DOUBLEVAL       51
-#define INTVAL          52
-#define STRVAL          53
-#define GET_STRING      54
-#define PUT_STRING      55
-#define STRLEN          56
-#define GET_SUBSTRING   57
-#define FIND_STRING     58
-#define SORT_STRING     59
-//-------------------
 // starty konce lol
 #define START     60 // <?php
 #define KONEC    61 // eof
