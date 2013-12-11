@@ -171,7 +171,10 @@ void tostring(item *item){
 		case VARINT:{
 			int delka = 0;
 			delka = get_int_len(item->data.varInt);
-			char vysledek[delka+1];
+			char *vysledek;
+			if((vysledek = malloc((char)sizeof(delka+1))) == NULL){
+				print_error(E_INTERN,"chyba pri alokace tostring");
+			}
 			sprintf(vysledek, "%d", item->data.varInt);
 			item->data.varString = vysledek;
 			item->type = STRING;         //puvodne: item->type = VARINT;
@@ -179,7 +182,10 @@ void tostring(item *item){
 		}
 		case VARDOUBLE:{
 			// delka double cisla?
-			char vysledek[100];
+			char *vysledek;
+			if((vysledek = malloc((char)sizeof(50))) == NULL){
+				print_error(E_INTERN,"chyba pri alokace tostring");
+			}
 			sprintf(vysledek, "%g", item->data.varDouble);
 			item->data.varString = vysledek;
 			item->type = STRING;        // puvodne: item->type = VARDOUBLE;
@@ -309,9 +315,7 @@ void vs_put_string(tHashTbl *tab,tHashTbl *NavrTab){
 	strcpy(g_ptrs->params,"0000000\0");
 	while((tempitem = TblSearch (tab, gen_param(g_ptrs->params)))!= NULL){
 		tostring(tempitem);
-		printf("no proto hajzle======\n");
 		printf("%s\n",tempitem->data.varString);
-		printf("=====================\n");
 		i.varInt++;
 	}
 
