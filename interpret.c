@@ -36,7 +36,7 @@ void interpret (tHashTbl *global_htable, TList *L)
    char *result;
 
    // data aktualni instrukce z HASH table
-   item *tHsrc1, *tHsrcGlob1;
+   item *tHsrc1;
    item *tHsrc2;
    item *tHresult = NULL;
 
@@ -99,10 +99,10 @@ void interpret (tHashTbl *global_htable, TList *L)
    // aktivace prvni instrukce z prave provadenyho instrukcniho listu
    ActiveFirstItem (ActiveList);
 
-
    printf("uplnej zacatek====\n");
    PrintList(ActiveList);
    printf("==============\n");
+
 //------------------- EXECUTE -------------------------------------------------------------
 
   /// cekuju jestli je instrukce aktivni, pokud ano = while (1), jinak = while (0) = end
@@ -141,7 +141,8 @@ void interpret (tHashTbl *global_htable, TList *L)
               }
               else 
               {
-                 TblInsert (active_htable, result, tHsrc1->data, tHsrc1->type);
+                 printf ("jsem tady %d\n",tHsrc1->data);
+                 TblInsert (active_htable, result, (tokenValue) tHsrc1->data, tHsrc1->type);
               }
          }
 
@@ -950,9 +951,8 @@ void interpret (tHashTbl *global_htable, TList *L)
          src1 = instr->src1;
 
          // nactu id src1 z HASH nebo GLOBAL hash tabulky
-         tHsrcGlob1 = (TblSearch (global_htable, src1));//global
          tHsrc1 = (TblSearch (active_htable, src1));
-         tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
+         tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : (TblSearch (global_htable, src1));
  
          if (tHsrc1==NULL){ 
             int i=0;
@@ -980,9 +980,6 @@ void interpret (tHashTbl *global_htable, TList *L)
 
             // push adresy lokalni TS fce na stack
             pushStack(g_ptrs->function_stack,local_htable_func,NULL,ActiveList);//(TLitem*)(tHsrc1->data.pointer)
-
-            // prepnuti kontextu
-           /// active_htable = local_htable_func;
          }
          break;
 
@@ -1018,7 +1015,6 @@ void interpret (tHashTbl *global_htable, TList *L)
 
          tHsrc1 = (TblSearch (active_htable, src1));
          
-
          if (tHsrc1==NULL) print_error(E_SEM_PARAM, "nespravny pocet parametru funkce [I_CHCKPAR]");
          else 
          {
@@ -1049,9 +1045,8 @@ void interpret (tHashTbl *global_htable, TList *L)
 
 
          // nactu id src1 z HASH nebo GLOBAL hash tabulky
-         tHsrcGlob1 = (TblSearch (global_htable, src1));//global
          tHsrc1 = (TblSearch (active_htable, src1));
-         tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
+         tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : (TblSearch (global_htable, src1));
  
          // lokalni TS dane funkce
          local_htable_Fce = (topStack(g_ptrs->function_stack)->hashTbl);
@@ -1079,9 +1074,8 @@ void interpret (tHashTbl *global_htable, TList *L)
          src1 = instr->src1;
 
          // nactu id src1 z HASH nebo GLOBAL hash tabulky
-         tHsrcGlob1 = (TblSearch (global_htable, src1));//global
          tHsrc1 = (TblSearch (active_htable, src1));
-         tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
+         tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : (TblSearch (global_htable, src1));
 
          if (tHsrc1==NULL) {
             print_error(E_SEM_OTHER, "id v lokalni ani globalni TS neexistuje [I_RETURN]");
@@ -1111,6 +1105,7 @@ void interpret (tHashTbl *global_htable, TList *L)
          case I_JMP:
          // nactu result z INSTRUKCE
          result = instr->result;
+
          // nactu result z GLOBALNI HASH tabulky
          tHresult = (TblSearch (global_htable, result));
 
@@ -1126,21 +1121,21 @@ void interpret (tHashTbl *global_htable, TList *L)
 
          /*========================I_JZ=========================*/
          case I_JZ:
-         // nactu id src1,src2 & result z INSTRUKCE
-         src1 = instr->src1;
-         result = instr->result;
+          // nactu id src1,src2 & result z INSTRUKCE
+          src1 = instr->src1;
+          result = instr->result;
 
           // nactu id src1,src2 & result z HASH tabulky
-          tHsrcGlob1 = (TblSearch (global_htable, src1));//global
           tHsrc1 = (TblSearch(active_htable,src1));
-          tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
+          tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : (TblSearch (global_htable, src1));
 
-         // nactu id src1,src2 & result z GLOBALNI HASH tabulky
-         tHresult = (TblSearch (global_htable, result));
+          // nactu id src1,src2 & result z GLOBALNI HASH tabulky
+          tHresult = (TblSearch (global_htable, result));
 
          // pokud by cil skoku, nebo zdrojova promenna nebyla v globalni tabulce ->chyba
-         if (tHresult==NULL || tHsrc1==NULL) 
+         if (tHresult==NULL || tHsrc1==NULL) {
             print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje I_JZ");
+         }
          else
          {
              switch (tHsrc1->type)
@@ -1170,25 +1165,22 @@ void interpret (tHashTbl *global_htable, TList *L)
              }
 
            if (jump)
-            { // proved skok - nejsu si jistej typama
+            {  // proved skok
                ActivePtrItem (ActiveList,((TLItem *)tHresult->data.pointer));
             }
          }
-         // TblPrint(active_htable);
-         // TblPrint(global_htable);
          break;
 
 
          /*========================I_JNZ=========================*/
          case I_JNZ:
-         // nactu id src1,src2 & result z INSTRUKCE
-         src1 = instr->src1;
-         result = instr->result;
+          // nactu id src1,src2 & result z INSTRUKCE
+          src1 = instr->src1;
+          result = instr->result;
 
           // nactu id src1,src2 & result z HASH tabulky
-          tHsrcGlob1 = (TblSearch (global_htable, src1));//global
           tHsrc1 = (TblSearch(active_htable,src1));
-          tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
+          tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : (TblSearch (global_htable, src1));
 
          // pokud by cil skoku, nebo zdrojova promenna nebyla v globalni tabulce ->chyba
          if (tHresult==NULL || tHsrc1==NULL) print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje I_JNZ");
@@ -1230,8 +1222,8 @@ void interpret (tHashTbl *global_htable, TList *L)
 
          /*========================I_LAB=========================*/
          case I_LAB:
-           // dodela david *joke* :P
          break;
+
          default:
           print_error(E_SYN,"Neznama instrukce");
      }
