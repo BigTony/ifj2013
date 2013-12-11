@@ -244,43 +244,43 @@ void VARBOOLval(item *item){
 
 // vestavene funkce z IFJ13
 
-void vs_boolval(){
+void vs_boolval(tHashTbl *tab,tHashTbl *NavrTab){
 
 }
 
-void vs_doubleval(){
+void vs_doubleval(tHashTbl *tab,tHashTbl *NavrTab){
 
 }
 
-void vs_intval(){
+void vs_intval(tHashTbl *tab,tHashTbl *NavrTab){
 
 }
 
-void vs_strval(){
+void vs_strval(tHashTbl *tab,tHashTbl *NavrTab){
 
 }
 
-void vs_get_string(){
+void vs_get_string(tHashTbl *tab,tHashTbl *NavrTab){
 
 }
 
-void vs_put_string(){
+void vs_put_string(tHashTbl *tab,tHashTbl *NavrTab){
 
 }
 
-void vs_strlen(){
+void vs_strlen(tHashTbl *tab,tHashTbl *NavrTab){
 
 }
 
-void vs_get_substring(){
+void vs_get_substring(tHashTbl *tab,tHashTbl *NavrTab){
 
 }
 
-void vs_find_string(){
+void vs_find_string(tHashTbl *tab,tHashTbl *NavrTab){
 
 }
 
-void vs_sort_string(){
+void vs_sort_string(tHashTbl *tab,item *item){
 
 }
 
