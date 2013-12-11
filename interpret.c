@@ -1159,8 +1159,8 @@ struct item *nextItem;
          //tHsrcLocF1 = (TblSearch (local_htable_Fce, src1));
          tHsrc1 = (TblSearch (active_htable, src1));
          tHsrc1 =  (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
-
-
+         printf("=====kuk sem======\n");
+         printf("%s\n",src1);
          if (tHsrc1==NULL) print_error(E_SEM_OTHER, "id funkce v lokalni ani globalni TS neexistuje [I_PARAM]");
          else 
          {
@@ -1222,7 +1222,7 @@ struct item *nextItem;
 				if (strcmp (src1,vestaveneFunkce[i] )==0)
 				{
 					(*fun[i])((topStack(g_ptrs->function_stack))->hashTbl, active_htable);
-					popStack(g_ptrs->function_stack);
+					// popStack(g_ptrs->function_stack);
 					break;	
 				}
 				i++;

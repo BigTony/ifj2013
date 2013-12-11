@@ -50,9 +50,9 @@ void tovarint(item *item){
   			// podle me to nemusime freeovat
   			// bo union zabira v pameti kolik jeho maximalni polozka takze by to melo bejt cajk
   			if(blank == 0)
-  				item->data.varInt = cislo;
-  			else
   				item->data.varInt = 0;
+  			else
+  				item->data.varInt = cislo;
 			item->type = VARINT;
 			break;
 		}
@@ -160,7 +160,8 @@ void todouble(item *item){
 int get_int_len (int value){
   int l=1;
   while(value>9){
-  	l++; value/=10;
+  	l++; 
+  	value/=10;
   }
   return l;
 }
@@ -168,7 +169,8 @@ int get_int_len (int value){
 void tostring(item *item){
 	switch(item->type){
 		case VARINT:{
-			int delka = get_int_len(item->data.varInt);
+			int delka = 0;
+			delka = get_int_len(item->data.varInt);
 			char vysledek[delka+1];
 			sprintf(vysledek, "%d", item->data.varInt);
 			item->data.varString = vysledek;
@@ -264,7 +266,11 @@ void vs_intval(tHashTbl *tab,tHashTbl *NavrTab){
 	item *tHsrc1 = (TblSearch (tab, "1000000\0"));
 	if(tHsrc1 == NULL)
     	print_error(E_SEM_PARAM,"Chybny pocet parametru ..  vs_intval");
+    printf("pred=======\n");
+    printf("%i\n",tHsrc1->data);
 	tovarint(tHsrc1);
+	printf("po========\n");
+	printf("%i\n",tHsrc1->data);
 	TblInsert(NavrTab,"$",tHsrc1->data,tHsrc1->type);
 }
 
@@ -297,8 +303,22 @@ void vs_get_string(tHashTbl *tab,tHashTbl *NavrTab){
 }
 
 void vs_put_string(tHashTbl *tab,tHashTbl *NavrTab){
+	printf("mrkni sem\n");
+	tokenValue i;
+	i.varInt = 0;
+	item *tempitem;
+	strcpy(g_ptrs->params,"0000000\0");
+	while((tempitem = TblSearch (tab, gen_param(g_ptrs->params)))!= NULL){
+		tostring(tempitem);
+		printf("koukni sem koukni tam at se na teebe podivam\n");
+		printf("%s\n",tempitem->data.varString);
+		printf("=================\n");
+		i.varInt++;
+	}
 
+	TblInsert(NavrTab,"$",i,VARINT);
 }
+
 
 void vs_strlen(tHashTbl *tab,tHashTbl *NavrTab){
 
