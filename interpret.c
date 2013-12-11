@@ -167,7 +167,7 @@ void interpret (tHashTbl *global_htable, TList *L)
               }
               else 
               {
-                 TblInsert (active_htable, result, (tokenValue) tHsrc1->data, tHsrc1->type);
+                 TblInsert (active_htable, result, tHsrc1->data, tHsrc1->type);
               }
          }
 
@@ -454,9 +454,16 @@ void interpret (tHashTbl *global_htable, TList *L)
                {
                    // vysledek bude int
                    TypeOF = VARDOUBLE;
-                  // todouble(tHsrc1);
-                  // todouble(tHsrc2);
-                   tmp.varDouble = (double)((double)(tHsrc1->data.varInt) / (double)(tHsrc2->data.varInt));
+
+                   // [===overujeme jestli se nedeli nulou===]
+                   if ((double)(tHsrc2->data.varInt)==0.0) 
+                    {
+                           print_error(E_SEM_DIV_ZERO, "NELZE DELIT NULOU! [I_DIV]");
+                    }
+                   else 
+                    {
+                        tmp.varDouble = (double)((double)(tHsrc1->data.varInt) / (double)(tHsrc2->data.varInt));
+                    }
                }
               else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
                {
@@ -464,13 +471,39 @@ void interpret (tHashTbl *global_htable, TList *L)
                    TypeOF = VARDOUBLE;
 
                    // pokud prvni double a druhy int, int pretypuju a naopak
-                   if (dataType1==VARDOUBLE && dataType2==VARINT){
-                       tmp.varDouble = (tHsrc1->data.varDouble / (double) (tHsrc2->data.varInt));
+                   if (dataType1==VARDOUBLE && dataType2==VARINT)
+                    {
+                           // [===overujeme jestli se nedeli nulou===]
+                          if ((double)(tHsrc2->data.varInt)==0.0) 
+                          {
+                              print_error(E_SEM_DIV_ZERO, "NELZE DELIT NULOU! [I_DIV]");
+                          }
+                          else {
+                             tmp.varDouble = (tHsrc1->data.varDouble / (double) (tHsrc2->data.varInt));
+                          }
                     }
-                   else if(dataType1==VARINT && dataType2==VARDOUBLE)
-                       tmp.varDouble = ( (double)(tHsrc1->data.varInt) / tHsrc2->data.varDouble);
-                    else if(dataType1==VARDOUBLE && dataType2==VARDOUBLE)
-                      tmp.varDouble = (tHsrc1->data.varDouble / tHsrc2->data.varDouble);
+                   else if(dataType1==VARINT && dataType2==VARDOUBLE) 
+                    {
+                          // [===overujeme jestli se nedeli nulou===]
+                         if (tHsrc2->data.varDouble==0.0) 
+                         {
+                             print_error(E_SEM_DIV_ZERO, "NELZE DELIT NULOU! [I_DIV]");
+                         }
+                         else  {
+                            tmp.varDouble = ( (double)(tHsrc1->data.varInt) / tHsrc2->data.varDouble);
+                         }
+                    }
+                    else if(dataType1==VARDOUBLE && dataType2==VARDOUBLE) 
+                    {
+                         // [===overujeme jestli se nedeli nulou===]
+                         if (tHsrc2->data.varDouble==0.0) 
+                         {
+                             print_error(E_SEM_DIV_ZERO, "NELZE DELIT NULOU! [I_DIV]");
+                         }
+                         else {
+                            tmp.varDouble = (tHsrc1->data.varDouble / tHsrc2->data.varDouble);
+                         }
+                    } 
 
                }
                else {
