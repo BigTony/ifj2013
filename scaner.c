@@ -15,18 +15,6 @@
 #include "scaner.h"
 #include <stdio.h>
 
-char* vestaveneFunkce[10]={
-    "boolval",      //BOOLVAL
-    "doubleval",    //DOUBLEVAL
-    "intval",       //INTVAL
-    "strval",       //STRVAL
-    "get_string",   //GET_STRING
-    "put_string",   //PUT_STRING
-    "strlen",       //STRLEN
-    "get_substring",//GET_SUBSTRING
-    "find_string",  //FIND_STRING
-    "sort_string",  //SORT_STRING
-};
 //test-vypis nacteneho tokenu
 int getToken_test(FILE *fp,Ttoken *token)
 {
@@ -77,20 +65,6 @@ void skipSpace(char *c,FILE *fp)
      while((_c!=EOF) && (isspace(_c)!=0));
      *c=_c;
 }
-
-/*void horner(char *w,Ttoken *token,short which)
-{
-    if (which == VARDOUBLE)
-    {
-        token->value.varDouble=atof(w);
-    }
-    else if(which == VARINT)
-    {
-        token->value.varInt=atoi(w);
-    }
-    return;
-}*/
-
 /////////////////
 //FUNKCE getToken(FILE *f)
 //FILE *f je zdrojovy kod jazyka IFJ13 predavany ridicim programem
@@ -105,9 +79,6 @@ int getToken(FILE *fp,Ttoken *token){
     {
         print_error(E_INTERN,"LexAllocError");
     }
-    //Ttoken token = malloc(sizeof(token));  //Alokace pro token (Neni lepsi obdrzet od zadatele?)
-
-
     skipSpace(&c,fp);
     while(1)
     {
@@ -466,71 +437,8 @@ int getToken(FILE *fp,Ttoken *token){
             ungetc(c,fp);
             w[len]='\0';
             len--;
-           /* if((strcmp(w,"if")==0)||(strcmp(w,"else")==0)||(strcmp(w,"while")==0)||(strcmp(w,"return")==0
-                )||(strcmp(w,"function")==0)||(strcmp(w,"null")==0)||(strcmp(w,"true")==0)||(strcmp(w,"false")==0))
-            {
-                freeW(&w); token->value.varString=NULL;
-                print_error(E_LEX,"LexERROR"); return E_LEX;
-            }*/
-            int i=0;
-            while(i<10)
-            {
-                if(strcmp(w,vestaveneFunkce[i])==0){
-                    break;}
-                i++;
-            }
-            if(i<10)//Vestavena funkce
-            {
-                switch(i)
-                {
-                    case 0:
-                        token->id=BOOLVAL;
-                        freeW(&w); token->value.varString=NULL;
-                        return token->id;
-                    case 1:
-                        token->id=DOUBLEVAL;
-                        freeW(&w); token->value.varString=NULL;
-                        return token->id;
-                    case 2:
-                        token->id=INTVAL;
-                        freeW(&w); token->value.varString=NULL;
-                        return token->id;
-                    case 3:
-                        token->id=STRVAL;
-                        freeW(&w); token->value.varString=NULL;
-                        return token->id;
-                    case 4:
-                        token->id=GET_STRING;
-                        freeW(&w); token->value.varString=NULL;
-                        return token->id;
-                    case 5:
-                        token->id=PUT_STRING;
-                        freeW(&w); token->value.varString=NULL;
-                        return token->id;
-                    case 6:
-                        token->id=STRLEN;
-                        freeW(&w); token->value.varString=NULL;
-                        return token->id;
-                    case 7:
-                        token->id=GET_SUBSTRING;
-                        freeW(&w); token->value.varString=NULL;
-                        return token->id;
-                    case 8:
-                        token->id=FIND_STRING;
-                        freeW(&w); token->value.varString=NULL;
-                        return token->id;
-                    case 9:
-                        token->id=SORT_STRING;
-                        freeW(&w); token->value.varString=NULL;
-                        return token->id;
-                    default:
-                        freeW(&w); token->value.varString=NULL;
-                        print_error(E_LEX,"LexERROR");
-                        break;
 
-                }
-            }
-            else if((strcmp(w,"if")==0))
+            if((strcmp(w,"if")==0))
             {
                 token->id=IF;
                 freeW(&w); token->value.varString=NULL;
