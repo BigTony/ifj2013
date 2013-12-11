@@ -1012,46 +1012,20 @@ void interpret (tHashTbl *global_htable, TList *L)
          // nactu id src1,src2 & result z INSTRUKCE
          src1 = instr->src1;
          result = instr->result;
+
          // lokalni TS funkce
          local_htable_Fce = (topStack(g_ptrs->function_stack))->hashTbl;
 
          // nactu data na prohledani 3 TS
-         tHsrcGlob1 = (TblSearch (global_htable, src1));//global
-         //tHsrcLocF1 = (TblSearch (local_htable_Fce, src1));
          tHsrc1 = (TblSearch (active_htable, src1));
-         tHsrc1 =  (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
+         tHsrc1 =  (tHsrc1!=NULL) ? tHsrc1 : (TblSearch (global_htable, src1));
 
-
-         if (tHsrc1==NULL) print_error(E_SEM_OTHER, "id funkce v lokalni ani globalni TS neexistuje [I_PARAM]");
+         if (tHsrc1==NULL)  {
+             print_error(E_SEM_OTHER, "id funkce v lokalni ani globalni TS neexistuje [I_PARAM]");
+         }
          else 
          {
-             switch (tHsrc1->type)
-             {
-                case VARINT:
-                  TypeOF = VARINT;
-                  tmp.varInt=tHsrc1->data.varInt;
-                break;
-
-                case VARBOOL:
-                  TypeOF = VARBOOL;
-                  tmp.varInt=tHsrc1->data.varInt;
-                break;
-
-                case VARDOUBLE:
-                  TypeOF = VARDOUBLE;
-                  tmp.varDouble=tHsrc1->data.varDouble;
-                break;
-
-                case STRING:
-                  TypeOF = STRING;
-                  tmp.varString=tHsrc1->data.varString;
-                break;
-
-                default: // chyba
-                break;
-             }
-
-            TblInsert (local_htable_Fce, result, tmp, TypeOF);
+            TblInsert (local_htable_Fce, result, tHsrc1->data, tHsrc1->type);
          }
          break;
 
@@ -1133,58 +1107,24 @@ void interpret (tHashTbl *global_htable, TList *L)
          tHsrc1 = (TblSearch (active_htable, src1));
          tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
 
-         if (tHsrc1==NULL) 
+         if (tHsrc1==NULL) {
             print_error(E_SEM_OTHER, "id v lokalni ani globalni TS neexistuje [I_RETURN]");
+         }
          else 
          {
-              switch (tHsrc1->type)
-              {
-                 case VARINT:
-                   TypeOF = VARINT;
-                   tmp.varInt=tHsrc1->data.varInt;
-                 break;
-
-                 case VARBOOL:
-                   TypeOF = VARBOOL;
-                   tmp.varInt=tHsrc1->data.varInt;
-                 break;
-
-                 case VARDOUBLE:
-                   TypeOF = VARDOUBLE;
-                   tmp.varDouble=tHsrc1->data.varDouble;
-                 break;
-
-                 case STRING:
-                   TypeOF = STRING;
-                   tmp.varString=tHsrc1->data.varString;
-                 break;
-
-                 default: // chyba
-                 break;
-              }
-
-
-              
+              // aktivuju list z vrcholu stacku a nastav aktivni instrukci
               ActiveList = (topStack(g_ptrs->function_stack))->list;
               ActivePtrItem(ActiveList,(topStack(g_ptrs->function_stack))->NavrInstrukce);
-              printf("navratova instrukce po returnu\n");
-              printf("%p\n",(topStack(g_ptrs->function_stack))->NavrInstrukce);
-              printf("%p\n",ActiveList );
-              printf("=============\n");
+
               // pop stack
               popStack(g_ptrs->function_stack);
-
 
               //Aktivuj lokalni TS fce
               active_htable = (topStack(g_ptrs->function_stack))->hashTbl;
 
               //vloz polozku
-              TblInsert (active_htable, "$", tmp, TypeOF);
-
-
+              TblInsert (active_htable, "$", tHsrc1->data, tHsrc1->type);
          }
-         printf("po returnu ======\n");
-         PrintList(ActiveList);
          break;
 
 
@@ -1202,7 +1142,7 @@ void interpret (tHashTbl *global_htable, TList *L)
          if (tHresult==NULL) print_error(E_SEM_OTHER, "cil skoku v lokalni TS neexistuje [I_JMP]");
          else
          {
-              // aktivuje instrukci v prave aktivnim listu, nejsu si jistej typama
+              // aktivuje instrukci v prave aktivnim listu
               ActivePtrItem (ActiveList,((TLItem *)tHresult->data.pointer));
          }
          break;
