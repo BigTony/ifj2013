@@ -396,8 +396,14 @@ void vs_find_string(tHashTbl *tab,tHashTbl *NavrTab){
     	print_error(E_SEM_PARAM,"vs_get_substring prvni param neni string");
 
     // beh programu
+    if((strcmp(param2->data.varString,""))==0){
+    	tokenValue result;
+    	result.varInt = 0;
+    	TblInsert(NavrTab,"$",result,VARINT);
+    	return;
+    }
 	tokenValue result;
-	result.varInt = get_substring(param1->data.varString,param2->data.varString);
+	result.varInt = find_string(param1->data.varString,param2->data.varString);
 	TblInsert(NavrTab,"$",result,VARINT);
 }
 
@@ -410,7 +416,7 @@ void vs_sort_string(tHashTbl *tab,tHashTbl *NavrTab){
 
 // konec vestavencyh funkci IFJ13
 
-int get_substring(char *text,char* word)
+int find_string(char *text,char* word)
 {
     int pozice=getSubstringKmp(text,word);
     int textLen=strlen(text);

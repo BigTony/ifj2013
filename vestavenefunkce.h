@@ -9,7 +9,7 @@
 
 //vraci pozici v char[pozice]..cislo 0azDELKATEXTU
 //vraci -1 nenajde-li
-int get_substring(char* text,char* word);
+int find_string(char* text,char* word);
 
 void vs_boolval(tHashTbl *tab,tHashTbl *NavrTab);
 void vs_doubleval(tHashTbl *tab,tHashTbl *NavrTab);
