@@ -9,12 +9,13 @@ $z = A($a);
 
 function B($a)
 {
+    $n = 0;
     if($a>5)
     {
        while ($a<5)
        {
-            $n = $n+$a;
-            $a = $a + 1;
+            $n=$n+$a;
+            $a=$a+1;
        }
     }
     else
