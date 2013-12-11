@@ -17,6 +17,7 @@
 #include "errors.h"
 #include "scaner.h"
 #include "adt.h"
+#include "vestavenefunkce.h"
 #include "memory.h"
 
 void tostring(item *item);

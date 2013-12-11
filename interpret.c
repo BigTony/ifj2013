@@ -50,6 +50,33 @@ void interpret (tHashTbl *global_htable, TList *L)
    // tmp
    tokenValue tmp;
 
+	// Tabulka lokalnich funkci
+   char* vestaveneFunkce[10]={
+    "boolval",      //BOOLVAL
+    "doubleval",    //DOUBLEVAL
+    "intval",       //INTVAL
+    "strval",       //STRVAL
+    "get_string",   //GET_STRING
+    "put_string",   //PUT_STRING
+    "strlen",       //STRLEN
+    "get_substring",//GET_SUBSTRING
+    "find_string",  //FIND_STRING
+    "sort_string",  //SORT_STRING
+};
+   void (*fun[10]) (tHashTbl*tab,item*item)={
+    vs_boolval,      //BOOLVAL
+    vs_doubleval,    //DOUBLEVAL
+    vs_intval,       //INTVAL
+    vs_strval,       //STRVAL
+    vs_get_string,   //GET_STRING
+    vs_put_string,   //PUT_STRING
+    vs_strlen,       //STRLEN
+    vs_get_substring,//GET_SUBSTRING
+    vs_find_string,  //FIND_STRING
+    vs_sort_string,  //SORT_STRING
+};
+
+
 //____________________LOKALNI TS_____________________________________________
 
    // Lokalni TS pro MAIN & FCE
@@ -1174,6 +1201,15 @@ struct item *nextItem;
          case I_CALL:
          // nactu id src1 z INSTRUKCE
          src1 = instr->src1;
+			int i=0;
+			while (i<10)
+			{
+				if (strcmp (src1,vestaveneFunkce[i] )==0)
+				{
+					
+				}
+			}
+
 
          // nactu id src1 z HASH nebo GLOBAL hash tabulky
          tHsrcGlob1 = (TblSearch (global_htable, src1));//global
