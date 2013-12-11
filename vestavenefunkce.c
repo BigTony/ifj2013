@@ -344,24 +344,44 @@ void vs_get_substring(tHashTbl *tab,tHashTbl *NavrTab){
 
     // druhy parametr
 	item *param2 = (TblSearch(tab,"2000000\0"));
-	if(param1 == NULL)
+	if(param2 == NULL)
     	print_error(E_SEM_PARAM,"Chybny pocet parametru ..  vs_get_substring");
-    if(param1->type != VARINT)
+    if(param2->type != VARINT)
     	print_error(E_SEM_PARAM,"vs_get_substring druhy param neni int");
+    if((param2->data.varInt < 0) || (param2->data.varInt >= strlen(param1->data.varString)))
+    	print_error(E_SEM_PARAM,"vs_get_substring druhy param < 0 nebo vetsi jak strlen string");
 
     // treti parametr
 	item *param3 = (TblSearch(tab,"3000000\0"));
-	if(param1 == NULL)
+	if(param3 == NULL)
     	print_error(E_SEM_PARAM,"Chybny pocet parametru ..  vs_get_substring");
-    if(param1->type != VARINT)
+    if(param3->type != VARINT)
     	print_error(E_SEM_PARAM,"vs_get_substring treti param neni int");
+    if((param3->data.varInt < 0) || (param3->data.varInt >= strlen(param1->data.varString)))
+    	print_error(E_SEM_PARAM,"vs_get_substring druhy param < 0 nebo vetsi jak strlen string");
 
     // beh programu
-    
+    int delka = param3->data.varInt - param2->data.varInt;
+    char *vysledek;
+	if((vysledek = malloc((char)sizeof(delka+10))) == NULL){
+		print_error(E_INTERN,"chyba pri alokace vs_get_substring");
+	}
+	int start = param2->data.varInt;
+	int end = param3->data.varInt;
+	int i = 0;
+	while(start <= end){
+		vysledek[i] = param1->data.varString[start];
+		i++;
+		start++;
+	}
+	vysledek[i] = '\0';
+	tokenValue result;
+	result.varString = vysledek;
+	TblInsert(NavrTab,"$",result,STRING);
 }
 
 void vs_find_string(tHashTbl *tab,tHashTbl *NavrTab){
-
+	
 }
 
 void vs_sort_string(tHashTbl *tab,tHashTbl *NavrTab){
