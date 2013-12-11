@@ -63,7 +63,7 @@ void interpret (tHashTbl *global_htable, TList *L)
     "find_string",  //FIND_STRING
     "sort_string",  //SORT_STRING
 };
-   void (*fun[10]) (tHashTbl*tab,item*item)={
+   void (*fun[10]) (tHashTbl*tab,tHashTbl*NavrTab)={
     vs_boolval,      //BOOLVAL
     vs_doubleval,    //DOUBLEVAL
     vs_intval,       //INTVAL

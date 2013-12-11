@@ -245,22 +245,52 @@ void VARBOOLval(item *item){
 // vestavene funkce z IFJ13
 
 void vs_boolval(tHashTbl *tab,tHashTbl *NavrTab){
-
+    tHsrc1 = (TblSearch (tab, "1000000\0"));
+    if(tHsrc1 == NULL)
+    	print_error(E_SEM_PARAM,"Chybny pocet parametru ..  vs_boolval");
+	toVARBOOL(tHsrc1);
+	TblInsert(NavrTab,"$",tHsrc1->data,tHsrc1->type);
 }
 
 void vs_doubleval(tHashTbl *tab,tHashTbl *NavrTab){
-
+	tHsrc1 = (TblSearch (tab, "1000000\0"));
+	if(tHsrc1 == NULL)
+    	print_error(E_SEM_PARAM,"Chybny pocet parametru ..  vs_doubleval");
+	todouble(tHsrc1);
+	TblInsert(NavrTab,"$",tHsrc1->data,tHsrc1->type);
 }
 
 void vs_intval(tHashTbl *tab,tHashTbl *NavrTab){
-
+	tHsrc1 = (TblSearch (tab, "1000000\0"));
+	if(tHsrc1 == NULL)
+    	print_error(E_SEM_PARAM,"Chybny pocet parametru ..  vs_intval");
+	tovarint(tHsrc1);
+	TblInsert(NavrTab,"$",tHsrc1->data,tHsrc1->type);
 }
 
 void vs_strval(tHashTbl *tab,tHashTbl *NavrTab){
-
+	tHsrc1 = (TblSearch (tab, "1000000\0"));
+	if(tHsrc1 == NULL)
+    	print_error(E_SEM_PARAM,"Chybny pocet parametru ..  vs_strval");
+	tostring(tHsrc1);
+	TblInsert(NavrTab,"$",tHsrc1->data,tHsrc1->type);
 }
 
 void vs_get_string(tHashTbl *tab,tHashTbl *NavrTab){
+	int c;
+	int i = 0;
+	int size = ALLOC_SIZE;
+	char *temp = allocString();
+  	do {
+    	c=getchar();
+    	if(i >= size){
+    		reAllocString(temp,size+ALLOC_SIZE);
+    		size = size + ALLOC_SIZE;
+    	}
+    	temp[i] = c;
+    	i++;
+  	}while ((c != EOL) || (c != EOF));
+  	TblInsert(NavrTab,"$",temp,STRING);
 
 }
 
@@ -280,7 +310,7 @@ void vs_find_string(tHashTbl *tab,tHashTbl *NavrTab){
 
 }
 
-void vs_sort_string(tHashTbl *tab,item *item){
+void vs_sort_string(tHashTbl *tab,tHashTbl *NavrTab){
 
 }
 
