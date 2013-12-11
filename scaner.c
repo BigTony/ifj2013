@@ -558,13 +558,14 @@ int getToken(FILE *fp,Ttoken *token){
                             w[len]='\0';
                             ungetc(c,fp);
                             token->id=VARDOUBLE;
+
                             token->value.varDouble = strtod(w,NULL);
-                            freeW(&w); token->value.varString=NULL;
+                            freeW(&w); ///token->value.varString=NULL;
                             return token->id;
                         }
                         else
                         {
-                            freeW(&w); token->value.varString=NULL;
+                            freeW(&w); //token->value.varString=NULL;
                             print_error(E_LEX,"LexERROR"); return E_LEX;
                         }
                     }
@@ -574,7 +575,7 @@ int getToken(FILE *fp,Ttoken *token){
                         ungetc(c,fp);
                         token->id=VARDOUBLE;
                         token->value.varDouble = strtod(w,NULL);
-                        freeW(&w); token->value.varString=NULL;
+                        freeW(&w); //token->value.varString=NULL;
                         return token->id;
                     }
                 }
@@ -602,7 +603,7 @@ int getToken(FILE *fp,Ttoken *token){
                 ungetc(c,fp);
                 token->id=VARDOUBLE;
                 token->value.varDouble = strtod(w,NULL);
-                freeW(&w); token->value.varString=NULL;
+                freeW(&w); //token->value.varString=NULL;
                 return token->id;
 
             }
