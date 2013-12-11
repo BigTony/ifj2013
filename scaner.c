@@ -589,7 +589,7 @@ int getToken(FILE *fp,Ttoken *token){
                 do{
                     if(len%10==9)
                     {
-                      if(reallocString(&w)!=E_OK){print_error(E_LEX,"LexERROR"); return E_LEX;}
+                      reallocString(&w);
                     }
                     c=fgetc(fp);
                     len++;
@@ -627,11 +627,7 @@ int getToken(FILE *fp,Ttoken *token){
             {
                 if(len%10==9)
                 {
-                    if(reallocString(&w)!=E_OK)
-                    {
-                        print_error(E_LEX,"LexERROR");
-                        return E_LEX;
-                    }
+                    reallocString(&w);                    
                 }
                 if(c>31 && c!='"' && c!='$' && c!='t' && c!='n' && c!='\\' && c!='x')
                 {
@@ -674,7 +670,7 @@ int getToken(FILE *fp,Ttoken *token){
                     }
                     else
                     {
-                        print_error(E_LEX,"$ neni predchazen \\");
+                        print_error(E_LEX,"Expected \\ before $ symbol inside of a string");
                     }
                 }
                 else if(c=='t')
@@ -703,7 +699,7 @@ int getToken(FILE *fp,Ttoken *token){
                         }
                         else
                         {
-                            print_error(E_LEX,"Chybny format unikove skevence \xDD");
+                            print_error(E_LEX,"Chybny format unikove skevence \\xDD");
                         }
                     }
                     else
@@ -745,6 +741,6 @@ int getToken(FILE *fp,Ttoken *token){
 }
     //k tomuhle by nemelo vubec dojit, jen kvuli warningu
     freeW(&w); token->value.varString=NULL;
-    print_error(E_LEX,"LexERROR");
+    print_error(E_LEX,"Nepovoleny znak na vstupu.");
     return E_LEX;
 }
