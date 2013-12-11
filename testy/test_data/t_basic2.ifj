@@ -1,0 +1,6 @@
+<?php
+
+// Pouze prirazeni a vypis
+
+$a = 7;
+$x = put_string($a, "\n");

@@ -1,0 +1,23 @@
+<?php
+
+$a = 8.7;
+
+if (null < null) {
+	$a = 8 + $a;
+}
+else {
+	$a = "true" . true;
+}
+
+;
+
+///*//-////-/////-/////-/////-////-/*///
+$x = put_string(null, null, $a, "\n");
+$x = put_string($x, "\n");
+$x = put_string();
+$x = put_string($x, "\n");
+
+
+function id1(){}
+function id2_7(){}
+function id2(){}

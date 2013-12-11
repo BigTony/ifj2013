@@ -1,0 +1,37 @@
+<?php
+
+// Program 13: testovani aritmetickych vyrazu
+// nastane chyba (5) -> nedeklarovana promenna
+
+$a = 20; 
+$b = 5;
+$c = 15;
+
+$x = $a - $b * $b;
+$x = put_string($x, "\n");
+
+$x = $b * $c / $b;
+$x = put_string($x, "\n");
+
+$x = $c / $a - $b;
+$x = put_string($x, "\n");
+
+$x = $a - ($c + $b);
+$x = put_string($x, "\n");
+
+$a = ($c + $b);
+$a = doubleval($a);
+
+$x = put_string($a, "\n");
+
+$c = "874.ioop";
+$c = intval($c);
+$x = put_string($c, "\n");
+
+if ($c) {
+	$d = 0;
+	$x = put_string($d, "\n");
+}
+else {
+	$x = put_string($d, "\n");
+}

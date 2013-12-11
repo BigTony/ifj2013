@@ -1,0 +1,16 @@
+<?php
+
+// Cyklus while
+
+$a = 5;
+$b = 1;
+
+while ($a > 0) {
+	$y = put_string($a, "\n");
+	$a = $a - 1;	
+	$b = $b * 2.3;
+}
+
+$y = put_string($b, "\n");
+
+

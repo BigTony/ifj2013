@@ -1,0 +1,11 @@
+<?php
+
+// Program 16: deleni nulou
+// chybovy kod (10)
+
+$a = 5;
+$b = 0;
+
+$c = ((($a / $b)));
+
+$x = put_string($c, "\n");

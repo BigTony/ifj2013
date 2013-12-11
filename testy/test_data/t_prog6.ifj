@@ -1,0 +1,11 @@
+<?php /* Komentar */
+
+// Program 6: Cyklus a matematicke operace
+
+$a = 10 * 32 -500;
+$b = $a + 100;
+
+while ($a <$b) {
+	$a = $a + 10;        ;
+	$x = put_string("Cyklus probiha!\n");
+}

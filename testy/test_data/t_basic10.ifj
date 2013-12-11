@@ -1,0 +1,13 @@
+<?php
+
+// Delka retezce
+
+$a = "desetznaku";
+$b = strlen($a);
+
+$y = put_string($b, "\n");
+
+$y = put_string("Zadejte cislo 4: ");
+$c = get_string();
+$y = put_string($c, "\n");
+

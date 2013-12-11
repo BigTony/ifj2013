@@ -1,0 +1,22 @@
+<?php
+
+// Program 14: testovani vestavenych fci
+
+$a = "Ahoj";
+$b = "Kamile!";
+
+$c = $a . " " . $b . "\n";
+
+$d = get_substring($c, 4, 10);
+$x = put_string($d, "\n");
+
+$e = strlen($d);
+$x = put_string($e, "\n");
+
+$a = find_string($d, "ami");
+$x = put_string($a, "\n");
+
+$x = sort_string($b);
+$x = put_string($x, "\n");
+
+return 42;

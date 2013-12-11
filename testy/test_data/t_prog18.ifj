@@ -1,0 +1,17 @@
+<?php
+
+// Testovani strval a konkatenace
+
+$a = 87;
+$b = 98.74e7;
+
+$c = strval($a);
+$x = put_string($c, "\n");
+$d = strval($b);
+$x = put_string($d, "\n");
+
+$d = "Hi " . $d . "Oh yeah ... ";
+$x = put_string($d, "\n");
+
+$e = ("87" . ((($c . $d) . " popo ") . "87"));
+$x = put_string($e, "\n");

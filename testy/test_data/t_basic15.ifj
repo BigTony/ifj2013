@@ -1,0 +1,14 @@
+<?php
+
+$x = 1 . 2; // toto ma byt chyba (12)
+				// pretypovani probehne, tehdy pokud 1 bude "1"
+				// je treba prva zkontrolovat prvni operand zda je 
+				// string a podle toho bud pretypovat vsechny ostatni
+				// nebo vyhodit chybu (pokud prvni neni string)
+
+				// $x = "1" . 2; -> ok
+				// $x = "1" . 2 . 3; -> ok
+				// $x = 1 . "2"; -> chyba
+
+
+$x = put_string($x, "\n");

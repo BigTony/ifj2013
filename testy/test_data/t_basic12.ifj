@@ -1,0 +1,8 @@
+<?php
+
+function moje_fce($a, $a)
+{
+	return 10;
+}
+
+$x = moje_fce(4, 5);
