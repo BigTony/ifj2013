@@ -303,14 +303,15 @@ void vs_get_string(tHashTbl *tab,tHashTbl *NavrTab){
 }
 
 void vs_put_string(tHashTbl *tab,tHashTbl *NavrTab){
-	printf("mrkni sem\n");
 	tokenValue i;
 	i.varInt = 0;
 	item *tempitem;
 	strcpy(g_ptrs->params,"0000000\0");
 	while((tempitem = TblSearch (tab, gen_param(g_ptrs->params)))!= NULL){
 		tostring(tempitem);
+		printf("no proto hajzle======\n");
 		printf("%s\n",tempitem->data.varString);
+		printf("=====================\n");
 		i.varInt++;
 	}
 
@@ -319,7 +320,14 @@ void vs_put_string(tHashTbl *tab,tHashTbl *NavrTab){
 
 
 void vs_strlen(tHashTbl *tab,tHashTbl *NavrTab){
-
+	item *tHsrc1 = (TblSearch (tab, "1000000\0"));
+	if(tHsrc1 == NULL)
+    	print_error(E_SEM_PARAM,"Chybny pocet parametru ..  vs_strlen");
+	tostring(tHsrc1);
+	int delka = strlen(tHsrc1->data.varString);
+	tokenValue i;
+	i.varInt = delka;
+	TblInsert(NavrTab,"$",i,VARINT);
 }
 
 void vs_get_substring(tHashTbl *tab,tHashTbl *NavrTab){
@@ -339,19 +347,19 @@ void vs_sort_string(tHashTbl *tab,tHashTbl *NavrTab){
 
 // konec vestavencyh funkci IFJ13
 
-// int get_substring(char *text,char* word)
-// {
-//     int pozice=getSubstringKmp(text,word);
-//     int textLen=strlen(text);
+int get_substring(char *text,char* word)
+{
+    int pozice=getSubstringKmp(text,word);
+    int textLen=strlen(text);
 
-//     if(pozice>textLen)
-//     {//NENASEL
-//         return -1;
-//     }
-//     else//NASEL
-//     {
-//         return pozice;
-//     }
-// }
+    if(pozice>textLen)
+    {//NENASEL
+        return -1;
+    }
+    else//NASEL
+    {
+        return pozice;
+    }
+}
 
 

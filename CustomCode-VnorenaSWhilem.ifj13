@@ -4,21 +4,22 @@
 $x = put_string("Zadejte cislo pro vypocet\n");
 $a = get_string();
 $a = intval($a);
-function A($a);
 
-function B($n)
+$z = A($a);
+
+function B($a)
 {
-    if($n>5)
+    if($a>5)
     {
        while ($a<5)
        {
-            $n=$n+a;
-            $a=$a+1;
+            $n = $n+$a;
+            $a = $a + 1;
        }
     }
     else
     {
-        $n=(5*$a)/2;
+        $n = (5*$a)/2;
     }
     //end ifu 
    return  $n;
@@ -26,7 +27,7 @@ function B($n)
 
 function A($n)
 {
-$result = function($n);
-
-$x=put_string("Vysledek je: ", $result, "\n");
+  $result = B($n);
+  $x=put_string("Vysledek je: ",$result,"\n");
+  return $x;
 }
