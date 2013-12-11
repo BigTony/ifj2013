@@ -310,9 +310,7 @@ void vs_put_string(tHashTbl *tab,tHashTbl *NavrTab){
 	strcpy(g_ptrs->params,"0000000\0");
 	while((tempitem = TblSearch (tab, gen_param(g_ptrs->params)))!= NULL){
 		tostring(tempitem);
-		printf("koukni sem koukni tam at se na teebe podivam\n");
 		printf("%s\n",tempitem->data.varString);
-		printf("=================\n");
 		i.varInt++;
 	}
 

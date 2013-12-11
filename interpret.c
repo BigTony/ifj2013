@@ -347,7 +347,7 @@ void interpret (tHashTbl *global_htable, TList *L)
 
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
          tHsrc2 = (TblSearch (active_htable, src2));
-         tHsrc2 = (tHsrc2!=NULL) ? tHsrc2 : (TblSearch (global_htable, src2);
+         tHsrc2 = (tHsrc2!=NULL) ? tHsrc2 : (TblSearch (global_htable, src2));
 
          tHresult = (TblSearch (active_htable, result));
 
@@ -584,7 +584,7 @@ void interpret (tHashTbl *global_htable, TList *L)
          // tmp
          tokenValue tmp;
 
-         atTyp=0;
+         datTyp=0;
 
          if (tHsrc1==NULL || tHsrc2==NULL) print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje I_G");
 
@@ -1256,7 +1256,8 @@ void interpret (tHashTbl *global_htable, TList *L)
          case I_LAB:
            // dodela david *joke* :P
          break;
-
+         default:
+          print_error(E_SYN,"Neznama instrukce");
      }
 
       if(muzuskocit){
