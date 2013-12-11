@@ -1206,8 +1206,15 @@ struct item *nextItem;
 			{
 				if (strcmp (src1,vestaveneFunkce[i] )==0)
 				{
-					
+					(*fun[i])((topStack(g_ptrs->function_stack))->hashTbl, active_htable);
+					popStack(g_ptrs->function_stack);
+					break;	
 				}
+				i++;
+			}
+			if (i<10)
+			{
+			break;
 			}
 
 
@@ -1217,7 +1224,7 @@ struct item *nextItem;
          tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
  
          // lokalni TS dane funkce
-         local_htable_Fce = (topStack(g_ptrs->function_stack))->hashTbl;
+         local_htable_Fce = (topStack(g_ptrs->function_stack)->hashTbl);
 
          if (tHsrc1==NULL) print_error(E_SEM_OTHER, "id funkce v lokalni ani globalni TS neexistuje [I_CALL]");
          else 
