@@ -138,98 +138,31 @@ void interpret (tHashTbl *global_htable, TList *L)
 
          /*========================I_ASS=================================================== (EKV.: mov) */
          case I_ASS:
-
-         // nactu id src1 & result
-         src1 = instr->src1;
-         result = instr->result;
+          // nactu id src1 & result
+          src1 = instr->src1;
+          result = instr->result;
          
-          // nactu id src1,src2 & result z HASH tabulky
-          tHsrcGlob1 = (TblSearch (global_htable, src1));//global
+          // nactu id src1 HASH tabulky
           tHsrc1 = (TblSearch(active_htable,src1));
-          tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
-          printf("[][][][][]][\n");
-          printf("%s\n",src1);
-          TblPrint(active_htable);
-          printf("%p %p\n",tHsrc1,tHsrcGlob1);
-          printf("[][][][][]][\n");
+          tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : (TblSearch (global_htable, src1));
 
-         tHresult = (TblSearch (active_htable, result));
-
-         // nactu typ dat src1
-         
-
-          // if (!dataType) print_error(E_SEM_OTHER, "dat.typ v itemu neni nastaven [I_ASS]");
-
-          if (tHsrc1==NULL) print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje [I_ASS] thsrc1");
+          /// vyhledam vysledek
+          tHresult = (TblSearch (active_htable, result));
+    
+          if (tHsrc1==NULL) {
+             print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje [I_ASS] thsrc1");
+          }
           else
           {
-            dataType = (tHsrc1->type);
-                if (dataType==VARINT)
-                {
-                   // prepisu data operandu result daty operandu src1
-                   tmp.varInt = (tHsrc1)->data.varInt;
-
-                     // POKUD operand do ktereho prirazuju jiz exituje, tak jeho data prepisu
-                     if (tHresult!=NULL)
-                     {
-                        tHresult->data.varInt = tmp.varInt;
-                        tHresult->type = dataType;
-                     }
-                     else
-                     {
-                        
-                        // v pripade ze operand result jeste neexsituje, vlozim novou polozku
-                        TblInsert (active_htable, result, tmp, dataType);
-                     }
-                }
-                else if (dataType==VARDOUBLE)
-                {
-                    
-                    tmp.varDouble = (tHsrc1)->data.varDouble;
-                     // POKUD operand do ktereho prirazuju jiz exituje, tak jeho data prepisu
-                     if (tHresult!=NULL)
-                     {
-                        tHresult->data.varDouble = tmp.varDouble;
-                        tHresult->type = dataType;
-                     }
-                     else
-                     {
-                        // v pripade ze operand result jeste neexsituje, vlozim novou polozku
-                        TblInsert (active_htable, result, tmp, dataType);
-                     }
-                }
-                else if (dataType==STRING)
-                {
-                     tmp.varString = (tHsrc1)->data.varString;
-
-                     // POKUD operand do ktereho prirazuju jiz exituje, tak jeho data prepisu
-                     if (tHresult!=NULL)
-                     {
-                        tHresult->data.varString = tmp.varString;
-                        tHresult->type = dataType;
-                     }
-                     else
-                     {
-                        // v pripade ze operand result jeste neexsituje, vlozim novou polozku
-                        TblInsert (active_htable, result, tmp, dataType);
-                     }
-                }
-                else if (dataType==VARBOOL)
-                {
-                     tmp.varInt= (tHsrc1)->data.varInt;
-
-                     // POKUD operand do ktereho prirazuju jiz exituje, tak jeho data prepisu
-                     if (tHresult!=NULL)
-                     {
-                        tHresult->data.varInt = tmp.varInt;
-                        tHresult->type = dataType;
-                     }
-                     else
-                     {
-                        // v pripade ze operand result jeste neexsituje, vlozim novou polozku
-                        TblInsert (active_htable, result, tmp, dataType);
-                     }
-                }
+              if (tHresult!=NULL)
+              {
+                  tHresult->data = tHsrc1->data;
+                  tHresult->type = tHsrc1->type;
+              }
+              else 
+              {
+                 TblInsert (active_htable, result, tHsrc1->data, tHsrc1->type);
+              }
          }
 
          break;
@@ -245,28 +178,24 @@ void interpret (tHashTbl *global_htable, TList *L)
          result = instr->result;
 
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
-         tHsrcGlob1 = (TblSearch (global_htable, src1));//global
          tHsrc1 = (TblSearch (active_htable, src1));
-         tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
+         tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : (TblSearch (global_htable, src1));
 
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
-         tHsrcGlob2 = (TblSearch (global_htable, src2));//global
          tHsrc2 = (TblSearch (active_htable, src2));
-         tHsrc2 = (tHsrc2!=NULL) ? tHsrc2 : tHsrcGlob2;
+         tHsrc2 = (tHsrc2!=NULL) ? tHsrc2 : (TblSearch (global_htable, src2));
 
          tHresult = (TblSearch (active_htable, result));
-
-         // nactu typ dat src1 & src2
-         dataType1 = tHsrc1->type;
-         dataType2 = tHsrc2->type;
-
-         if (!dataType1 || !dataType2) print_error(E_SEM_OTHER, "dat.typ itemu v src1 nebo src2 neni nastaven [I_ADD] ");
 
           // pokud src1 nebo src2 nebudou mit prirazenou hodnotu -> syntax error
           if (tHsrc1==NULL || tHsrc2==NULL)
            {
               print_error(E_SEM_OTHER, "item src1 nebo src2 v lokalni ani globalni TS neexistuje [I_ADD]");
            }
+
+             // nactu typ dat src1 & src2
+             dataType1 = tHsrc1->type;
+             dataType2 = tHsrc2->type;
 
               ///----------- cekuju provadim operace
               if (dataType1==VARINT && dataType2==VARINT)
@@ -331,25 +260,24 @@ void interpret (tHashTbl *global_htable, TList *L)
          result = instr->result;
 
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
-         tHsrcGlob1 = (TblSearch (global_htable, src1));//global
          tHsrc1 = (TblSearch (active_htable, src1));
-         tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
+         tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : (TblSearch (global_htable, src1));
 
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
-         tHsrcGlob2 = (TblSearch (global_htable, src2));//global
          tHsrc2 = (TblSearch (active_htable, src2));
-         tHsrc2 = (tHsrc2!=NULL) ? tHsrc2 : tHsrcGlob2;
+         tHsrc2 = (tHsrc2!=NULL) ? tHsrc2 : (TblSearch (global_htable, src2));
 
          tHresult = (TblSearch (active_htable, result));
-         // nactu typ dat src1 & src2
-         dataType1 = tHsrc1->type;
-         dataType2 = tHsrc2->type;
 
           // pokud src1 nebo src2 nebudou mit prirazenou hodnotu -> syntax error
           if (tHsrc1==NULL || tHsrc2==NULL)
            {
               print_error(E_SEM_OTHER, "item src1 nebo src2 v lokalni ani globalni TS neexistuje [I_SUB]");
            }
+
+              // nactu typ dat src1 & src2
+              dataType1 = tHsrc1->type;
+              dataType2 = tHsrc2->type;
 
               ///----------- cekuju provadim operace
               if (dataType1==VARINT && dataType2==VARINT)
@@ -413,16 +341,13 @@ void interpret (tHashTbl *global_htable, TList *L)
          src2 = instr->src2;
          result = instr->result;
 
-
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
-         tHsrcGlob1 = (TblSearch (global_htable, src1));//global
          tHsrc1 = (TblSearch (active_htable, src1));
-         tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
+         tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : (TblSearch (global_htable, src1));
 
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
-         tHsrcGlob2 = (TblSearch (global_htable, src2));//global
          tHsrc2 = (TblSearch (active_htable, src2));
-         tHsrc2 = (tHsrc2!=NULL) ? tHsrc2 : tHsrcGlob2;
+         tHsrc2 = (tHsrc2!=NULL) ? tHsrc2 : (TblSearch (global_htable, src2);
 
          tHresult = (TblSearch (active_htable, result));
 
@@ -432,9 +357,9 @@ void interpret (tHashTbl *global_htable, TList *L)
               print_error(E_SEM_OTHER, "item src1 nebo src2 v lokalni ani globalni TS neexistuje [I_MUL]");
            }
 
-           // nactu typ dat src1 & src2
-          dataType1 = tHsrc1->type;
-          dataType2 = tHsrc2->type;
+             // nactu typ dat src1 & src2
+             dataType1 = tHsrc1->type;
+             dataType2 = tHsrc2->type;
 
               ///----------- cekuju provadim operace
               if (dataType1==VARINT && dataType2==VARINT)
@@ -499,26 +424,24 @@ void interpret (tHashTbl *global_htable, TList *L)
          result = instr->result;
 
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
-         tHsrcGlob1 = (TblSearch (global_htable, src1));//global
          tHsrc1 = (TblSearch (active_htable, src1));
-         tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
+         tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : (TblSearch (global_htable, src1));
 
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
-         tHsrcGlob2 = (TblSearch (global_htable, src2));//global
          tHsrc2 = (TblSearch (active_htable, src2));
-         tHsrc2 = (tHsrc2!=NULL) ? tHsrc2 : tHsrcGlob2;
+         tHsrc2 = (tHsrc2!=NULL) ? tHsrc2 : (TblSearch (global_htable, src2));
 
          tHresult = (TblSearch (active_htable, result));
-
-         // nactu typ dat src1 & src2
-         dataType1 = tHsrc1->type;
-         dataType2 = tHsrc2->type;
 
           // pokud src1 nebo src2 nebudou mit prirazenou hodnotu -> syntax error
           if (tHsrc1==NULL || tHsrc2==NULL)
            {
               print_error(E_SEM_OTHER, "item src1 nebo src2 v lokalni ani globalni TS neexistuje [I_DIV]");
            }
+
+               // nactu typ dat src1 & src2
+               dataType1 = tHsrc1->type;
+               dataType2 = tHsrc2->type;
 
               ///----------- cekuju provadim operace
               if (dataType1==VARINT && dataType2==VARINT)
@@ -587,25 +510,21 @@ void interpret (tHashTbl *global_htable, TList *L)
          result = instr->result;
 
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
-         tHsrcGlob1 = (TblSearch (global_htable, src1));//global
          tHsrc1 = (TblSearch (active_htable, src1));
-         tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
+         tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : (TblSearch (global_htable, src1));
 
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
-         tHsrcGlob2 = (TblSearch (global_htable, src2));//global
          tHsrc2 = (TblSearch (active_htable, src2));
-         tHsrc2 = (tHsrc2!=NULL) ? tHsrc2 : tHsrcGlob2;
+         tHsrc2 = (tHsrc2!=NULL) ? tHsrc2 : (TblSearch (global_htable, src2));
 
          tHresult = (TblSearch (active_htable, result));
+
+         // overeni jestli data ubec existuji
+         if (tHsrc1==NULL || tHsrc2==NULL) print_error(E_SEM_OTHER, "item src1 nebo src2 v lokalni ani globalni TS neexistuje [I_CON]");
 
          // nactu typ dat src1 & src2
          dataType1 = tHsrc1->type;
          dataType2 = tHsrc2->type;
-
-
-
-         // overeni jestli data ubec existuji
-         if (tHsrc1==NULL || tHsrc2==NULL) print_error(E_SEM_OTHER, "item src1 nebo src2 v lokalni ani globalni TS neexistuje [I_CON]");
 
          /// cekni typ pro konkatenaci
          if (dataType1==STRING && dataType2==STRING)
@@ -642,31 +561,6 @@ void interpret (tHashTbl *global_htable, TList *L)
 
          break;
 
-     /*
-#define IDENTIFIKATOR 1
-#define VARINT 2
-#define VARDOUBLE 3
-#define VARIABLE 4
-#define STRING 5
-*/
-
-     /*
-typedef union {
-int varInt;
-double varDouble;
-char *varString;
-}tokenValue;
-*/
-
-      /*
-typedef struct item{
-int type;
-itemKey key;
-tokenValue data;
-struct item *nextItem;
-}item;
-*/
-
 //---------------------------- POROVNAVANI ----------------------------------------------------------------
 
          /*========================I_G=================================================================*/
@@ -677,27 +571,20 @@ struct item *nextItem;
          src2 = instr->src2;
          result = instr->result;
 
-
-         // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
-         
-
-         tHsrcGlob1 = (TblSearch (global_htable, src1));//global
+         // nactu id src1,src2 z HASH nebo GLOBAL hash tabulky
          tHsrc1 = (TblSearch (active_htable, src1));
-         tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
+         tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : (TblSearch (global_htable, src1));
 
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
-         tHsrcGlob2 = (TblSearch (global_htable, src2));//global
          tHsrc2 = (TblSearch (active_htable, src2));
-         tHsrc2 = (tHsrc2!=NULL) ? tHsrc2 : tHsrcGlob2;
+         tHsrc2 = (tHsrc2!=NULL) ? tHsrc2 : (TblSearch (global_htable, src2));
 
          tHresult = (TblSearch (active_htable, result));
 
-        // tmp
-        tokenValue tmp;
+         // tmp
+         tokenValue tmp;
 
-         // typ: tHsrc1->type data: tHsrc1->data item: tHsrc1 , tHsrc2 , tHresult
-
-         datTyp=0;
+         atTyp=0;
 
          if (tHsrc1==NULL || tHsrc2==NULL) print_error(E_SEM_OTHER, "item v lokalni ani globalni TS neexistuje I_G");
 
@@ -727,11 +614,10 @@ struct item *nextItem;
                  if (tHsrc1->data.varInt > tHsrc2->data.varInt) datTyp = 1;
                  else datTyp = 0;
               }
-
          }
          else
          {
-                  print_error(E_SEM_TYPE, "vadny typ operandu");
+              print_error(E_SEM_TYPE, "vadny typ operandu");
          }
 
             // pokud result exituje, prepisu data
@@ -753,20 +639,15 @@ struct item *nextItem;
          src2 = instr->src2;
          result = instr->result;
 
-
-         // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
-         tHsrcGlob1 = (TblSearch (global_htable, src1));//global
+         // nactu id src1,src2 z HASH nebo GLOBAL hash tabulky
          tHsrc1 = (TblSearch (active_htable, src1));
-         tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
+         tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : (TblSearch (global_htable, src1));
 
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
-         tHsrcGlob2 = (TblSearch (global_htable, src2));//global
          tHsrc2 = (TblSearch (active_htable, src2));
-         tHsrc2 = (tHsrc2!=NULL) ? tHsrc2 : tHsrcGlob2;
+         tHsrc2 = (tHsrc2!=NULL) ? tHsrc2 : (TblSearch (global_htable, src2));
 
          tHresult = (TblSearch (active_htable, result));
-
-         // typ: tHsrc1->type data: tHsrc1->data item: tHsrc1 , tHsrc2 , tHresult
 
          datTyp=0;
 
@@ -823,20 +704,15 @@ struct item *nextItem;
          src2 = instr->src2;
          result = instr->result;
 
-
-         // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
-         tHsrcGlob1 = (TblSearch (global_htable, src1));//global
+         // nactu id src1,src2 z HASH nebo GLOBAL hash tabulky
          tHsrc1 = (TblSearch (active_htable, src1));
-         tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
+         tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : (TblSearch (global_htable, src1));
 
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
-         tHsrcGlob2 = (TblSearch (global_htable, src2));//global
          tHsrc2 = (TblSearch (active_htable, src2));
-         tHsrc2 = (tHsrc2!=NULL) ? tHsrc2 : tHsrcGlob2;
+         tHsrc2 = (tHsrc2!=NULL) ? tHsrc2 : (TblSearch (global_htable, src2));
 
          tHresult = (TblSearch (active_htable, result));
-
-         // typ: tHsrc1->type data: tHsrc1->data item: tHsrc1 , tHsrc2 , tHresult
 
          datTyp=0;
 
@@ -869,7 +745,6 @@ struct item *nextItem;
                  if (tHsrc1->data.varInt < tHsrc2->data.varInt) datTyp = 1;
                  else datTyp = 0;
               }
-
          }
          else
          {
@@ -895,19 +770,15 @@ struct item *nextItem;
          src2 = instr->src2;
          result = instr->result;
 
-         // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
-         tHsrcGlob1 = (TblSearch (global_htable, src1));//global
+         // nactu id src1,src2 z HASH nebo GLOBAL hash tabulky
          tHsrc1 = (TblSearch (active_htable, src1));
-         tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
+         tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : (TblSearch (global_htable, src1));
 
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
-         tHsrcGlob2 = (TblSearch (global_htable, src2));//global
          tHsrc2 = (TblSearch (active_htable, src2));
-         tHsrc2 = (tHsrc2!=NULL) ? tHsrc2 : tHsrcGlob2;
+         tHsrc2 = (tHsrc2!=NULL) ? tHsrc2 : (TblSearch (global_htable, src2));
 
          tHresult = (TblSearch (active_htable, result));
-
-         // typ: tHsrc1->type data: tHsrc1->data item: tHsrc1 , tHsrc2 , tHresult
 
          datTyp=0;
 
@@ -939,7 +810,6 @@ struct item *nextItem;
                  if (tHsrc1->data.varInt <= tHsrc2->data.varInt) datTyp = 1;
                  else datTyp = 0;
               }
-
          }
          else
          {
@@ -966,20 +836,15 @@ struct item *nextItem;
          src2 = instr->src2;
          result = instr->result;
 
-
-         // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
-         tHsrcGlob1 = (TblSearch (global_htable, src1));//global
+         // nactu id src1,src2 z HASH nebo GLOBAL hash tabulky
          tHsrc1 = (TblSearch (active_htable, src1));
-         tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
+         tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : (TblSearch (global_htable, src1));
 
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
-         tHsrcGlob2 = (TblSearch (global_htable, src2));//global
          tHsrc2 = (TblSearch (active_htable, src2));
-         tHsrc2 = (tHsrc2!=NULL) ? tHsrc2 : tHsrcGlob2;
+         tHsrc2 = (tHsrc2!=NULL) ? tHsrc2 : (TblSearch (global_htable, src2));
 
          tHresult = (TblSearch (active_htable, result));
-
-         // typ: tHsrc1->type data: tHsrc1->data item: tHsrc1 , tHsrc2 , tHresult
 
          datTyp=0;
 
@@ -1037,19 +902,15 @@ struct item *nextItem;
          src2 = instr->src2;
          result = instr->result;
 
-         // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
-         tHsrcGlob1 = (TblSearch (global_htable, src1));//global
+         // nactu id src1,src2 z HASH nebo GLOBAL hash tabulky
          tHsrc1 = (TblSearch (active_htable, src1));
-         tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
+         tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : (TblSearch (global_htable, src1));
 
          // nactu id src1,src2 & result z HASH nebo GLOBAL hash tabulky
-         tHsrcGlob2 = (TblSearch (global_htable, src2));//global
          tHsrc2 = (TblSearch (active_htable, src2));
-         tHsrc2 = (tHsrc2!=NULL) ? tHsrc2 : tHsrcGlob2;
+         tHsrc2 = (tHsrc2!=NULL) ? tHsrc2 : (TblSearch (global_htable, src2));
 
          tHresult = (TblSearch (active_htable, result));
-
-         // typ: tHsrc1->type data: tHsrc1->data item: tHsrc1 , tHsrc2 , tHresult
 
          datTyp=0;
 
@@ -1151,46 +1012,20 @@ struct item *nextItem;
          // nactu id src1,src2 & result z INSTRUKCE
          src1 = instr->src1;
          result = instr->result;
+
          // lokalni TS funkce
          local_htable_Fce = (topStack(g_ptrs->function_stack))->hashTbl;
 
          // nactu data na prohledani 3 TS
-         tHsrcGlob1 = (TblSearch (global_htable, src1));//global
-         //tHsrcLocF1 = (TblSearch (local_htable_Fce, src1));
          tHsrc1 = (TblSearch (active_htable, src1));
-         tHsrc1 =  (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
-         printf("=====kuk sem======\n");
-         printf("%s\n",src1);
-         if (tHsrc1==NULL) print_error(E_SEM_OTHER, "id funkce v lokalni ani globalni TS neexistuje [I_PARAM]");
+         tHsrc1 =  (tHsrc1!=NULL) ? tHsrc1 : (TblSearch (global_htable, src1));
+
+         if (tHsrc1==NULL)  {
+             print_error(E_SEM_OTHER, "id funkce v lokalni ani globalni TS neexistuje [I_PARAM]");
+         }
          else 
          {
-             switch (tHsrc1->type)
-             {
-                case VARINT:
-                  TypeOF = VARINT;
-                  tmp.varInt=tHsrc1->data.varInt;
-                break;
-
-                case VARBOOL:
-                  TypeOF = VARBOOL;
-                  tmp.varInt=tHsrc1->data.varInt;
-                break;
-
-                case VARDOUBLE:
-                  TypeOF = VARDOUBLE;
-                  tmp.varDouble=tHsrc1->data.varDouble;
-                break;
-
-                case STRING:
-                  TypeOF = STRING;
-                  tmp.varString=tHsrc1->data.varString;
-                break;
-
-                default: // chyba
-                break;
-             }
-
-            TblInsert (local_htable_Fce, result, tmp, TypeOF);
+            TblInsert (local_htable_Fce, result, tHsrc1->data, tHsrc1->type);
          }
          break;
 
@@ -1272,152 +1107,24 @@ struct item *nextItem;
          tHsrc1 = (TblSearch (active_htable, src1));
          tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : tHsrcGlob1;
 
-         if (tHsrc1==NULL) 
+         if (tHsrc1==NULL) {
             print_error(E_SEM_OTHER, "id v lokalni ani globalni TS neexistuje [I_RETURN]");
+         }
          else 
          {
-              switch (tHsrc1->type)
-              {
-                 case VARINT:
-                   TypeOF = VARINT;
-                   tmp.varInt=tHsrc1->data.varInt;
-                 break;
-
-                 case VARBOOL:
-                   TypeOF = VARBOOL;
-                   tmp.varInt=tHsrc1->data.varInt;
-                 break;
-
-                 case VARDOUBLE:
-                   TypeOF = VARDOUBLE;
-                   tmp.varDouble=tHsrc1->data.varDouble;
-                 break;
-
-                 case STRING:
-                   TypeOF = STRING;
-                   tmp.varString=tHsrc1->data.varString;
-                 break;
-
-                 default: // chyba
-                 break;
-              }
-
-
-              
+              // aktivuju list z vrcholu stacku a nastav aktivni instrukci
               ActiveList = (topStack(g_ptrs->function_stack))->list;
               ActivePtrItem(ActiveList,(topStack(g_ptrs->function_stack))->NavrInstrukce);
-              printf("navratova instrukce po returnu\n");
-              printf("%p\n",(topStack(g_ptrs->function_stack))->NavrInstrukce);
-              printf("%p\n",ActiveList );
-              printf("=============\n");
+
               // pop stack
               popStack(g_ptrs->function_stack);
-
 
               //Aktivuj lokalni TS fce
               active_htable = (topStack(g_ptrs->function_stack))->hashTbl;
 
               //vloz polozku
-              TblInsert (active_htable, "$", tmp, TypeOF);
-
-
+              TblInsert (active_htable, "$", tHsrc1->data, tHsrc1->type);
          }
-         printf("po returnu ======\n");
-         PrintList(ActiveList);
-         break;
-
-
-//---------------------------- INTERNI FUNKCE --------------------------------------------------------------
-
-         /*========================I_BOOLVAL=========================*/
-         case I_BOOLVAL:
-
-         // nactu id src1 z INSTRUKCE
-         src1 = instr->src1;
-
-         // nactu id src1 z HASH tabulky
-         tHsrc1 = (TblSearch (active_htable, src1));
-
-         if (tHsrc1==NULL) print_error(E_SEM_OTHER, "item v lokalni TS neexistuje [I_BOOLVAL]");
-         else
-         {
-            toVARBOOL(tHsrc1);
-         }
-         break;
-
-         /*========================I_DOUBLEVAL=========================*/
-         case I_DOUBLEVAL:
-
-         // nactu id src1 z INSTRUKCE
-         src1 = instr->src1;
-
-         // nactu id src1 z HASH tabulky
-         tHsrc1 = (TblSearch (active_htable, src1));
-
-         if (tHsrc1==NULL) print_error(E_SEM_OTHER, "item v lokalni TS neexistuje [I_DOUBLEVAL]");
-         else
-         {
-            todouble(tHsrc1);
-         }
-         break;
-
-         /*========================I_INTVAL=========================*/
-         case I_INTVAL:
-
-         // nactu id src1 z INSTRUKCE
-         src1 = instr->src1;
-
-         // nactu id src1 z HASH tabulky
-         tHsrc1 = (TblSearch (active_htable, src1));
-
-         if (tHsrc1==NULL) print_error(E_SEM_OTHER, "item v lokalni TS neexistuje [I_INTVAL]");
-         else
-         {
-            tovarint(tHsrc1);
-         }
-         break;
-
-         /*========================I_STRVAL=========================*/
-         case I_STRVAL:
-
-         // nactu id src1 z INSTRUKCE
-         src1 = instr->src1;
-
-         // nactu id src1 z HASH tabulky
-         tHsrc1 = (TblSearch (active_htable, src1));
-
-         if (tHsrc1==NULL) print_error(E_SEM_OTHER, "item v lokalni TS neexistuje [I_STRVAL]");
-         else
-         {
-            tostring(tHsrc1);
-         }
-         break;
-
-         /*========================I_SORT=========================*/
-         case I_SORT:
-         break;
-
-         /*========================I_FIND=========================*/
-         case I_FIND:
-         break;
-
-         /*========================I_STRL=========================*/
-         case I_STRL:
-         break;
-
-
-         /*========================I_PUTS=========================*/
-         case I_PUTS:
-         break;
-
-
-         /*========================I_GETS=========================*/
-         case I_GETS:
-         break;
-
-
-         /*========================I_GETSU=========================*/
-         case I_GETSU:
          break;
 
 
@@ -1435,7 +1142,7 @@ struct item *nextItem;
          if (tHresult==NULL) print_error(E_SEM_OTHER, "cil skoku v lokalni TS neexistuje [I_JMP]");
          else
          {
-              // aktivuje instrukci v prave aktivnim listu, nejsu si jistej typama
+              // aktivuje instrukci v prave aktivnim listu
               ActivePtrItem (ActiveList,((TLItem *)tHresult->data.pointer));
          }
          break;
@@ -1468,7 +1175,6 @@ struct item *nextItem;
                 break;
 
                 case VARBOOL:
-                  printf("NIGGGAAAA\n");
                   if (tHsrc1->data.varInt==0) jump = 1;
                   else jump = 0;
                 break;
@@ -1539,7 +1245,7 @@ struct item *nextItem;
              }
 
            if (jump)
-            { // proved skok - nejsu si jistej typama
+            {   // proved skok 
                ActivePtrItem (ActiveList,((TLItem *)tHresult->data.pointer));
             }
          }
@@ -1550,7 +1256,6 @@ struct item *nextItem;
          case I_LAB:
            // dodela david *joke* :P
          break;
-
 
      }
 
@@ -1569,12 +1274,7 @@ struct item *nextItem;
          printf("============================================\n");
          printf("============================================\n");
          printf("============================================\n");
-          
-        
+             
   }
-
-         
-
-
 // end func
 }
