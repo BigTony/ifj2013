@@ -19,7 +19,7 @@
 
 #include "errors.h"
 #include "scaner.h"
-#define ALLOC 67
+#define ALLOC 17
 
 
 /*  // NEBUDU!! DoPiCI!! FURT!! LIST!!! DO SCANER.H!! dopcici!
