@@ -1,0 +1,33 @@
+<?php
+
+// Program 12: testovani porovnavani v podmince
+// nastane chyba v interpretu (12) -> chybne typy pri aritmetice
+
+
+$a = 1;
+$b = 1;
+$c = "1";
+$d = 1.0;
+$e = true;
+
+if ($a === $b) {
+	if ($a <= $b) {
+		if ($c === $d) {
+			$x = put_string("1. Sem se nedostane!\n");
+		}
+		else {
+			if ($c !== $d) {
+				$x = put_string("3. podminka\n");
+			}
+			else {
+				$x = put_string("2. Sem se nedostane!\n");
+			}
+		}
+	}
+	else {
+		$x = put_string("2. podminka\n");
+	}
+} 
+else {
+	$x = put_string("1. podminka\n");
+}

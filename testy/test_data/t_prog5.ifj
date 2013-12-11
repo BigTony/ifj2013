@@ -1,0 +1,6 @@
+oko<?php
+// Program 5: Lexikalni chyba
+// internalError = 2
+
+$x = 5;
+$y = put_string($x);

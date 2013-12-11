@@ -1,0 +1,13 @@
+<?php
+
+// operace v double
+
+$a = 5.78;
+$b = 3.63;
+$c = $b * 4 - $a;
+
+$x = put_string($c, "\n");
+
+$d = $c / 2.5;
+
+$y = put_string($d, "\n");

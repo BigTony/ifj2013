@@ -1,0 +1,19 @@
+<?php
+
+$a = 5;
+$x = my_fce($a, 1);
+$y = put_string($x, "\n");
+
+function my_fce($a, $b) {
+
+	$c = $a - $b;
+	if ($c) {
+		$b = $b + 1;
+		$a = my_fce($a, $b);
+	}
+	else {
+		$a = $a + 6;
+		return $a;
+	}
+	return $a;
+}

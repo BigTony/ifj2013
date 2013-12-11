@@ -1,0 +1,17 @@
+<?php
+
+/* Program 9: Testovani bloku kodu */
+
+$a = 10;
+$b = 15;
+$c = 35;
+$x = neco();
+
+function neco() {
+	$a = 5;
+	$c = $a + $b;
+	$x = put_string($c, "\n"); // 20
+}
+
+$x = put_string($c, "\n"); // 35
+return 0;

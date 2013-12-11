@@ -1,0 +1,14 @@
+<?php
+
+// Prevodni funkce
+
+$a = "65.78Text";
+
+$b = intval($a);
+$x = put_string($b, "\n");
+
+$c = doubleval($a);
+$x = put_string($c, "\n");
+
+$d = boolval($a);
+$x = put_string($d, "\n");

@@ -3,6 +3,8 @@
 #include "ial.h"
 #include "errors.h"
 #include "scaner.h"
+#include "strings.h"
+#include "parser.h"
 #endif
 
 //vraci pozici v char[pozice]..cislo 0azDELKATEXTU

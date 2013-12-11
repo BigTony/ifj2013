@@ -1,0 +1,16 @@
+<?php 
+
+// Program 15: testovani vsech pripustnych hodnot
+// test pro lex. analyzator
+
+$a = 1.85e-9;
+$x = put_string($a, "\n");
+
+$b = "Tohle je \\ \' text s \$ mnoha \x8A\x2b!\n";
+$x = put_string($b, "\n");
+
+$c = 8.4 - 6e1;
+$x = put_string($c, "\n");
+
+$d = 1/7 + 0 + 1 * 2.5;
+$x = put_string($d, "\n");

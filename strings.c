@@ -17,7 +17,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "strings.h"
-#define ALLOC_SIZE 8
+
 
 /**
  * Naalokuje jeden string, a vrati ukazatel na nej
@@ -65,38 +65,6 @@ char * konkatenace(char*prvni,char*druhy){
 	return vysledek;
 }
 
-// nalezeni podretezce v retezci
-char * get_substring(char* retezec, int pozice, int delka) 
-{
- char* substring;
- char* ret=NULL;
-
- if ((substring=(char*)malloc(sizeof(char)*(delka+1)))!=NULL) 
- {
-     int i=0;
-     while (i<(pozice-1)) 
-     {
-         (retezec)++; // navysim adresu na pozadovanou
-         i++;
-     }
-
-     int k=0;
-     while (k<delka) 
-     {
-        *(substring+k) = *(retezec);
-         (retezec)++;
-     }
-
-   // jeste ukoncovaci znak
-   *(substring+k) = '\0';
-   ret = substring;
- }
- else {
-   ret = NULL;
- }
- 
-return ret;
-}
 
 
 

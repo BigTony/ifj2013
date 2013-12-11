@@ -1,0 +1,13 @@
+<?php
+
+// unarni vyhodnoceni podminky if
+
+$a = 1;
+
+if ($a) {
+	$b = 2;
+	$x = put_string($b, "\n");
+}
+else {
+	$c = $d;
+}

@@ -1,0 +1,6 @@
+/* Komentar */<?php
+// Program 4: Syntakticka chyba (cokoliv pred <?php)
+// internalError = 2
+
+$a = 6;
+$y = put_string($a);

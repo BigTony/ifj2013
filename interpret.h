@@ -25,5 +25,6 @@ void toVARBOOL(item *item);
 void todouble(item *item);
 void tovarint(item *item);
 void interpret (tHashTbl *global_htable, TList *L);
-
+void PrintList (TList *L) ;
+void TblPrint( tHashTbl* tab );
 #endif

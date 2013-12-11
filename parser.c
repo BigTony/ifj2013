@@ -205,7 +205,7 @@ void callFunction(char* dest){
 				{
 					char*Tmp=gen_param(g_ptrs->para);
 					add_const_hashtbl(g_ptrs->main_symobol_tbl,g_ptrs->token->id, g_ptrs->token->value,Tmp);
-					InsertInstLast (g_ptrs->act_list_inst,(char*)g_ptrs->token->value.varString,NULL,gen_param(g_ptrs->params),I_PARAM);
+					InsertInstLast (g_ptrs->act_list_inst,Tmp,NULL,gen_param(g_ptrs->params),I_PARAM);
 				}
 			}
 			if(getToken_test(g_ptrs->source,g_ptrs->token) != CARKA){

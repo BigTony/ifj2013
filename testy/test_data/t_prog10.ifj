@@ -1,0 +1,33 @@
+<?php
+
+// Program 10: Pokrocile testovani bloku kodu s cykly
+
+// Uroven 0.
+$a = 4;
+$b = 3;
+$c = 2;
+$d = 1;
+$e = 0;
+
+$x = put_string("zacatek\n");
+while ($a > 0) {   // Uroven 1.
+	$a = $a - 1;
+	while ($b > 0) {               // Uroven 2.
+		$b = $b - 1;
+		while ($c > 0) {       // Uroven 3.
+			$c = $c - 1;
+			while ($d > 0) {                   // Uroven 4.
+				$d = $d - 1;
+				while ($e >= 0) {      // Uroven 5.
+					$e = $e - 1;
+					$x = put_string($a, " ", $b, " ", $c, "\n"); 
+				}
+				$x = put_string($a, " ", $b, " ", $c, "\n"); 
+			}
+			$x = put_string($a, " ", $b, " ", $c, "\n"); 
+		}
+		$x = put_string($a, " ", $b, " ", $c, "\n"); 
+	}
+	$x = put_string($a, " ", $b, " ", $c, "\n"); 
+}
+$x = put_string($a, " ", $b, " ", $c, "\n"); 

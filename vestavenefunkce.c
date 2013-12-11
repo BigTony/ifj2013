@@ -50,9 +50,9 @@ void tovarint(item *item){
   			// podle me to nemusime freeovat
   			// bo union zabira v pameti kolik jeho maximalni polozka takze by to melo bejt cajk
   			if(blank == 0)
-  				item->data.varInt = cislo;
-  			else
   				item->data.varInt = 0;
+  			else
+  				item->data.varInt = cislo;
 			item->type = VARINT;
 			break;
 		}
@@ -160,7 +160,8 @@ void todouble(item *item){
 int get_int_len (int value){
   int l=1;
   while(value>9){
-  	l++; value/=10;
+  	l++; 
+  	value/=10;
   }
   return l;
 }
@@ -168,8 +169,12 @@ int get_int_len (int value){
 void tostring(item *item){
 	switch(item->type){
 		case VARINT:{
-			int delka = get_int_len(item->data.varInt);
-			char vysledek[delka+1];
+			int delka = 0;
+			delka = get_int_len(item->data.varInt);
+			char *vysledek;
+			if((vysledek = malloc((char)sizeof(delka+1))) == NULL){
+				print_error(E_INTERN,"chyba pri alokace tostring");
+			}
 			sprintf(vysledek, "%d", item->data.varInt);
 			item->data.varString = vysledek;
 			item->type = STRING;         //puvodne: item->type = VARINT;
@@ -177,7 +182,10 @@ void tostring(item *item){
 		}
 		case VARDOUBLE:{
 			// delka double cisla?
-			char vysledek[100];
+			char *vysledek;
+			if((vysledek = malloc((char)sizeof(50))) == NULL){
+				print_error(E_INTERN,"chyba pri alokace tostring");
+			}
 			sprintf(vysledek, "%g", item->data.varDouble);
 			item->data.varString = vysledek;
 			item->type = STRING;        // puvodne: item->type = VARDOUBLE;
@@ -245,31 +253,85 @@ void VARBOOLval(item *item){
 // vestavene funkce z IFJ13
 
 void vs_boolval(tHashTbl *tab,tHashTbl *NavrTab){
-
+    item *tHsrc1 = (TblSearch (tab, "1000000\0"));
+    if(tHsrc1 == NULL)
+    	print_error(E_SEM_PARAM,"Chybny pocet parametru ..  vs_boolval");
+	toVARBOOL(tHsrc1);
+	TblInsert(NavrTab,"$",tHsrc1->data,tHsrc1->type);
 }
 
 void vs_doubleval(tHashTbl *tab,tHashTbl *NavrTab){
-
+	item * tHsrc1 = (TblSearch (tab, "1000000\0"));
+	if(tHsrc1 == NULL)
+    	print_error(E_SEM_PARAM,"Chybny pocet parametru ..  vs_doubleval");
+	todouble(tHsrc1);
+	TblInsert(NavrTab,"$",tHsrc1->data,tHsrc1->type);
 }
 
 void vs_intval(tHashTbl *tab,tHashTbl *NavrTab){
-
+	item *tHsrc1 = (TblSearch (tab, "1000000\0"));
+	if(tHsrc1 == NULL)
+    	print_error(E_SEM_PARAM,"Chybny pocet parametru ..  vs_intval");
+    printf("pred=======\n");
+    printf("%i\n",tHsrc1->data.varInt);
+	tovarint(tHsrc1);
+	printf("po========\n");
+	printf("%i\n",tHsrc1->data.varInt);
+	TblInsert(NavrTab,"$",tHsrc1->data,tHsrc1->type);
 }
 
 void vs_strval(tHashTbl *tab,tHashTbl *NavrTab){
-
+	item *tHsrc1 = (TblSearch (tab, "1000000\0"));
+	if(tHsrc1 == NULL)
+    	print_error(E_SEM_PARAM,"Chybny pocet parametru ..  vs_strval");
+	tostring(tHsrc1);
+	TblInsert(NavrTab,"$",tHsrc1->data,tHsrc1->type);
 }
 
 void vs_get_string(tHashTbl *tab,tHashTbl *NavrTab){
-
+	int c;
+	int i = 0;
+	int size = ALLOC_SIZE;
+	char *temp = allocString();
+  	do {
+    	c=getchar();
+    	if(i >= size){
+    		reAllocString(temp,size+ALLOC_SIZE);
+    		size = size + ALLOC_SIZE;
+    	}
+    	temp[i] = c;
+    	i++;
+  	}while (!((c == '\n') || (c == EOF)));
+  	temp[i-1] = '\0';
+  	tokenValue tempstring;
+  	tempstring.varString = temp;
+  	TblInsert(NavrTab,"$",tempstring,STRING);
 }
 
 void vs_put_string(tHashTbl *tab,tHashTbl *NavrTab){
+	tokenValue i;
+	i.varInt = 0;
+	item *tempitem;
+	strcpy(g_ptrs->params,"0000000\0");
+	while((tempitem = TblSearch (tab, gen_param(g_ptrs->params)))!= NULL){
+		tostring(tempitem);
+		printf("%s\n",tempitem->data.varString);
+		i.varInt++;
+	}
 
+	TblInsert(NavrTab,"$",i,VARINT);
 }
 
-void vs_strlen(tHashTbl *tab,tHashTbl *NavrTab){
 
+void vs_strlen(tHashTbl *tab,tHashTbl *NavrTab){
+	item *tHsrc1 = (TblSearch (tab, "1000000\0"));
+	if(tHsrc1 == NULL)
+    	print_error(E_SEM_PARAM,"Chybny pocet parametru ..  vs_strlen");
+	tostring(tHsrc1);
+	int delka = strlen(tHsrc1->data.varString);
+	tokenValue i;
+	i.varInt = delka;
+	TblInsert(NavrTab,"$",i,VARINT);
 }
 
 void vs_get_substring(tHashTbl *tab,tHashTbl *NavrTab){
@@ -280,7 +342,7 @@ void vs_find_string(tHashTbl *tab,tHashTbl *NavrTab){
 
 }
 
-void vs_sort_string(tHashTbl *tab,item *item){
+void vs_sort_string(tHashTbl *tab,tHashTbl *NavrTab){
 
 }
 
@@ -289,19 +351,19 @@ void vs_sort_string(tHashTbl *tab,item *item){
 
 // konec vestavencyh funkci IFJ13
 
-// int get_substring(char *text,char* word)
-// {
-//     int pozice=getSubstringKmp(text,word);
-//     int textLen=strlen(text);
+int get_substring(char *text,char* word)
+{
+    int pozice=getSubstringKmp(text,word);
+    int textLen=strlen(text);
 
-//     if(pozice>textLen)
-//     {//NENASEL
-//         return -1;
-//     }
-//     else//NASEL
-//     {
-//         return pozice;
-//     }
-// }
+    if(pozice>textLen)
+    {//NENASEL
+        return -1;
+    }
+    else//NASEL
+    {
+        return pozice;
+    }
+}
 
 

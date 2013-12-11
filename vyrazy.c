@@ -290,6 +290,7 @@ void ExGreater(TStack *stack){
 					SPop(&temp);
 					// operator
 					if(STop(&temp) > COM){
+						printf("%i\n",STop(&temp));
 						if(STop(&temp) != KONK){
 							SPopAll(&temp);
 							SPopAll(stack);
@@ -327,6 +328,9 @@ void ExGreater(TStack *stack){
 							break;
 						case LTH:
 							op = I_L;
+							break;
+						case KONK:
+							op = I_CON;
 							break;
 						default:
 							print_error(E_SYN,"chyba spatny operand E op E");

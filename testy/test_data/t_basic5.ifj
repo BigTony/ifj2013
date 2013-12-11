@@ -1,0 +1,9 @@
+<?php
+
+// Oprace * a /
+
+$a = 4;
+$a = $a * 2;
+$a = $a / 7;
+
+$x = put_string($a, "\n");

@@ -1,0 +1,11 @@
+<?php
+
+// hledani ve stringu
+
+$b = "Jelito kopytu udelame to.\n";
+$c = "to kopy";
+
+$a = find_string($b, $c);
+$x = put_string($a, "\n");
+//$d = sort_string($a);
+//$y = put_string($d, "\n");

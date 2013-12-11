@@ -46,20 +46,6 @@ typedef enum {
    I_CALL,    //    | src1 ... ...
    I_RETURN,  //    | src1 ... ...
 
-//===== vestavene funkce =================
-
-   I_BOOLVAL,  // | src1 ... ... 14
-   I_DOUBLEVAL,// | src1 ... ... 15
-   I_INTVAL,   // | src1 ... ... 16
-   I_STRVAL,   // | src1 ... ... 17
-
-   I_SORT, // sort string 18
-   I_FIND, // find string 19
-   I_STRL, // str.lenght 20
-   I_PUTS, // put string 21
-   I_GETS, // GET string 22
-   I_GETSU,// GET SUBstring 23
-
 //===== skoky ==========================
 
    I_JMP,  // nepodmíněný                 || ...  ... result 24

@@ -1,0 +1,32 @@
+<?php
+
+// Program 11: testovani poctu parametru a vzajemne volani
+// 
+
+function fce($param, $param2, $param3, $param4, $param5) {
+
+	$x = put_string("Napis neco (4): ");
+	$e = get_string();
+	$a = null;
+	$b = 0;
+	$c = 1;
+
+	if ($b < $c) {
+		$x = put_string("\n", $b, "\n");
+	}
+	else {
+		$x = put_string("\n", $c, "\n");
+	}
+
+	$b = fce2(42);
+	$x = put_string($b, "\n");
+
+	return $a;
+}
+
+$a = fce(20, "Ahoj", 58.69, false, null, false, false);
+$x = put_string($a, "\n");
+
+function fce2 () {
+	$x = put_string("Jsem ve fce2.0\n");
+}
