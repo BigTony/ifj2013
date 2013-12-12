@@ -384,7 +384,7 @@ int getToken(FILE *fp,Ttoken *token){
                     if(((len)%(BUFF))==BUFF-2)
                     {
                        w[len] = '\0';
-                      reallocString(&w);                      
+                      reallocString(&w);
                     }
                     c=fgetc(fp);
                 }
@@ -651,7 +651,7 @@ int getToken(FILE *fp,Ttoken *token){
                 if(((len)%(BUFF))==BUFF-2)
                 {
                     w[len+1] = '\0';
-                    reallocString(&w);                    
+                    reallocString(&w);
                 }
                 if(c>31 && c!='"' && c!='$' && c!='t' && c!='n' && c!='\\' && c!='x')
                 {
