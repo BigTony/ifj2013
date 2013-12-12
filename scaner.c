@@ -714,13 +714,14 @@ int getToken(FILE *fp,Ttoken *token){
                 {
                     if(w[len-1]=='\\')
                     {//\xDD kde DD jsou hexadecimalni cisla od 00 do FF/Ff/fF/ff
-                        char dd[2];
+                        char dd[3];
                         dd[0]=fgetc(fp);
                         dd[1]=fgetc(fp);
+                        dd[2]='\0';
                         if(isxdigit(dd[0])&&isxdigit(dd[1]))
                         {
-                            len--;
-                            w[len]=(char)strtol(dd,NULL,16);
+                            w[len-1]=(char)strtol(dd,NULL,16);
+                            c=fgetc(fp);
                         }
                         else
                         {
@@ -754,7 +755,6 @@ int getToken(FILE *fp,Ttoken *token){
                 }
 
             }
-
             w[len]='\0';
             token->id=STRING;
             token->value.varString=w;
