@@ -216,7 +216,7 @@ TInstr * ReturnActiveInstr (TList *L)
 // debug INSTRUKCNIHO SEZNAMU
 void PrintList (TList *L) 
 {
-	char pole[31][15]= 
+	char pole[21][15]= 
 	{
 	    "I_ASS\0",
 	    "I_ADD\0",
@@ -237,18 +237,6 @@ void PrintList (TList *L)
 	    "I_CHCKPAR\0",
 	    "I_CALL\0",
 	    "I_RETURN\0",
-
-	    "I_BOOLVAL\0",
-	    "I_DOUBLEVAL\0",
-	    "I_INTVAL\0",
-	    "I_STRVAL\0",
-
-	    "I_SORT\0",
-	    "I_FIND\0",
-	    "I_STRL\0",
-	    "I_PUTS\0",
-	    "I_GETS\0",
-	    "I_GETSU\0",
 
 	    "I_JMP\0",
 	    "I_JZ\0",
