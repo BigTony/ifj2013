@@ -315,11 +315,8 @@ void vs_put_string(tHashTbl *tab,tHashTbl *NavrTab){
 	i.varInt = 0;
 	item *tempitem;
 	strcpy(g_ptrs->params,"0000000\0");
-	char *konk;
-	konk = allocString();
 	while((tempitem = TblSearch (tab, gen_param(g_ptrs->params)))!= NULL){
 		tostring(tempitem);
-		// konk = konkatenace(konk,tempitem->data.varString);
 		printf("%s",tempitem->data.varString);
 		i.varInt++;
 	}
@@ -362,7 +359,7 @@ void vs_get_substring(tHashTbl *tab,tHashTbl *NavrTab){
     	print_error(E_SEM_PARAM,"Chybny pocet parametru ..  vs_get_substring");
     if(param3->type != VARINT)
     	print_error(E_SEM_PARAM,"vs_get_substring treti param neni int");
-    if((param3->data.varInt < 0) || (param3->data.varInt >= strlen(param1->data.varString)))
+    if((param3->data.varInt < 0) || (param3->data.varInt > strlen(param1->data.varString)) || (param2->data.varInt > param3->data.varInt))
     	print_error(E_SEM_PARAM,"vs_get_substring druhy param < 0 nebo vetsi jak strlen string");
 
     // beh programu
