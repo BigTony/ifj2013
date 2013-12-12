@@ -518,7 +518,7 @@ int getToken(FILE *fp,Ttoken *token){
                 w[len]=c;
 
             }while(isdigit(c)!=0);
-            if(len==1)
+            if(len>=1)
             {
                 if(c=='.')
                 {
@@ -560,9 +560,27 @@ int getToken(FILE *fp,Ttoken *token){
                             freeW(&w); //token->value.varString=NULL;
                             return token->id;
                         }
-                        // else if(){
-
-                        // }
+                        else if(isdigit(c)){
+                            len++;
+                            w[len]=c;
+                            do
+                            {
+                                if(((len)%(BUFF))==BUFF-2)
+                                {
+                                    w[len] = '\0';
+                                    reallocString(&w);
+                                }
+                                c=fgetc(fp);
+                                len++;
+                                w[len]=c;
+                            }while(isdigit(c));
+                            w[len]='\0';
+                            ungetc(c,fp);
+                            token->id=VARDOUBLE;
+                            token->value.varDouble = strtod(w,NULL);
+                            freeW(&w); //token->value.varString=NULL;
+                            return token->id;
+                        }
                         else
                         {
                             freeW(&w); //token->value.varString=NULL;
