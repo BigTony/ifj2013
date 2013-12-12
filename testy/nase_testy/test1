@@ -1,0 +1,8 @@
+<?php
+// prirazeni
+$a = 10;
+$b = 12;
+$c = 7;
+
+/// [SPRAVNEJ VYSLEDEK: $y=190.0]  ==> [testuje operace +-*/ a jejich priority]
+$y = (((((($b*$c*$a-$a-$c)+(($a+$a)*($b*2)))+7)-$a*$c)-100)/3)/2;
