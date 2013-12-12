@@ -318,10 +318,11 @@ void vs_put_string(tHashTbl *tab,tHashTbl *NavrTab){
 	konk = allocString();
 	while((tempitem = TblSearch (tab, gen_param(g_ptrs->params)))!= NULL){
 		tostring(tempitem);
-		konk = konkatenace(konk,tempitem->data.varString);
+		// konk = konkatenace(konk,tempitem->data.varString);
+		printf("%s",tempitem->data.varString);
 		i.varInt++;
 	}
-	printf("%s",konk);
+	// printf("%s",konk);
 	TblInsert(NavrTab,"$",i,VARINT);
 }
 

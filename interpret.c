@@ -119,7 +119,7 @@ void interpret (tHashTbl *global_htable, TList *L)
               // aktivuju list z vrcholu stacku a nastav aktivni instrukci
               ActiveList = (topStack(g_ptrs->function_stack))->list;
               ActivePtrItem(ActiveList,(topStack(g_ptrs->function_stack))->NavrInstrukce);
-
+              TblDelete((topStack(g_ptrs->function_stack))->hashTbl);
               // pop stack
               popStack(g_ptrs->function_stack);
 
@@ -1063,6 +1063,14 @@ void interpret (tHashTbl *global_htable, TList *L)
             {
               if (strcmp (src1,vestaveneFunkce[i] )==0)
               {
+                            // Lokalni TS
+            tHashTbl *local_htable_func;
+
+            // naalokovani a inicializaci LOKALNI TS fce
+            tableInit(&local_htable_func);
+
+            // push adresy lokalni TS fce na stack
+            pushStack(g_ptrs->function_stack,local_htable_func,NULL,ActiveList);//(TLitem*)(tHsrc1->data.pointer)
                 break;
               }
               i++;
@@ -1136,7 +1144,7 @@ void interpret (tHashTbl *global_htable, TList *L)
                                 if (strcmp (src1,vestaveneFunkce[i] )==0)
                                 {
                                         (*fun[i])((topStack(g_ptrs->function_stack))->hashTbl, active_htable);
-                                        // popStack(g_ptrs->function_stack);
+                                        popStack(g_ptrs->function_stack);
                                         break;        
                                 }
                                 i++;
@@ -1188,7 +1196,7 @@ void interpret (tHashTbl *global_htable, TList *L)
               // aktivuju list z vrcholu stacku a nastav aktivni instrukci
               ActiveList = (topStack(g_ptrs->function_stack))->list;
               ActivePtrItem(ActiveList,(topStack(g_ptrs->function_stack))->NavrInstrukce);
-
+              TblDelete((topStack(g_ptrs->function_stack))->hashTbl);
               // pop stack
               popStack(g_ptrs->function_stack);
 

@@ -136,7 +136,7 @@ void TblDelete (tHashTbl *tab)
 	// }
 	// tab->tableItems[key]=NULL;	         /// polozka je jiz prazdna
  //  }
- //  free(tab);
+  free(tab);
 }
 
 
