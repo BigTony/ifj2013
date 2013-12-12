@@ -1145,8 +1145,6 @@ void interpret (tHashTbl *global_htable, TList *L)
                         {
                                 if (strcmp (src1,vestaveneFunkce[i] )==0)
                                 {
-                                    // TblPrint((topStack(g_ptrs->function_stack))->hashTbl);
-                                    // TblPrint(active_htable);
                                         (*fun[i])((topStack(g_ptrs->function_stack))->hashTbl, active_htable);
                                         popStack(g_ptrs->function_stack);
                                         break;        

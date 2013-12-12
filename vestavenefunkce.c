@@ -164,10 +164,20 @@ void todouble(item *item){
 
 int get_int_len (int value){
   int l=1;
-  while(value>9){
-  	l++; 
-  	value/=10;
+  if(value>0){
+  	while(value>9){
+  		l++; 
+  		value/=10;
+  	}
+  }else{
+  	value = value * value;
+  	l++;
+  	while(value>9){
+  		l++; 
+  		value/=10;
+  	}
   }
+  
   return l;
 }
 
