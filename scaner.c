@@ -560,6 +560,9 @@ int getToken(FILE *fp,Ttoken *token){
                             freeW(&w); //token->value.varString=NULL;
                             return token->id;
                         }
+                        // else if(){
+
+                        // }
                         else
                         {
                             freeW(&w); //token->value.varString=NULL;
