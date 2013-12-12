@@ -28,12 +28,12 @@ void freeW(char **w)
     if(*w!=NULL)
         free(*w);
 }
-void reallocString(char** w,int len)
+void reallocString(char** w)
 {
     if(*w!=NULL)
     {
         char* wPom = NULL;
-        int i = len+1;
+        int i = strlen(*w);
         wPom = realloc(*w,i+BUFF);
         if(wPom==NULL)
         {
@@ -78,7 +78,6 @@ int getToken(FILE *fp,Ttoken *token){
     skipSpace(&c,fp);
     while(1)
     {
-        len=0;
         /**
         *Komentare
         */
@@ -385,7 +384,7 @@ int getToken(FILE *fp,Ttoken *token){
                     if(((len)%(BUFF))==BUFF-2)
                     {
                        w[len] = '\0';
-                      reallocString(&w,len);
+                      reallocString(&w);                      
                     }
                     c=fgetc(fp);
                 }
@@ -421,8 +420,8 @@ int getToken(FILE *fp,Ttoken *token){
             {
                 if(((len)%(BUFF))==BUFF-2)
                 {
-                    //w[len+1] = '\0';
-                    reallocString(&w,len);
+                    w[len+1] = '\0';
+                    reallocString(&w);
                 }
                 c=fgetc(fp);
                 len++;
@@ -511,15 +510,15 @@ int getToken(FILE *fp,Ttoken *token){
             {
                 if(((len)%(BUFF))==BUFF-2)
                 {
-                    //w[len+1] = '\0';
-                  reallocString(&w,len);
+                    w[len+1] = '\0';
+                  reallocString(&w);
                 }
                 c=fgetc(fp);
                 len++;
                 w[len]=c;
 
             }while(isdigit(c)!=0);
-            if(len==1)
+            if(len>=1)
             {
                 if(c=='.')
                 {
@@ -528,7 +527,7 @@ int getToken(FILE *fp,Ttoken *token){
                         if(((len)%(BUFF))==BUFF-2)
                         {
                             w[len+1] = '\0';
-                          reallocString(&w,len);
+                          reallocString(&w);
                         }
                         c=fgetc(fp);
                         len++;
@@ -546,14 +545,35 @@ int getToken(FILE *fp,Ttoken *token){
                             {
                                 if(((len)%(BUFF))==BUFF-2)
                                 {
-                                    //w[len] = '\0';
-                                    reallocString(&w,len);
+                                    w[len] = '\0';
+                                    reallocString(&w);
                                 }
                                 c=fgetc(fp);
                                 len++;
                                 w[len]=c;
                             }while(isdigit(c)!=0);
 
+                            w[len]='\0';
+                            ungetc(c,fp);
+                            token->id=VARDOUBLE;
+                            token->value.varDouble = strtod(w,NULL);
+                            freeW(&w); //token->value.varString=NULL;
+                            return token->id;
+                        }
+                        else if(isdigit(c)){
+                            len++;
+                            w[len]=c;
+                            do
+                            {
+                                if(((len)%(BUFF))==BUFF-2)
+                                {
+                                    w[len] = '\0';
+                                    reallocString(&w);
+                                }
+                                c=fgetc(fp);
+                                len++;
+                                w[len]=c;
+                            }while(isdigit(c));
                             w[len]='\0';
                             ungetc(c,fp);
                             token->id=VARDOUBLE;
@@ -591,8 +611,8 @@ int getToken(FILE *fp,Ttoken *token){
                 do{
                     if(((len)%(BUFF))==BUFF-2)
                     {
-                       // w[len+1] = '\0';
-                      reallocString(&w,len);
+                        w[len+1] = '\0';
+                      reallocString(&w);
                     }
                     c=fgetc(fp);
                     len++;
@@ -630,8 +650,8 @@ int getToken(FILE *fp,Ttoken *token){
             {
                 if(((len)%(BUFF))==BUFF-2)
                 {
-                   // w[len+1] = '\0';
-                    reallocString(&w,len);
+                    w[len+1] = '\0';
+                    reallocString(&w);                    
                 }
                 if(c>31 && c!='"' && c!='$' && c!='t' && c!='n' && c!='\\' && c!='x')
                 {
@@ -735,8 +755,7 @@ int getToken(FILE *fp,Ttoken *token){
                 }
 
             }
-
-            w[len+1]='\0';
+            w[len]='\0';
             token->id=STRING;
             token->value.varString=w;
             return token->id;
