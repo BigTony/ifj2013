@@ -46,7 +46,6 @@ void tovarint(item *item){
   					break;
   				}
   			}
-  			free(zpracuj);
   			// free(item->data);
   			// podle me to nemusime freeovat
   			// bo union zabira v pameti kolik jeho maximalni polozka takze by to melo bejt cajk
@@ -107,23 +106,28 @@ void todouble(item *item){
 		case STRING:{
 			int i = 0;
 			int cislo = 0;
-			int desetiny_cislo = 0;
+			double desetiny_cislo = 0;
 			int carka = 0;
 			int blank = 0;
+			int zbytek = 1;
 			char *zpracuj = item->data.varString;
 			while ((zpracuj[i]!='\0')){
 				if((isspace(zpracuj[i]))&&(cislo==0)&&(desetiny_cislo==0)) {
+					i++;
 					continue;
 				}
-  				if (isdigit(zpracuj[i]) && (cislo<=INT_MAX)&&(desetiny_cislo==0)){
+  				if (isdigit(zpracuj[i]) && (cislo<=INT_MAX)){
   					if(carka == 1){
-  						desetiny_cislo=desetiny_cislo+(zpracuj[i]-'0')/10;
+  						desetiny_cislo=desetiny_cislo*10+(zpracuj[i]-'0');
+  						zbytek = zbytek * 10;
   					}else{
   						cislo=cislo*10+(zpracuj[i]-'0');
   					}
   					blank = 1;
   					i++;
-  				}else if((zpracuj[i] == '.')){
+  				}else if(zpracuj[i] == '.'){
+  					blank = 1;
+  					i++;
   					if(carka == 0){
   						carka = 1;
   					}else{
@@ -133,7 +137,7 @@ void todouble(item *item){
   					break;
   				}
   			}
-  			free(zpracuj);
+  			desetiny_cislo = desetiny_cislo / zbytek;
   			if(blank == 0)
   				item->data.varDouble = 0.0;
   			else
@@ -172,7 +176,7 @@ void tostring(item *item){
 			int delka = 0;
 			delka = get_int_len(item->data.varInt);
 			char *vysledek;
-			if((vysledek = malloc((char)sizeof(delka+1))) == NULL){
+			if((vysledek =(char *) malloc((delka+1)*sizeof(char))) == NULL){
 				print_error(E_INTERN,"chyba pri alokace tostring");
 			}
 			sprintf(vysledek, "%d", item->data.varInt);
@@ -290,6 +294,7 @@ void vs_get_string(tHashTbl *tab,tHashTbl *NavrTab){
 	int size = ALLOC_SIZE;
 	char *temp = allocString();
   	do {
+  		 
     	c=getchar();
     	if(i >= size){
     		reAllocString(temp,size+ALLOC_SIZE);
@@ -311,14 +316,9 @@ void vs_put_string(tHashTbl *tab,tHashTbl *NavrTab){
 	strcpy(g_ptrs->params,"0000000\0");
 	char *konk;
 	konk = allocString();
-	int size = ALLOC_SIZE;
 	while((tempitem = TblSearch (tab, gen_param(g_ptrs->params)))!= NULL){
 		tostring(tempitem);
-		if(strlen(tempitem->data.varString) > size){
-			reAllocString(konk,size+strlen(tempitem->data.varString));
-		}
-		size = size+strlen(tempitem->data.varString);
-		strcat (konk,tempitem->data.varString);
+		konk = konkatenace(konk,tempitem->data.varString);
 		i.varInt++;
 	}
 	printf("%s",konk);

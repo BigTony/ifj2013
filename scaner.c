@@ -32,12 +32,9 @@ void reallocString(char** w)
 {
     if(*w!=NULL)
     {
-        char* wPom;
-        if((wPom = malloc(sizeof(char) * BUFF))==NULL)   //Alokace pro retezec
-        {
-            print_error(E_INTERN,"Scaner-reallocString()-malloc-error");
-        }
-        wPom = realloc(*w,strlen(*w)+BUFF);
+        char* wPom = NULL;
+        int i = strlen(*w);
+        wPom = realloc(*w,i+BUFF);
         if(wPom==NULL)
         {
             print_error(E_INTERN,"Scaner-reallocString()-realloc-error");
@@ -51,7 +48,6 @@ void reallocString(char** w)
     else
     {
         print_error(E_INTERN,"Scaner-reallocString()- Cannot realloc NULL");
-        return E_LEX;
     }
 
 }
@@ -385,8 +381,9 @@ int getToken(FILE *fp,Ttoken *token){
                 {
                     w[len]=c;
                     len++;
-                    if(len%10==9)
+                    if(((len)%(BUFF))==BUFF-2)
                     {
+                       w[len] = '\0';
                       reallocString(&w);                      
                     }
                     c=fgetc(fp);
@@ -421,8 +418,9 @@ int getToken(FILE *fp,Ttoken *token){
             w[len]=c;
             do
             {
-                if(len%10==9)
+                if(((len)%(BUFF))==BUFF-2)
                 {
+                    w[len+1] = '\0';
                     reallocString(&w);
                 }
                 c=fgetc(fp);
@@ -510,8 +508,9 @@ int getToken(FILE *fp,Ttoken *token){
             w[len]=c;
             do
             {
-                if(len%10==9)
+                if(((len)%(BUFF))==BUFF-2)
                 {
+                    w[len+1] = '\0';
                   reallocString(&w);
                 }
                 c=fgetc(fp);
@@ -525,8 +524,9 @@ int getToken(FILE *fp,Ttoken *token){
                 {
                     do
                     {
-                        if(len%10==9)
+                        if(((len)%(BUFF))==BUFF-2)
                         {
+                            w[len+1] = '\0';
                           reallocString(&w);
                         }
                         c=fgetc(fp);
@@ -543,8 +543,9 @@ int getToken(FILE *fp,Ttoken *token){
                             w[len]=c;
                             do
                             {
-                                if(len%10==9)
+                                if(((len)%(BUFF))==BUFF-2)
                                 {
+                                    w[len] = '\0';
                                     reallocString(&w);
                                 }
                                 c=fgetc(fp);
@@ -587,8 +588,9 @@ int getToken(FILE *fp,Ttoken *token){
             else if(c=='.')
             {
                 do{
-                    if(len%10==9)
+                    if(((len)%(BUFF))==BUFF-2)
                     {
+                        w[len+1] = '\0';
                       reallocString(&w);
                     }
                     c=fgetc(fp);
@@ -625,8 +627,9 @@ int getToken(FILE *fp,Ttoken *token){
             //len++;
             while(c!='"'||pom==0)
             {
-                if(len%10==9)
+                if(((len)%(BUFF))==BUFF-2)
                 {
+                    w[len+1] = '\0';
                     reallocString(&w);                    
                 }
                 if(c>31 && c!='"' && c!='$' && c!='t' && c!='n' && c!='\\' && c!='x')
@@ -709,7 +712,7 @@ int getToken(FILE *fp,Ttoken *token){
                         c=fgetc(fp);
                     }
                 }
-                else if(c=='\\')
+                else if((c=='\\'))
                 {
                     if(w[len-1]=='\\')
                     {
