@@ -306,7 +306,7 @@ void interpret (tHashTbl *global_htable, TList *L)
               if (dataType1==VARINT && dataType2==VARINT)
                {
                    /// OVERENI zdali neni INT_MAX, pokud jo tak pretypujem na double
-                   if (max(tHsrc1->data.varInt,tHsrc2->data.varInt,I_ADD)==1)   // OK
+                   if (max(tHsrc1->data.varInt,tHsrc2->data.varInt,I_SUB)==1)   // OK
                     {
                           TypeOF = VARINT; // vysledek bude int
                           tmp.varInt = (tHsrc1->data.varInt - tHsrc2->data.varInt);
@@ -402,7 +402,7 @@ void interpret (tHashTbl *global_htable, TList *L)
               if (dataType1==VARINT && dataType2==VARINT)
                {
                    /// OVERENI zdali neni INT_MAX, pokud jo tak pretypujem na double
-                   if (max(tHsrc1->data.varInt,tHsrc2->data.varInt,I_ADD)==1)   // OK
+                   if (max(tHsrc1->data.varInt,tHsrc2->data.varInt,I_MUL)==1)   // OK
                     {
                           TypeOF = VARINT; // vysledek bude int
                           tmp.varInt = (tHsrc1->data.varInt * tHsrc2->data.varInt);
