@@ -114,6 +114,7 @@ TExpType TokenToExpresion(int token){
 		case VARIABLE:
 		case VARINT:
 		case VARDOUBLE:
+		case VARBOOL:
 		case STRING:
 		case NIL:
 			return VALUE;

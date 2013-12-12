@@ -31,14 +31,20 @@ void add_const_hashtbl(tHashTbl *hashTbl, int type,tokenValue value, char *id)
 char* gen_id(char *counter)
 {
 	int i=2;
+	int j = 2;
 	while ((counter[i]!='\0'))
 	{
-		if ((counter[i]<'9'))
+		if ((counter[i]<'a'))
 		{
 		counter[i]++;
+		j = i;
 		break;
 		}
 		i++;
+	}
+	while(j != 2){
+		j--;
+		counter[j] = '0';
 	}
 	char* new=allocString();
 	strcpy(new,counter);	
@@ -47,14 +53,20 @@ char* gen_id(char *counter)
 char* gen_param(char *counter)
 {
 	int i=0;
+	int j = 0;
 	while ((counter[i]!='\0'))
 	{
-		if ((counter[i]<'9'))
+		if ((counter[i]<'a'))
 		{
 		counter[i]++;
+		j = i;
 		break;
 		}
 		i++;
+	}
+	while(j != 0){
+		j--;
+		counter[j] = '0';
 	}
 	char* new=allocString();
 	strcpy(new,counter);	

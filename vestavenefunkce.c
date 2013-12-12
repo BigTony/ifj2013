@@ -101,6 +101,7 @@ void toVARBOOL(item *item){
 void todouble(item *item){
 	switch(item->type){
 		case VARINT:
+			item->data.varDouble = (int)item->data.varInt;
 			item->type = VARDOUBLE;
 			break;
 		case STRING:{

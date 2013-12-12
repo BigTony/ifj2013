@@ -40,8 +40,11 @@ void print_error(int err_code, char* err_msg){
 	}
 	if (err_msg!=NULL)
 	{
-		fprintf (stderr,"\nAditional description:\n---------------------------------------\n||     %s      ||\n---------------------------------------\n",err_msg);
+		if(err_code != E_OK){
+			fprintf (stderr,"\nAditional description:\n---------------------------------------\n||     %s      ||\n---------------------------------------\n",err_msg);
+		}
 	}
+		
 	destr_global();
 	exit(err_code);
 }

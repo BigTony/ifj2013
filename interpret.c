@@ -1000,37 +1000,37 @@ void interpret (tHashTbl *global_htable, TList *L)
 
          if (tHsrc1==NULL || tHsrc2==NULL) print_error(E_SEM_VAR, "item src1 nebo src2 v lokalni ani globalni TS neexistuje [I_NET]");
 
-         if (tHsrc1->type!=tHsrc2->type)
+         if (tHsrc1->type==tHsrc2->type)
          {
               TypeOF = VARBOOL;
 
               if (tHsrc1->type==VARINT)
               {
-                 if (tHsrc1->data.varInt != tHsrc2->data.varInt) datTyp = 1;
-                 else datTyp = 0;
+                 if (tHsrc1->data.varInt != tHsrc2->data.varInt) datTyp = 0;
+                 else datTyp = 1;
               }
 
               else if (tHsrc1->type==VARDOUBLE)
               {
-                 if (tHsrc1->data.varDouble != tHsrc2->data.varDouble) datTyp = 1;
-                 else datTyp = 0;
+                 if (tHsrc1->data.varDouble != tHsrc2->data.varDouble) datTyp = 0;
+                 else datTyp = 1;
               }
 
               else if (tHsrc1->type==STRING)
               {
-                 if (strcmp(tHsrc1->data.varString,tHsrc2->data.varString)!=0) datTyp = 1;
-                 else datTyp = 0;
+                 if (strcmp(tHsrc1->data.varString,tHsrc2->data.varString)!=0) datTyp = 0;
+                 else datTyp = 1;
               }
               else if (tHsrc1->type==VARBOOL)
               {
-                 if (tHsrc1->data.varInt != tHsrc2->data.varInt) datTyp = 1;
-                 else datTyp = 0;
+                 if (tHsrc1->data.varInt != tHsrc2->data.varInt) datTyp = 0;
+                 else datTyp = 1;
               }
 
          }
          else
          {
-             datTyp = 0;
+             datTyp = 1;
          }
 
             // pokud result exituje, prepisu data
@@ -1143,6 +1143,8 @@ void interpret (tHashTbl *global_htable, TList *L)
                         {
                                 if (strcmp (src1,vestaveneFunkce[i] )==0)
                                 {
+                                    // TblPrint((topStack(g_ptrs->function_stack))->hashTbl);
+                                    // TblPrint(active_htable);
                                         (*fun[i])((topStack(g_ptrs->function_stack))->hashTbl, active_htable);
                                         popStack(g_ptrs->function_stack);
                                         break;        
@@ -1187,6 +1189,10 @@ void interpret (tHashTbl *global_htable, TList *L)
          // nactu id src1 z HASH nebo GLOBAL hash tabulky
          tHsrc1 = (TblSearch (active_htable, src1));
          tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : (TblSearch (global_htable, src1));
+
+         if (((topStack(g_ptrs->function_stack))->NavrInstrukce)==NULL){
+            print_error(E_OK,"");
+         }
 
          if (tHsrc1==NULL) {
             print_error(E_SEM_VAR, "id v lokalni ani globalni TS neexistuje [I_RETURN]");
