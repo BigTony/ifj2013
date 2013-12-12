@@ -719,7 +719,8 @@ int getToken(FILE *fp,Ttoken *token){
                         dd[1]=fgetc(fp);
                         if(isxdigit(dd[0])&&isxdigit(dd[1]))
                         {
-                            w[len-1]=(char)strtol(dd,NULL,16);
+                            len--;
+                            w[len]=(char)strtol(dd,NULL,16);
                         }
                         else
                         {
