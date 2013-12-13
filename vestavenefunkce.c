@@ -374,8 +374,9 @@ void vs_get_substring(tHashTbl *tab,tHashTbl *NavrTab){
 
     // beh programu
     int delka = param3->data.varInt - param2->data.varInt;
+    printf("%d\n",delka );
     char *vysledek;
-	if((vysledek = malloc((char)sizeof(delka+10))) == NULL){
+	if((vysledek = malloc((delka+10)*sizeof(char))) == NULL){
 		print_error(E_INTERN,"chyba pri alokace vs_get_substring");
 	}
 	int start = param2->data.varInt;
