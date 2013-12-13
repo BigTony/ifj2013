@@ -486,4 +486,4 @@ int ExEx(int ifYes,char * result){
 
 }
 
-// // git ls-files | xargs wc -l
+// // git ls-files *.[ch] | xargs wc -l

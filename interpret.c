@@ -604,7 +604,9 @@ void interpret (tHashTbl *global_htable, TList *L)
          tHresult = (TblSearch (active_htable, result));
 
          // overeni jestli data ubec existuji
-         if (tHsrc1==NULL || tHsrc2==NULL) print_error(E_SEM_VAR, "item src1 nebo src2 v lokalni ani globalni TS neexistuje [I_CON]");
+         if (tHsrc1==NULL || tHsrc2==NULL) {
+                print_error(E_SEM_VAR, "item src1 nebo src2 v lokalni ani globalni TS neexistuje [I_CON]");
+         }
 
          // nactu typ dat src1 & src2
          dataType1 = tHsrc1->type;
@@ -670,8 +672,9 @@ void interpret (tHashTbl *global_htable, TList *L)
 
          datTyp=0;
 
-         if (tHsrc1==NULL || tHsrc2==NULL) print_error(E_SEM_VAR, "item v lokalni ani globalni TS neexistuje I_G");
-
+         if (tHsrc1==NULL || tHsrc2==NULL) {
+              print_error(E_SEM_VAR, "item v lokalni ani globalni TS neexistuje I_G");
+         }
          if (tHsrc1->type==tHsrc2->type)
          {
               TypeOF = VARBOOL;
@@ -735,8 +738,9 @@ void interpret (tHashTbl *global_htable, TList *L)
 
          datTyp=0;
 
-         if (tHsrc1==NULL || tHsrc2==NULL) print_error(E_SEM_VAR, "item src1 nebo src2 v lokalni ani globalni TS neexistuje [I_GE]");
-
+         if (tHsrc1==NULL || tHsrc2==NULL) {
+             print_error(E_SEM_VAR, "item src1 nebo src2 v lokalni ani globalni TS neexistuje [I_GE]");
+         }
          if (tHsrc1->type==tHsrc2->type)
          {
               TypeOF = VARBOOL;
