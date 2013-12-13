@@ -47,7 +47,8 @@ typedef struct tHashTbl{
 //Knuth-Morris-Pratt
 //void createTableKmp(char* patt, int pattLen, int** fail);
 int getSubstringKmp(char* text,char* patt);
-//
+//Merge sort
+void full_merge_sort(char*array);
 int hashCode ( char* key );
 void tableInit(tHashTbl **hash_table);
 item* TblSearch (tHashTbl *tab, char* key);

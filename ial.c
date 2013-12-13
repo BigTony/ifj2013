@@ -126,7 +126,7 @@ void TblDelete (tHashTbl *tab)
 	// {
 	//     Temp=tab->tableItems[key]->nextItem; /// ulozim nasledujici polozku
 	//     free(tab->tableItems[key]->key);
-	//     if(tab->tableItems[key]->type < 5){
+	//     if(tab->tableItems[key]->type < STRING ){
 	//     	if(tab->tableItems[key]->data.varString != NULL){
 	//     		free(tab->tableItems[key]->data.varString);
 	//     	}
@@ -284,6 +284,59 @@ int getSubstringKmp(char* text,char* patt)
 }
 ///--------------------------------------//
 ///-------------------------------------//
+}
+//merge sort implementovan rekursivne
+void merge_sort(char*in,char*out,int l,int r){
+    int len=r-l;
+    int mid=(len)/2+l;
+    if (l<r)
+    {
+        merge_sort(in,out,l,mid);
+        merge_sort(in,out,mid+1,r);
+        msort(in,out,l,mid,mid+1,r);
+    }
+
+}
+void msort(char*in,char*out,int l1,int r1,int l2,int r2){
+    int ar=l1;
+    int i=l1;
+
+    while ((l1<=r1) &&(l2<=r2))
+    {
+        if (in[l1]<in[l2])
+        {
+            out[i++]=in[l1++];
+        }
+        else
+        {
+            out[i++]=in[l2++];
+        }
+    }
+    while ((l1<=r1))
+        {
+            out[i++]=in[l1++];
+        }
+    while ((l2<=r2))
+        {
+            out[i++]=in[l2++];
+        }
+    memcpy(&(in[ar]),&(out[ar]),i-ar);
+}
 
 
-
+void full_merge_sort(char*array) {
+int len = strlen(array)-1;
+if (len > 0)
+char*tmp;
+{
+	if(NULL!=(tmp=malloc(len*sizeof(char))))
+	{
+		merge_sort(array,tmp,0,len);
+	 	free(tmp);
+	}
+	else 
+	{
+	print_error(E_INTERN,chyba pri alokaci pro merge_sort);
+	}
+}
+}
