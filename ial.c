@@ -284,7 +284,7 @@ int getSubstringKmp(char* text,char* patt)
 }
 ///--------------------------------------//
 ///-------------------------------------//
-}
+
 //merge sort implementovan rekursivne
 void merge_sort(char*in,char*out,int l,int r){
     int len=r-l;
@@ -325,18 +325,18 @@ void msort(char*in,char*out,int l1,int r1,int l2,int r2){
 
 
 void full_merge_sort(char*array) {
-int len = strlen(array)-1;
-if (len > 0)
-char*tmp;
-{
-	if(NULL!=(tmp=malloc(len*sizeof(char))))
-	{
-		merge_sort(array,tmp,0,len);
-	 	free(tmp);
-	}
-	else 
-	{
-	print_error(E_INTERN,chyba pri alokaci pro merge_sort);
-	}
-}
+  int len = strlen(array)-1;
+  if (len > 0)
+  {
+    char* tmp;
+  	if(NULL!=(tmp=malloc((len+1)*sizeof(char))))
+  	{
+		  merge_sort(array,tmp,0,len);
+	 	 free(tmp);
+	 }
+	 else 
+	 {
+	 print_error(E_INTERN,"chyba pri alokaci pro merge_sort");
+	 }
+  }
 }

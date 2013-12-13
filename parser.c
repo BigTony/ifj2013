@@ -217,7 +217,7 @@ void callFunction(char* dest){
 				}
 				else
 				{
-					char*Tmp=gen_param(g_ptrs->params);
+					char*Tmp=gen_id(g_ptrs->counter);
 					add_const_hashtbl(g_ptrs->main_symobol_tbl,g_ptrs->token->id, g_ptrs->token->value,Tmp);
 					InsertInstLast (g_ptrs->act_list_inst,Tmp,NULL,gen_param(g_ptrs->params),I_PARAM);
 				}
@@ -251,6 +251,8 @@ void main_classify(){
 			defWhile();
 		}else if(g_ptrs->token->id == RETURN){
 			defReturn();
+		}else if(g_ptrs->token->id == STREDNIK){
+			continue;
 		}else{
 		   print_error(E_SYN,"neocekavany token v main_clasify");
 		}
@@ -273,8 +275,9 @@ void classify(){
 			defWhile();
 		}else if(g_ptrs->token->id == RETURN){
 			defReturn();
-		}
-			
+		}else if(g_ptrs->token->id == STREDNIK){
+			continue;
+		}	
 		else{
 		   print_error(E_SYN,"neocekavany token v clasify");
 		}

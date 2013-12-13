@@ -389,13 +389,12 @@ void vs_get_substring(tHashTbl *tab,tHashTbl *NavrTab){
 
     // beh programu
     int delka = param3->data.varInt - param2->data.varInt;
-    printf("%d\n",delka );
     char *vysledek;
 	if((vysledek = malloc((delka+10)*sizeof(char))) == NULL){
 		print_error(E_INTERN,"chyba pri alokace vs_get_substring");
 	}
 	int start = param2->data.varInt;
-	int end = param3->data.varInt;
+	int end = param3->data.varInt - 1;
 	int i = 0;
 	while(start <= end){
 		vysledek[i] = param1->data.varString[start];
@@ -412,16 +411,16 @@ void vs_find_string(tHashTbl *tab,tHashTbl *NavrTab){
 	// prvni parametr
 	item *param1 = (TblSearch(tab,"1000000\0"));
 	if(param1 == NULL)
-    	print_error(E_SEM_PARAM,"Chybny pocet parametru ..  vs_get_substring");
+    	print_error(E_SEM_PARAM,"Chybny pocet parametru 1..  vs_find_substring");
     if(param1->type != STRING)
-    	print_error(E_SEM_PARAM,"vs_get_substring prvni param neni string");
+    	print_error(E_SEM_PARAM,"vs_find_substring prvni param neni string");
 
     // druhy parametr
 	item *param2 = (TblSearch(tab,"2000000\0"));
 	if(param2 == NULL)
-    	print_error(E_SEM_PARAM,"Chybny pocet parametru ..  vs_get_substring");
+    	print_error(E_SEM_PARAM,"Chybny pocet parametru 2..  vs_find_substring");
     if(param2->type != STRING)
-    	print_error(E_SEM_PARAM,"vs_get_substring prvni param neni string");
+    	print_error(E_SEM_PARAM,"vs_find_substring prvni param neni string");
 
     // beh programu
     if((strcmp(param2->data.varString,""))==0){
@@ -441,20 +440,20 @@ void vs_sort_string(tHashTbl *tab,tHashTbl *NavrTab){
 	if(param1 == NULL)
     	print_error(E_SEM_PARAM,"Chybny pocet parametru ..  vs_sort_string");
 	tostring(param1);
-	int delka = strlen(tHsrc1->data.varString);
+	int delka = strlen(param1->data.varString);
 	char *newstr;
-	if(NULL!=(newstr=malloc(delka*sizeof(char))))
+	if(NULL!=(newstr=malloc((delka+1)*sizeof(char))))
 	{
-		strcpy (newstr,tHsrc1->data.varString );
+		strcpy (newstr,param1->data.varString );
 		full_merge_sort(newstr);
 	}
 	else 
 	{
-	print_error(E_INTERN,chyba pri alokaci pro merge_sort);
+	print_error(E_INTERN,"chyba pri alokaci pro merge_sort");
 	}
 	tokenValue result;
 	result.varString = newstr;
-	TblInsert(NavrTab,"$",result,VARINT);
+	TblInsert(NavrTab,"$",result,STRING);
 }
 
 

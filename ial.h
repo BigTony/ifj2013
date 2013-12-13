@@ -49,6 +49,8 @@ typedef struct tHashTbl{
 int getSubstringKmp(char* text,char* patt);
 //Merge sort
 void full_merge_sort(char*array);
+void merge_sort(char*in,char*out,int l,int r);
+void msort(char*in,char*out,int l1,int r1,int l2,int r2);
 int hashCode ( char* key );
 void tableInit(tHashTbl **hash_table);
 item* TblSearch (tHashTbl *tab, char* key);
