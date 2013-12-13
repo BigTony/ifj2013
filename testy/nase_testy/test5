@@ -1,6 +1,6 @@
 <?php
-$a = 34;
-$b = 5.56000;
+$a = 67;
+$b = 67.56000;
 $c = "kokot";
 
 $d = true;
@@ -8,44 +8,63 @@ $e = false;
 
 $f = null;
 
-// z null
-$a1 = boolval($f);
-$a2 = intval($f);
-$a3 = doubleval($f);
-$a4 = strval($f);
+
+// z null                MA VYJIT PODLE TABULKY
+$a1 = boolval($f);       // false
+$a2 = intval($f);        // 0
+$a3 = doubleval($f);     // 0.0
+$a4 = strval($f);        // ""
 
 
-// z bool
-$b1 = boolval($d);
-$b2 = intval($d);
-$b3 = doubleval($d);
-$b4 = strval($d);
+// z bool [true]         MA VYJIT
+$b1 = boolval($d);       // true
+$b2 = intval($d);        // 1
+$b3 = doubleval($d);     // 1.0
+$b4 = strval($d);        // "1"
 
-// z bool
-$c1 = boolval($e);
-$c2 = intval($e);
-$c3 = doubleval($e);
-$c4 = strval($e);
+// z bool [false]        MA VYJIT
+$c1 = boolval($e);       // false
+$c2 = intval($e);        // 0
+$c3 = doubleval($e);     // 0.0
+$c4 = strval($e);        // ""
 
-// z int
-$d1 = boolval($a);
-$d2 = intval($a);
-$d3 = doubleval($a);
-$d4 = strval($a);
+// z int                 MA VYJIT
+$d1 = boolval($a);       // true
+$d2 = intval($a);        // 67
+$d3 = doubleval($a);     // 67.00
+$d4 = strval($a);        // 67
 
-// double
-$e1 = boolval($b);
-$e2 = intval($b);
-$e3 = doubleval($b);
-$e4 = strval($b);
+// z double              MA VYJIT
+$e1 = boolval($b);       // true
+$e2 = intval($b);        // 67
+$e3 = doubleval($b);     // 67.56
+$e4 = strval($b);        // 67.56
 
-// ze stringu
-$f1 = boolval($c);
-$f2 = intval($c);
-$f3 = doubleval($c);
-$f4 = strval($c);
+// ze stringu            MA VYJIT
+$f1 = boolval($c);       // true
+$f2 = intval($c);        // 0
+$f3 = doubleval($c);     // 0.0
+$f4 = strval($c);        // kokot
 
-$y = put_string($b1,$b2,$b3,$b4,$c1,$c2,$c3,$c4,$d1,$d2,$d3,$d4,$f1,$f2,$f3,$f4);
+
+$x1  = put_string("PREVOD z NULL\n");
+$y1 = put_string("[\$a1]: ",$a1,"\n","[\$a2]: ",$a2,"\n","[\$a3]: ",$a3,"\n","[\$a4]: ",$a4,"\n\n");
+
+$x2  = put_string("PREVOD z bool [true]\n");
+$y2 = put_string("[\$b1]: ",$b1,"\n","[\$b2]: ",$b2,"\n","[\$b3]: ",$b3,"\n","[\$b4]: ",$b4,"\n\n");
+
+$x3  = put_string("PREVOD z bool [false]\n");
+$y3 = put_string("[\$c1]: ",$c1,"\n","[\$c2]: ",$c2,"\n","[\$c3]: ",$c3,"\n","[\$c4]: ",$c4,"\n\n");
+
+$x4  = put_string("PREVOD z INT\n");
+$y4 = put_string("[\$d1]: ",$d1,"\n","[\$d2]: ",$d2,"\n","[\$d3]: ",$d3,"\n","[\$d4]: ",$d4,"\n\n");
+
+$x5  = put_string("PREVOD z DOUBLE\n");
+$y5 = put_string("[\$e1]: ",$e1,"\n","[\$e2]: ",$e2,"\n","[\$e3]: ",$e3,"\n","[\$e4]: ",$e4,"\n\n");
+
+$x6  = put_string("PREVOD ze STRINGU\n");
+$y6 = put_string("[\$f1]: ",$f1,"\n","[\$f2]: ",$f2,"\n","[\$f3]: ",$f3,"\n","[\$f4]: ",$f4,"\n\n");
+
 
 
 
