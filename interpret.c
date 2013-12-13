@@ -1065,14 +1065,14 @@ void interpret (tHashTbl *global_htable, TList *L)
             {
               if (strcmp (src1,vestaveneFunkce[i] )==0)
               {
-                            // Lokalni TS
-            tHashTbl *local_htable_func;
+                 // Lokalni TS
+                 tHashTbl *local_htable_func;
 
-            // naalokovani a inicializaci LOKALNI TS fce
-            tableInit(&local_htable_func);
+                 // naalokovani a inicializaci LOKALNI TS fce
+                 tableInit(&local_htable_func);
 
-            // push adresy lokalni TS fce na stack
-            pushStack(g_ptrs->function_stack,local_htable_func,NULL,ActiveList);//(TLitem*)(tHsrc1->data.pointer)
+                 // push adresy lokalni TS fce na stack
+                 pushStack(g_ptrs->function_stack,local_htable_func,NULL,ActiveList);//(TLitem*)(tHsrc1->data.pointer)
                 break;
               }
               i++;
@@ -1128,7 +1128,9 @@ void interpret (tHashTbl *global_htable, TList *L)
 
          tHsrc1 = (TblSearch (active_htable, src1));
          
-         if (tHsrc1==NULL) print_error(E_SEM_PARAM, "nespravny pocet parametru funkce [I_CHCKPAR]");
+         if (tHsrc1==NULL) {
+          print_error(E_SEM_PARAM, "nespravny pocet parametru funkce [I_CHCKPAR]");
+         }
          else
          {
              TblInsert(active_htable,result,tHsrc1->data,tHsrc1->type);
@@ -1164,7 +1166,9 @@ void interpret (tHashTbl *global_htable, TList *L)
          // lokalni TS dane funkce
          local_htable_Fce = (topStack(g_ptrs->function_stack)->hashTbl);
 
-         if (tHsrc1==NULL) print_error(E_SEM_FCE, "id funkce v lokalni ani globalni TS neexistuje [I_CALL]");
+         if (tHsrc1==NULL) {
+             print_error(E_SEM_FCE, "id funkce v lokalni ani globalni TS neexistuje [I_CALL]");
+         }
          else
          {
               //ulozeni navratove adresy na stack
@@ -1277,6 +1281,11 @@ void interpret (tHashTbl *global_htable, TList *L)
                   else jump = 0;
                 break;
 
+                case NIL:
+                  if (tHsrc1->data.pointer==NULL) jump = 1;
+                  else jump = 0;
+                break;
+
                 default: // chyba
                 break;
              }
@@ -1322,6 +1331,11 @@ void interpret (tHashTbl *global_htable, TList *L)
 
                 case STRING:
                   if (strcmp(tHsrc1->data.varString,"")!=0) jump = 1;
+                  else jump = 0;
+                break;
+
+                case NIL:
+                  if (tHsrc1->data.pointer!=NULL) jump = 1;
                   else jump = 0;
                 break;
 
