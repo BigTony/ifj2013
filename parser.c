@@ -87,8 +87,9 @@ void defVar(tokenValue value){
 	if(getToken_test(g_ptrs->source,g_ptrs->token) != PRIRAZENI){
 		print_error(E_SYN,"chyba v syntaxi ocekavano = pri prirazeni promene nebo funkce");
 	}else{
-		if(ExEx(0,var_name)){
-			callFunction(var_name);
+		char *temp;
+		if((temp = ExEx(0,var_name)) != NULL) {
+			callFunction(var_name,temp);
 			if(getToken_test(g_ptrs->source,g_ptrs->token) != STREDNIK){
 				print_error(E_SYN,"chyba v syntaxi ocekavano ; po prirazeni promene nebo funkce");
 			}
@@ -170,7 +171,10 @@ void defFunction(){
 	   InitList((g_ptrs->act_list_inst=CreateList())); // init listu instrukci nove
 	   tokenValue pretyp;
 	   pretyp.varString = (char *) g_ptrs->act_list_inst;
-	   add_const_hashtbl(g_ptrs->main_symobol_tbl, IDENTIFIKATOR,pretyp, g_ptrs->token->value.varString);
+	   if(TblSearch(g_ptrs->function_table,g_ptrs->token->value.varString) != NULL){
+	   		print_error(E_SEM_FCE,"pokus o redefinici funkce ");
+	   }
+	   add_const_hashtbl(g_ptrs->function_table, IDENTIFIKATOR,pretyp, g_ptrs->token->value.varString);
 		if(getToken_test(g_ptrs->source,g_ptrs->token) != ZAV_JEDN_L){
 			print_error(E_SYN,"pri deklaraci funkce chyby ( ");
 		}else{
@@ -200,18 +204,14 @@ void defFunction(){
 }
 
 // volani funkce
-void callFunction(char* dest){
-	char * nazevFce = g_ptrs->token->value.varString;
-	InsertInstLast (g_ptrs->act_list_inst,(char*)g_ptrs->token->value.varString,NULL,NULL,I_TSW);// vygenerujeme 3AC pro nazev funkce a pro prepnuti tabulky
-	if(getToken_test(g_ptrs->source,g_ptrs->token) != ZAV_JEDN_L){
-		print_error(E_SYN,"pri volani funkce chyby (");
-	}else{
+void callFunction(char* dest,char *funct){
+	InsertInstLast (g_ptrs->act_list_inst,funct,NULL,NULL,I_TSW);// vygenerujeme 3AC pro nazev funkce a pro prepnuti tabulky
 		strcpy(g_ptrs->params,"0000000\0");
 		while(getToken_test(g_ptrs->source,g_ptrs->token) != ZAV_JEDN_P){
-			if(!((g_ptrs->token->id > IDENTIFIKATOR) && (g_ptrs->token->id <= NIL))){
+			if(!((g_ptrs->token->id >= IDENTIFIKATOR) && (g_ptrs->token->id <= NIL))){
 				print_error(E_SYN,"pri volani funkce jsou parametry jine termy");
 			}else{
-				if (g_ptrs->token->id==VARIABLE)
+				if ((g_ptrs->token->id==VARIABLE) || (g_ptrs->token->id==IDENTIFIKATOR))
 				{
 					InsertInstLast (g_ptrs->act_list_inst,(char*)g_ptrs->token->value.varString,NULL,gen_param(g_ptrs->params),I_PARAM);	
 				}
@@ -229,9 +229,9 @@ void callFunction(char* dest){
 		if (g_ptrs->token->id != ZAV_JEDN_P){
 			print_error(E_SYN,"pri volani funkce je za poslednim parametetrem ocekavana ) ");	
 		}
-		InsertInstLast (g_ptrs->act_list_inst,nazevFce,NULL,NULL,I_CALL);
+		InsertInstLast (g_ptrs->act_list_inst,funct,NULL,NULL,I_CALL);
 		InsertInstLast (g_ptrs->act_list_inst,"$",NULL,dest,I_ASS);
-	}
+	
 	
 	
 }
@@ -286,6 +286,7 @@ void classify(){
 
 void parser(tPointers *ptrs){
 	tableInit(&(g_ptrs->main_symobol_tbl)); // init globalni tabulky symbolu
+	tableInit(&(g_ptrs->function_table));
 	InitList((g_ptrs->list_instr=CreateList())); // init listu instrukci
 	g_ptrs->act_list_inst = g_ptrs->list_instr;
     if (fgetc(g_ptrs->source)!='<'){

@@ -117,6 +117,7 @@ TExpType TokenToExpresion(int token){
 		case VARBOOL:
 		case STRING:
 		case NIL:
+		case IDENTIFIKATOR:
 			return VALUE;
 		// case FUNCTION_CALL:
 		// 	return FUNC;
@@ -178,6 +179,7 @@ void ExLess(TStack *stack,TExpType input){
 			add_const_hashtbl(g_ptrs->main_symobol_tbl,g_ptrs->token->id,g_ptrs->token->value,(char *)value.varString);
 			break;
 		case VARIABLE:
+		case IDENTIFIKATOR:
 			value = g_ptrs->token->value;
 			break;
 		case STRING:
@@ -392,7 +394,7 @@ TExpType skipNonTerm(TStack *stack){
 	return b;
 }
 
-int ExEx(int ifYes,char * result){
+char * ExEx(int ifYes,char * result){
 
 	tokenValue value;
 	if(ifYes == IF){
@@ -404,8 +406,14 @@ int ExEx(int ifYes,char * result){
 		if((c == STREDNIK) || (c == ZAV_SLOZ_L)){
 			print_error(E_SYN,"syntax error $a = ;");
 		}
-		if(c == IDENTIFIKATOR)
-			return 1;
+		if(c == IDENTIFIKATOR){
+			char* temp;
+			temp = g_ptrs->token->value.varString;
+			int c = getToken_test(g_ptrs->source,g_ptrs->token);
+			if(c == ZAV_JEDN_L)
+				return temp;
+		}
+			
 
 	}
 
@@ -483,7 +491,7 @@ int ExEx(int ifYes,char * result){
 
 	InsertInstLast (g_ptrs->act_list_inst,(char *)stack.top->var.varString,NULL,result,I_ASS);
 	SPopAll(&stack);
-	return 0;
+	return NULL;
 
 }
 

@@ -21,3 +21,4 @@ void vs_strlen(tHashTbl *tab,tHashTbl *NavrTab);
 void vs_get_substring(tHashTbl *tab,tHashTbl *NavrTab);
 void vs_find_string(tHashTbl *tab,tHashTbl *NavrTab);
 void vs_sort_string(tHashTbl *tab,tHashTbl *NavrTab);
+void vs_define(tHashTbl *tab,tHashTbl *NavrTab);

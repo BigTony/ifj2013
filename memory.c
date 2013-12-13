@@ -25,6 +25,7 @@ void init_global()
 		print_error(E_INTERN,"Chyba alokace pameti: init_global->token");
 	}
 	g_ptrs->main_symobol_tbl=NULL;
+	g_ptrs->function_table = NULL;
 	g_ptrs->function_stack=NULL;
 	g_ptrs->list_instr=NULL;
 	g_ptrs->act_list_inst=NULL;
@@ -41,7 +42,10 @@ void destr_global(){
 	 	free(g_ptrs->counter);
 	}
 	if (g_ptrs->main_symobol_tbl != NULL){
-		TblDelete(g_ptrs->main_symobol_tbl);
+		TblDeleteMain(g_ptrs->main_symobol_tbl);
+	}
+	if (g_ptrs->function_table != NULL){
+		TblDeleteFunction(g_ptrs->function_table);
 	}
 	if (g_ptrs->function_stack != NULL){
 		freeStack(g_ptrs->function_stack);
@@ -49,8 +53,8 @@ void destr_global(){
 	// if (g_ptrs->list_instr != NULL){
 	// 	free(g_ptrs->list_instr);
 	// }
-	// if (g_ptrs->act_list_inst != NULL){
-	// 	free(g_ptrs->act_list_inst);
-	// }
+	if (g_ptrs->act_list_inst != NULL){
+		free(g_ptrs->act_list_inst);
+	}
 	free(g_ptrs);
 }

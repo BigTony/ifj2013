@@ -17,6 +17,7 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <limits.h> 
+#define VS_COUNT 11
 
 int max (int a, int b, TIType type);
 
@@ -52,8 +53,9 @@ void interpret (tHashTbl *global_htable, TList *L)
    // tmp
    tokenValue tmp;
 
+
         // Tabulka lokalnich funkci
-   char* vestaveneFunkce[10]={
+   char* vestaveneFunkce[VS_COUNT]={
     "boolval", //BOOLVAL
     "doubleval", //DOUBLEVAL
     "intval", //INTVAL
@@ -64,8 +66,9 @@ void interpret (tHashTbl *global_htable, TList *L)
     "get_substring",//GET_SUBSTRING
     "find_string", //FIND_STRING
     "sort_string", //SORT_STRING
+    "define",
 };
-   void (*fun[10]) (tHashTbl*tab,tHashTbl*NavrTab)={
+   void (*fun[VS_COUNT]) (tHashTbl*tab,tHashTbl*NavrTab)={
     vs_boolval, //BOOLVAL
     vs_doubleval, //DOUBLEVAL
     vs_intval, //INTVAL
@@ -76,6 +79,7 @@ void interpret (tHashTbl *global_htable, TList *L)
     vs_get_substring,//GET_SUBSTRING
     vs_find_string, //FIND_STRING
     vs_sort_string, //SORT_STRING
+    vs_define,
 };
 
 
@@ -119,7 +123,7 @@ void interpret (tHashTbl *global_htable, TList *L)
               // aktivuju list z vrcholu stacku a nastav aktivni instrukci
               ActiveList = (topStack(g_ptrs->function_stack))->list;
               ActivePtrItem(ActiveList,(topStack(g_ptrs->function_stack))->NavrInstrukce);
-              TblDelete((topStack(g_ptrs->function_stack))->hashTbl);
+              tHashTbl *temp = (topStack(g_ptrs->function_stack))->hashTbl;
               // pop stack
               popStack(g_ptrs->function_stack);
 
@@ -132,6 +136,7 @@ void interpret (tHashTbl *global_htable, TList *L)
               //vloz polozku
               TblInsert (active_htable, "$", nil, NIL);
               ActiveNextItem(ActiveList);
+              TblDeleteFunction(temp);
            }
           else break;
      }
@@ -1060,12 +1065,12 @@ void interpret (tHashTbl *global_htable, TList *L)
          src1 = instr->src1;
 
          // nactu id src1 z HASH nebo GLOBAL hash tabulky
-         tHsrc1 = (TblSearch (active_htable, src1));
+         tHsrc1 = (TblSearch (g_ptrs->function_table, src1));
          tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : (TblSearch (global_htable, src1));
  
          if (tHsrc1==NULL){
             int i=0;
-            while (i<10)
+            while (i<VS_COUNT)
             {
               if (strcmp (src1,vestaveneFunkce[i] )==0)
               {
@@ -1081,7 +1086,7 @@ void interpret (tHashTbl *global_htable, TList *L)
               }
               i++;
             }
-          if (i==10)
+          if (i==VS_COUNT)
           {
             print_error(E_SEM_FCE, "id funkce v lokalni ani globalni TS neexistuje [I_TSW]");
           }
@@ -1147,7 +1152,7 @@ void interpret (tHashTbl *global_htable, TList *L)
          // nactu id src1 z INSTRUKCE
          src1 = instr->src1;
                         int i=0;
-                        while (i<10)
+                        while (i<VS_COUNT)
                         {
                                 if (strcmp (src1,vestaveneFunkce[i] )==0)
                                 {
@@ -1157,14 +1162,14 @@ void interpret (tHashTbl *global_htable, TList *L)
                                 }
                                 i++;
                         }
-                        if (i<10)
+                        if (i<VS_COUNT)
                         {
                         break;
                         }
 
 
          // nactu id src1 z HASH nebo GLOBAL hash tabulky
-         tHsrc1 = (TblSearch (active_htable, src1));
+         tHsrc1 = (TblSearch (g_ptrs->function_table, src1));
          tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : (TblSearch (global_htable, src1));
  
          // lokalni TS dane funkce
@@ -1210,7 +1215,7 @@ void interpret (tHashTbl *global_htable, TList *L)
               // aktivuju list z vrcholu stacku a nastav aktivni instrukci
               ActiveList = (topStack(g_ptrs->function_stack))->list;
               ActivePtrItem(ActiveList,(topStack(g_ptrs->function_stack))->NavrInstrukce);
-              TblDelete((topStack(g_ptrs->function_stack))->hashTbl);
+              tHashTbl *temp = (topStack(g_ptrs->function_stack))->hashTbl;
               // pop stack
               popStack(g_ptrs->function_stack);
 
@@ -1219,6 +1224,7 @@ void interpret (tHashTbl *global_htable, TList *L)
 
               //vloz polozku
               TblInsert (active_htable, "$", tHsrc1->data, tHsrc1->type);
+              TblDeleteFunction(temp);
          }
          break;
 

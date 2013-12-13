@@ -11,6 +11,7 @@
 typedef struct tPointers{
 	Ttoken *token;	//predavany token
 	struct tHashTbl *main_symobol_tbl;	//hlavni tabulka symbolu
+	struct tHashTbl *function_table; // tabulka funkci
 	struct tHashTblStack *function_stack;	//zasobnik tabulek symbolu pro funkce
 	struct TList *list_instr;	//Ukazatel List main instrukci 
 	struct TList *act_list_inst; //Ukazatel na aktulani instruction list

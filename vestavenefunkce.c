@@ -476,4 +476,20 @@ int find_string(char *text,char* word)
     }
 }
 
+//
+void vs_define(tHashTbl *tab,tHashTbl *NavrTab){
+	item *param1 = (TblSearch (tab, "1000000\0"));
+	if(param1 == NULL)
+    	print_error(E_SEM_PARAM,"Chybny pocet parametru ..  vs_define");
+    if(param1->type != STRING)
+    	print_error(E_SEM_PARAM,"vs_define prvni param neni string");
+    item *param2 = (TblSearch (tab, "2000000\0"));
+	if(param2 == NULL)
+    	print_error(E_SEM_PARAM,"Chybny pocet parametru ..  vs_define");
+	TblInsert(g_ptrs->main_symobol_tbl,param1->data.varString,param2->data,param2->type);
+	tokenValue result;
+	result.varString = NULL;
+	TblInsert(NavrTab,"$",result,NIL);
+}
+
 

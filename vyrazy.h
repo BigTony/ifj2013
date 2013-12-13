@@ -69,7 +69,7 @@ int SEmpty(TStack *stack);
 // odstran vsechny prvky
 void SPopAll(TStack *stack);
 
-int ExEx(int ifYes,char * result);
+char * ExEx(int ifYes,char * result);
 #endif
 
 

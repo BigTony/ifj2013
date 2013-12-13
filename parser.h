@@ -39,6 +39,6 @@ char* gen_id(char *counter);
 void add_const_hashtbl(tHashTbl *hashTbl, int type,tokenValue value, char *id);
 //funkce na vlozeni instrukce do ilist v ExEx
 tokenValue CreateExInstruction(tokenValue value1,tokenValue value2,TIType op);
-void callFunction(char* dest);
+void callFunction(char* dest,char *funct);
 char* gen_param(char *counter);
 #endif

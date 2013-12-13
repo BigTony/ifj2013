@@ -117,42 +117,50 @@ return 0;
 
 
 /// SMAZU VSECHNO
-void TblDelete (tHashTbl *tab)
+void TblDeleteMain (tHashTbl *tab)
 {
- //  item* Temp=NULL;
- //  for (int key=0;key<ALLOC;key++)
- //  {
-	// while (tab->tableItems[key]!=NULL)
-	// {
-	//     Temp=tab->tableItems[key]->nextItem; /// ulozim nasledujici polozku
-	//     free(tab->tableItems[key]->key);
-	//     if(tab->tableItems[key]->type < STRING ){
-	//     	if(tab->tableItems[key]->data.varString != NULL){
-	//     		free(tab->tableItems[key]->data.varString);
-	//     	}
-	//     }
-	//     free (tab->tableItems[key]);
-	//     tab->tableItems[key] = Temp;         /// navazeme na nasledujici polozku
-	// }
-	// tab->tableItems[key]=NULL;	         /// polozka je jiz prazdna
- //  }
- // free(tab);
+  
+  if(tab == NULL){
+    return;
+  }
+  item* Temp=NULL;
+  for (int key=0;key<ALLOC;key++)
+  {
+	while (tab->tableItems[key]!=NULL)
+	{
+	    Temp=tab->tableItems[key]->nextItem; /// ulozim nasledujici polozku
+	    if(tab->tableItems[key]->type == STRING ){
+	    	if(tab->tableItems[key]->data.varString != NULL){
+	    		free(tab->tableItems[key]->data.varString);
+	    	}
+	    }
+	    free (tab->tableItems[key]);    
+      tab->tableItems[key] = Temp; /// navazeme na nasledujici polozku     
+	}
+	tab->tableItems[key]=NULL;	         /// polozka je jiz prazdna
+  }
+  free(tab->tableItems);
+  // nakonec smazu tabulku
+  free (tab);
+}
 
-
-  // item* Temp=NULL;
-  // for (int key=0;key<ALLOC;key++)
-  // {
-  //       while (tab->tableItems[key]!=NULL)
-  //       {
-  //          Temp=tab->tableItems[key]->nextItem; /// ulozim nasledujici polozku
-  //          free (tab->tableItems[key]);
-  //          tab->tableItems[key] = Temp; /// navazeme na nasledujici polozku
-  //       }
-  //       tab->tableItems[key]=NULL;         /// polozka je jiz prazdna
-  // }
-
-// nakonec smazu tabulku
-free (tab);
+void TblDeleteFunction(tHashTbl *tab){
+  
+  if(tab == NULL){
+    return;
+  }
+  item* Temp=NULL;
+  for (int key=0;key<ALLOC;key++){
+    while (tab->tableItems[key]!=NULL){
+      Temp=tab->tableItems[key]->nextItem; /// ulozim nasledujici polozku 
+      free (tab->tableItems[key]);
+      tab->tableItems[key] = Temp;         /// navazeme na nasledujici polozku
+    }
+    tab->tableItems[key]=NULL;           /// polozka je jiz prazdna
+  }
+  free(tab->tableItems);
+  // nakonec smazu tabulku
+  free (tab);
 }
 
 
