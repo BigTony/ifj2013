@@ -802,7 +802,10 @@ int getToken(FILE *fp,Ttoken *token){
                         }
                         else
                         {
-                            print_error(E_LEX,"Chybny format unikove skevence \\xDD");
+                            w[len]='x'; len++;
+                            w[len]=dd[0]; len++;
+                            w[len]=dd[1]; len++;
+                            c=fgetc(fp);
                         }
                     }
                     else
