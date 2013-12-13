@@ -35,5 +35,3 @@ if ($c) {
 else {
 	$x = put_string($d, "\n");
 }
-
-

@@ -136,7 +136,23 @@ void TblDelete (tHashTbl *tab)
 	// }
 	// tab->tableItems[key]=NULL;	         /// polozka je jiz prazdna
  //  }
-  free(tab);
+ // free(tab);
+
+
+  // item* Temp=NULL;
+  // for (int key=0;key<ALLOC;key++)
+  // {
+  //       while (tab->tableItems[key]!=NULL)
+  //       {
+  //          Temp=tab->tableItems[key]->nextItem; /// ulozim nasledujici polozku
+  //          free (tab->tableItems[key]);
+  //          tab->tableItems[key] = Temp; /// navazeme na nasledujici polozku
+  //       }
+  //       tab->tableItems[key]=NULL;         /// polozka je jiz prazdna
+  // }
+
+// nakonec smazu tabulku
+free (tab);
 }
 
 

@@ -596,6 +596,57 @@ int getToken(FILE *fp,Ttoken *token){
                         freeW(&w); //token->value.varString=NULL;
                         return token->id;
                     }
+                }else if(c=='e'|| c=='E'){
+                    c=fgetc(fp);
+                        if((c=='+') || (c=='-'))
+                        {
+                            len++;
+                            w[len]=c;
+                            do
+                            {
+                                if(((len)%(BUFF))==BUFF-2)
+                                {
+                                    w[len] = '\0';
+                                    reallocString(&w,len); 
+                                }
+                                c=fgetc(fp);
+                                len++;
+                                w[len]=c;
+                            }while(isdigit(c)!=0);
+
+                            w[len]='\0';
+                            ungetc(c,fp);
+                            token->id=VARDOUBLE;
+                            token->value.varDouble = strtod(w,NULL);
+                            freeW(&w); //token->value.varString=NULL;
+                            return token->id;
+                        }
+                        else if(isdigit(c)){
+                            len++;
+                            w[len]=c;
+                            do
+                            {
+                                if(((len)%(BUFF))==BUFF-2)
+                                {
+                                    w[len] = '\0';
+                                    reallocString(&w,len); 
+                                }
+                                c=fgetc(fp);
+                                len++;
+                                w[len]=c;
+                            }while(isdigit(c));
+                            w[len]='\0';
+                            ungetc(c,fp);
+                            token->id=VARDOUBLE;
+                            token->value.varDouble = strtod(w,NULL);
+                            freeW(&w); //token->value.varString=NULL;
+                            return token->id;
+                        }
+                        else
+                        {
+                            freeW(&w); //token->value.varString=NULL;
+                            print_error(E_LEX,"Wrong double format.Expected X.Y+-eZ\nwhere X is single-digit number,\nY and Z are integers\nand\"e\"is upper/lower case E."); return E_LEX;
+                        }
                 }
                 else
                 {

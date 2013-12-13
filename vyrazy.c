@@ -181,6 +181,7 @@ void ExLess(TStack *stack,TExpType input){
 			value = g_ptrs->token->value;
 			break;
 		case STRING:
+		case NIL:
 			value.varString = gen_id(g_ptrs->counter);
 			add_const_hashtbl(g_ptrs->main_symobol_tbl,g_ptrs->token->id,g_ptrs->token->value,(char *)value.varString);
 			break;

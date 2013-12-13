@@ -1,0 +1,51 @@
+<?php
+$a = 34;
+$b = 5.56000;
+$c = "kokot";
+
+$d = true;
+$e = false;
+
+$f = null;
+
+// z null
+$a1 = bolval($f);
+$a2 = intval($f);
+$a3 = doubleval($f);
+$a4 = strval($f);
+
+
+// z bool
+$b1 = boolval($d);
+$b2 = intval($d);
+$b3 = doubleval($d);
+$b4 = strval($d);
+
+// z bool
+$c1 = boolval($e);
+$c2 = intval($e);
+$c3 = doubleval($e);
+$c4 = strval($e);
+
+// z int
+$d1 = boolval($a);
+$d2 = intval($a);
+$d3 = doubleval($a);
+$d4 = strval($a);
+
+// double
+$e1 = boolval($b);
+$e2 = intval($b);
+$e3 = doubleval($b);
+$e4 = strval($b);
+
+// ze stringu
+$f1 = boolval($c);
+$f2 = intval($c);
+$f3 = doubleval($c);
+$f4 = strval($c);
+
+$y = put_string($b1,$b2,$b3,$b4,$c1,$c2,$c3,$c4,$d1,$d2,$d3,$d4,$f1,$f2,$f3,$f4);
+
+
+
