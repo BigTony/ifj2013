@@ -1286,7 +1286,7 @@ void interpret (tHashTbl *global_htable, TList *L)
                 break;
 
                 case NIL:
-                  if (tHsrc1->data.pointer==NULL) jump = 1;
+                  if (tHsrc1->data.varString==NULL) jump = 1;
                   else jump = 0;
                 break;
 
@@ -1339,7 +1339,7 @@ void interpret (tHashTbl *global_htable, TList *L)
                 break;
 
                 case NIL:
-                  if (tHsrc1->data.pointer!=NULL) jump = 1;
+                  if (tHsrc1->data.varString!=NULL) jump = 1;
                   else jump = 0;
                 break;
 
