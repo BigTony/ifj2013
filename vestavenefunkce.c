@@ -59,6 +59,7 @@ void tovarint(item *item){
 		case NIL:
 			item->data.varInt = 0;
 			item->type = VARINT;
+			break;
 		case VARINT:
 			break;
 		default:
@@ -98,6 +99,7 @@ void toVARBOOL(item *item){
 		case NIL:
 			item->data.varInt = 0;
 			item->type = VARBOOL;
+			break;
 		default:
 			print_error(E_INTERN,"chyba pri pretypovani");
 			break;
@@ -165,6 +167,7 @@ void todouble(item *item){
 		case NIL:
 			item->data.varDouble = 0.0;
 			item->type = VARDOUBLE;
+			break;
 		default:
 			print_error(E_INTERN,"chyba pri pretypovani");
 			break;

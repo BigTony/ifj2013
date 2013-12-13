@@ -9,7 +9,7 @@ $e = false;
 $f = null;
 
 // z null
-$a1 = bolval($f);
+$a1 = boolval($f);
 $a2 = intval($f);
 $a3 = doubleval($f);
 $a4 = strval($f);

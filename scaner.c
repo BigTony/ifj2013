@@ -697,6 +697,12 @@ int getToken(FILE *fp,Ttoken *token){
             c=fgetc(fp);
             int pom=0;// na rozliseni " nebo \"
             //len++;
+            if(c=='"'){
+                w[len]='\0';
+                token->id=STRING;
+                token->value.varString=w;
+                return token->id;
+            }
             while(c!='"'||pom==0)
             {
                 if(((len)%(BUFF))==BUFF-2)
