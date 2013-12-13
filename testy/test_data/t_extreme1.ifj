@@ -41,7 +41,7 @@ while($count > 0.1) {
 
 $x = put_string("a ", "b ", "c ", "d ", "e ", "f ", "g ", "h ", "i ", "j ", "k ", "l ", $count, "\n");
 
-//return 24578125445354.65481e8;
+return 24578125445354.65481e8;
 
 function power($cislo) {
 	$cislo = $cislo * $cislo * 1.05;

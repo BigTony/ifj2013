@@ -168,7 +168,9 @@ void defFunction(){
 		print_error(E_SYN,"pri deklarace funkce chyby jeji nazev");
 	}else{
 	   InitList((g_ptrs->act_list_inst=CreateList())); // init listu instrukci nove
-	   add_const_hashtbl(g_ptrs->main_symobol_tbl, IDENTIFIKATOR, (tokenValue)(void*)g_ptrs->act_list_inst, g_ptrs->token->value.varString);
+	   tokenValue pretyp;
+	   pretyp.varString = (char *) g_ptrs->act_list_inst;
+	   add_const_hashtbl(g_ptrs->main_symobol_tbl, IDENTIFIKATOR,pretyp, g_ptrs->token->value.varString);
 		if(getToken_test(g_ptrs->source,g_ptrs->token) != ZAV_JEDN_L){
 			print_error(E_SYN,"pri deklaraci funkce chyby ( ");
 		}else{
