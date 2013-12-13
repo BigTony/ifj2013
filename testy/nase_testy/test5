@@ -48,22 +48,22 @@ $f4 = strval($c);        // kokot
 
 
 $x1  = put_string("PREVOD z NULL\n");
-$y1 = put_string("[\$a1]: ",$a1,"\n","[\$a2]: ",$a2,"\n","[\$a3]: ",$a3,"\n","[\$a4]: ",$a4,"\n\n");
+$y1 = put_string("[(bool)\$a1]: ",$a1,"\n","[\$a2]: ",$a2,"\n","[\$a3]: ",$a3,"\n","[\$a4]: ",$a4,"\n\n");
 
 $x2  = put_string("PREVOD z bool [true]\n");
-$y2 = put_string("[\$b1]: ",$b1,"\n","[\$b2]: ",$b2,"\n","[\$b3]: ",$b3,"\n","[\$b4]: ",$b4,"\n\n");
+$y2 = put_string("[(bool)\$b1]: ",$b1,"\n","[\$b2]: ",$b2,"\n","[\$b3]: ",$b3,"\n","[\$b4]: ",$b4,"\n\n");
 
 $x3  = put_string("PREVOD z bool [false]\n");
-$y3 = put_string("[\$c1]: ",$c1,"\n","[\$c2]: ",$c2,"\n","[\$c3]: ",$c3,"\n","[\$c4]: ",$c4,"\n\n");
+$y3 = put_string("[(bool)\$c1]: ",$c1,"\n","[\$c2]: ",$c2,"\n","[\$c3]: ",$c3,"\n","[\$c4]: ",$c4,"\n\n");
 
 $x4  = put_string("PREVOD z INT\n");
-$y4 = put_string("[\$d1]: ",$d1,"\n","[\$d2]: ",$d2,"\n","[\$d3]: ",$d3,"\n","[\$d4]: ",$d4,"\n\n");
+$y4 = put_string("[(bool)\$d1]: ",$d1,"\n","[\$d2]: ",$d2,"\n","[\$d3]: ",$d3,"\n","[\$d4]: ",$d4,"\n\n");
 
 $x5  = put_string("PREVOD z DOUBLE\n");
-$y5 = put_string("[\$e1]: ",$e1,"\n","[\$e2]: ",$e2,"\n","[\$e3]: ",$e3,"\n","[\$e4]: ",$e4,"\n\n");
+$y5 = put_string("[(bool)\$e1]: ",$e1,"\n","[\$e2]: ",$e2,"\n","[\$e3]: ",$e3,"\n","[\$e4]: ",$e4,"\n\n");
 
 $x6  = put_string("PREVOD ze STRINGU\n");
-$y6 = put_string("[\$f1]: ",$f1,"\n","[\$f2]: ",$f2,"\n","[\$f3]: ",$f3,"\n","[\$f4]: ",$f4,"\n\n");
+$y6 = put_string("[(bool)\$f1]: ",$f1,"\n","[\$f2]: ",$f2,"\n","[\$f3]: ",$f3,"\n","[\$f4]: ",$f4,"\n\n");
 
 
 
