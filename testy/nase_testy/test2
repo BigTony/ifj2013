@@ -1,0 +1,24 @@
+<?php
+/// [SPRAVNEJ VYSLEDEK: $z=92]  ==> [testuje operace volani funkci]
+function obsah ($a,$b) 
+{
+   return $a*$b;
+}
+
+
+function obvod ($a,$b) 
+{
+   return 2*$a+2*$b;
+}
+
+
+$a = 10;
+$b = 6;
+
+$x = obsah($a,$b); 
+$y = obvod($a,$b);
+
+
+$z=$x+$y;
+
+

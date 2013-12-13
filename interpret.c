@@ -16,6 +16,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
+#include <limits.h> 
+
+int max (int a, int b, TIType type);
 
 /* INTERPRET - vykona intepretaci jazyka IFJ13
 * @param1: globalni TS
@@ -49,30 +52,30 @@ void interpret (tHashTbl *global_htable, TList *L)
    // tmp
    tokenValue tmp;
 
-	// Tabulka lokalnich funkci
+        // Tabulka lokalnich funkci
    char* vestaveneFunkce[10]={
-    "boolval",      //BOOLVAL
-    "doubleval",    //DOUBLEVAL
-    "intval",       //INTVAL
-    "strval",       //STRVAL
-    "get_string",   //GET_STRING
-    "put_string",   //PUT_STRING
-    "strlen",       //STRLEN
+    "boolval", //BOOLVAL
+    "doubleval", //DOUBLEVAL
+    "intval", //INTVAL
+    "strval", //STRVAL
+    "get_string", //GET_STRING
+    "put_string", //PUT_STRING
+    "strlen", //STRLEN
     "get_substring",//GET_SUBSTRING
-    "find_string",  //FIND_STRING
-    "sort_string",  //SORT_STRING
+    "find_string", //FIND_STRING
+    "sort_string", //SORT_STRING
 };
    void (*fun[10]) (tHashTbl*tab,tHashTbl*NavrTab)={
-    vs_boolval,      //BOOLVAL
-    vs_doubleval,    //DOUBLEVAL
-    vs_intval,       //INTVAL
-    vs_strval,       //STRVAL
-    vs_get_string,   //GET_STRING
-    vs_put_string,   //PUT_STRING
-    vs_strlen,       //STRLEN
+    vs_boolval, //BOOLVAL
+    vs_doubleval, //DOUBLEVAL
+    vs_intval, //INTVAL
+    vs_strval, //STRVAL
+    vs_get_string, //GET_STRING
+    vs_put_string, //PUT_STRING
+    vs_strlen, //STRLEN
     vs_get_substring,//GET_SUBSTRING
-    vs_find_string,  //FIND_STRING
-    vs_sort_string,  //SORT_STRING
+    vs_find_string, //FIND_STRING
+    vs_sort_string, //SORT_STRING
 };
 
 
@@ -99,9 +102,9 @@ void interpret (tHashTbl *global_htable, TList *L)
    // aktivace prvni instrukce z prave provadenyho instrukcniho listu
    ActiveFirstItem (ActiveList);
 
-   printf("uplnej zacatek====\n");
-   PrintList(ActiveList);
-   printf("==============\n");
+    // printf("uplnej zacatek====\n");
+    // PrintList(ActiveList);
+    // printf("==============\n");
 
 //------------------- EXECUTE -------------------------------------------------------------
 
@@ -109,14 +112,14 @@ void interpret (tHashTbl *global_htable, TList *L)
   while (1) //IsActiveItem(ActiveList)
   {
 
-     if (!(IsActiveItem(ActiveList))) 
+     if (!(IsActiveItem(ActiveList)))
      {
-           if (((topStack(g_ptrs->function_stack))->NavrInstrukce)!=NULL) 
+           if (((topStack(g_ptrs->function_stack))->NavrInstrukce)!=NULL)
            {
               // aktivuju list z vrcholu stacku a nastav aktivni instrukci
               ActiveList = (topStack(g_ptrs->function_stack))->list;
               ActivePtrItem(ActiveList,(topStack(g_ptrs->function_stack))->NavrInstrukce);
-
+              TblDelete((topStack(g_ptrs->function_stack))->hashTbl);
               // pop stack
               popStack(g_ptrs->function_stack);
 
@@ -124,10 +127,11 @@ void interpret (tHashTbl *global_htable, TList *L)
               active_htable = (topStack(g_ptrs->function_stack))->hashTbl;
 
               tokenValue nil;
-              nil.varString =  NULL;
+              nil.varString = NULL;
 
               //vloz polozku
               TblInsert (active_htable, "$", nil, NIL);
+              ActiveNextItem(ActiveList);
            }
           else break;
      }
@@ -164,9 +168,9 @@ void interpret (tHashTbl *global_htable, TList *L)
                   tHresult->data = tHsrc1->data;
                   tHresult->type = tHsrc1->type;
               }
-              else 
+              else
               {
-                 TblInsert (active_htable, result, (tokenValue) tHsrc1->data, tHsrc1->type);
+                 TblInsert (active_htable, result, tHsrc1->data, tHsrc1->type);
               }
          }
 
@@ -205,9 +209,17 @@ void interpret (tHashTbl *global_htable, TList *L)
               ///----------- cekuju provadim operace
               if (dataType1==VARINT && dataType2==VARINT)
                {
-                   // vysledek bude int
-                   TypeOF = VARINT;
-                   tmp.varInt = (tHsrc1->data.varInt + tHsrc2->data.varInt);
+                   /// OVERENI zdali neni INT_MAX, pokud jo tak pretypujem na double
+                   if (max(tHsrc1->data.varInt,tHsrc2->data.varInt,I_ADD)==1)   // OK
+                    {
+                          TypeOF = VARINT; // vysledek bude int
+                          tmp.varInt = (tHsrc1->data.varInt + tHsrc2->data.varInt);
+                    }
+                   else 
+                   {
+                          TypeOF = VARDOUBLE; // vysledek bude double
+                          tmp.varDouble = ((double)tHsrc1->data.varInt + (double)tHsrc2->data.varInt);
+                   }
                }
               else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
                {
@@ -231,8 +243,14 @@ void interpret (tHashTbl *global_htable, TList *L)
                 {
                    if (dataType1==VARINT && dataType2==VARINT)
                    {
-                     tHresult->data.varInt = tmp.varInt; // uloim soucet do te exitusjici
-                     tHresult->type=TypeOF;
+                           if (TypeOF == VARINT) 
+                            {
+                               tHresult->data.varInt = tmp.varInt; // uloim soucet do te exitusjici
+                               tHresult->type=TypeOF;
+                            } else {
+                               tHresult->data.varDouble = tmp.varDouble; // uloim soucet do te exitusjici
+                               tHresult->type=TypeOF;
+                            }
                     }
                    else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
                    {
@@ -287,9 +305,17 @@ void interpret (tHashTbl *global_htable, TList *L)
               ///----------- cekuju provadim operace
               if (dataType1==VARINT && dataType2==VARINT)
                {
-                   // vysledek bude int
-                   TypeOF = VARINT;
-                   tmp.varInt = (tHsrc1->data.varInt - tHsrc2->data.varInt);
+                   /// OVERENI zdali neni INT_MAX, pokud jo tak pretypujem na double
+                   if (max(tHsrc1->data.varInt,tHsrc2->data.varInt,I_SUB)==1)   // OK
+                    {
+                          TypeOF = VARINT; // vysledek bude int
+                          tmp.varInt = (tHsrc1->data.varInt - tHsrc2->data.varInt);
+                    }
+                   else 
+                   {
+                          TypeOF = VARDOUBLE; // vysledek bude double
+                          tmp.varDouble = ((double)tHsrc1->data.varInt - (double)tHsrc2->data.varInt);
+                   }
                }
               else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
                {
@@ -313,8 +339,14 @@ void interpret (tHashTbl *global_htable, TList *L)
                 {
                    if (dataType1==VARINT && dataType2==VARINT)
                    {
-                     tHresult->data.varInt = tmp.varInt; // uloim soucet do te exitusjici
-                     tHresult->type=TypeOF;
+                           if (TypeOF == VARINT) 
+                            {
+                               tHresult->data.varInt = tmp.varInt; // uloim soucet do te exitusjici
+                               tHresult->type=TypeOF;
+                            } else {
+                               tHresult->data.varDouble = tmp.varDouble; // uloim soucet do te exitusjici
+                               tHresult->type=TypeOF;
+                            }
                     }
                    else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
                    {
@@ -369,9 +401,17 @@ void interpret (tHashTbl *global_htable, TList *L)
               ///----------- cekuju provadim operace
               if (dataType1==VARINT && dataType2==VARINT)
                {
-                   // vysledek bude int
-                   TypeOF = VARINT;
-                   tmp.varInt = (tHsrc1->data.varInt * tHsrc2->data.varInt);
+                   /// OVERENI zdali neni INT_MAX, pokud jo tak pretypujem na double
+                   if (max(tHsrc1->data.varInt,tHsrc2->data.varInt,I_MUL)==1)   // OK
+                    {
+                          TypeOF = VARINT; // vysledek bude int
+                          tmp.varInt = (tHsrc1->data.varInt * tHsrc2->data.varInt);
+                    }
+                   else 
+                   {
+                          TypeOF = VARDOUBLE; // vysledek bude double
+                          tmp.varDouble = ((double)tHsrc1->data.varInt * (double)tHsrc2->data.varInt);
+                   }
                }
               else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
                {
@@ -395,8 +435,14 @@ void interpret (tHashTbl *global_htable, TList *L)
                 {
                    if (dataType1==VARINT && dataType2==VARINT)
                    {
-                     tHresult->data.varInt = tmp.varInt; // uloim soucet do te exitusjici
-                     tHresult->type=TypeOF;
+                           if (TypeOF == VARINT) 
+                            {
+                               tHresult->data.varInt = tmp.varInt; // uloim soucet do te exitusjici
+                               tHresult->type=TypeOF;
+                            } else {
+                               tHresult->data.varDouble = tmp.varDouble; // uloim soucet do te exitusjici
+                               tHresult->type=TypeOF;
+                            }
                     }
                    else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
                    {
@@ -453,9 +499,16 @@ void interpret (tHashTbl *global_htable, TList *L)
                {
                    // vysledek bude int
                    TypeOF = VARDOUBLE;
-                  // todouble(tHsrc1);
-                  // todouble(tHsrc2);
-                   tmp.varDouble = (double)((double)(tHsrc1->data.varInt) / (double)(tHsrc2->data.varInt));
+
+                   // [===overujeme jestli se nedeli nulou===]
+                   if ((double)(tHsrc2->data.varInt)==0.0)
+                    {
+                           print_error(E_SEM_DIV_ZERO, "NELZE DELIT NULOU! [I_DIV]");
+                    }
+                   else
+                    {
+                        tmp.varDouble = (double)((double)(tHsrc1->data.varInt) / (double)(tHsrc2->data.varInt));
+                    }
                }
               else if ((dataType1==VARDOUBLE || dataType1==VARINT) && (dataType2==VARDOUBLE || dataType2==VARINT))
                {
@@ -463,13 +516,39 @@ void interpret (tHashTbl *global_htable, TList *L)
                    TypeOF = VARDOUBLE;
 
                    // pokud prvni double a druhy int, int pretypuju a naopak
-                   if (dataType1==VARDOUBLE && dataType2==VARINT){
-                       tmp.varDouble = (tHsrc1->data.varDouble / (double) (tHsrc2->data.varInt));
+                   if (dataType1==VARDOUBLE && dataType2==VARINT)
+                    {
+                           // [===overujeme jestli se nedeli nulou===]
+                          if ((double)(tHsrc2->data.varInt)==0.0)
+                          {
+                              print_error(E_SEM_DIV_ZERO, "NELZE DELIT NULOU! [I_DIV]");
+                          }
+                          else {
+                             tmp.varDouble = (tHsrc1->data.varDouble / (double) (tHsrc2->data.varInt));
+                          }
                     }
                    else if(dataType1==VARINT && dataType2==VARDOUBLE)
-                       tmp.varDouble = ( (double)(tHsrc1->data.varInt) / tHsrc2->data.varDouble);
+                    {
+                          // [===overujeme jestli se nedeli nulou===]
+                         if (tHsrc2->data.varDouble==0.0)
+                         {
+                             print_error(E_SEM_DIV_ZERO, "NELZE DELIT NULOU! [I_DIV]");
+                         }
+                         else {
+                            tmp.varDouble = ( (double)(tHsrc1->data.varInt) / tHsrc2->data.varDouble);
+                         }
+                    }
                     else if(dataType1==VARDOUBLE && dataType2==VARDOUBLE)
-                      tmp.varDouble = (tHsrc1->data.varDouble / tHsrc2->data.varDouble);
+                    {
+                         // [===overujeme jestli se nedeli nulou===]
+                         if (tHsrc2->data.varDouble==0.0)
+                         {
+                             print_error(E_SEM_DIV_ZERO, "NELZE DELIT NULOU! [I_DIV]");
+                         }
+                         else {
+                            tmp.varDouble = (tHsrc1->data.varDouble / tHsrc2->data.varDouble);
+                         }
+                    }
 
                }
                else {
@@ -525,7 +604,9 @@ void interpret (tHashTbl *global_htable, TList *L)
          tHresult = (TblSearch (active_htable, result));
 
          // overeni jestli data ubec existuji
-         if (tHsrc1==NULL || tHsrc2==NULL) print_error(E_SEM_VAR, "item src1 nebo src2 v lokalni ani globalni TS neexistuje [I_CON]");
+         if (tHsrc1==NULL || tHsrc2==NULL) {
+                print_error(E_SEM_VAR, "item src1 nebo src2 v lokalni ani globalni TS neexistuje [I_CON]");
+         }
 
          // nactu typ dat src1 & src2
          dataType1 = tHsrc1->type;
@@ -591,8 +672,9 @@ void interpret (tHashTbl *global_htable, TList *L)
 
          datTyp=0;
 
-         if (tHsrc1==NULL || tHsrc2==NULL) print_error(E_SEM_VAR, "item v lokalni ani globalni TS neexistuje I_G");
-
+         if (tHsrc1==NULL || tHsrc2==NULL) {
+              print_error(E_SEM_VAR, "item v lokalni ani globalni TS neexistuje I_G");
+         }
          if (tHsrc1->type==tHsrc2->type)
          {
               TypeOF = VARBOOL;
@@ -656,8 +738,9 @@ void interpret (tHashTbl *global_htable, TList *L)
 
          datTyp=0;
 
-         if (tHsrc1==NULL || tHsrc2==NULL) print_error(E_SEM_VAR, "item src1 nebo src2 v lokalni ani globalni TS neexistuje [I_GE]");
-
+         if (tHsrc1==NULL || tHsrc2==NULL) {
+             print_error(E_SEM_VAR, "item src1 nebo src2 v lokalni ani globalni TS neexistuje [I_GE]");
+         }
          if (tHsrc1->type==tHsrc2->type)
          {
               TypeOF = VARBOOL;
@@ -921,14 +1004,16 @@ void interpret (tHashTbl *global_htable, TList *L)
 
          if (tHsrc1==NULL || tHsrc2==NULL) print_error(E_SEM_VAR, "item src1 nebo src2 v lokalni ani globalni TS neexistuje [I_NET]");
 
-         if (tHsrc1->type!=tHsrc2->type)
+         if (tHsrc1->type==tHsrc2->type)
          {
               TypeOF = VARBOOL;
 
               if (tHsrc1->type==VARINT)
               {
-                 if (tHsrc1->data.varInt != tHsrc2->data.varInt) datTyp = 1;
-                 else datTyp = 0;
+                 if (tHsrc1->data.varInt != tHsrc2->data.varInt) 
+                    datTyp = 1;
+                 else 
+                    datTyp = 0;
               }
 
               else if (tHsrc1->type==VARDOUBLE)
@@ -951,7 +1036,7 @@ void interpret (tHashTbl *global_htable, TList *L)
          }
          else
          {
-             datTyp = 0;
+             datTyp = 1;
          }
 
             // pokud result exituje, prepisu data
@@ -978,13 +1063,21 @@ void interpret (tHashTbl *global_htable, TList *L)
          tHsrc1 = (TblSearch (active_htable, src1));
          tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : (TblSearch (global_htable, src1));
  
-         if (tHsrc1==NULL){ 
+         if (tHsrc1==NULL){
             int i=0;
             while (i<10)
             {
               if (strcmp (src1,vestaveneFunkce[i] )==0)
               {
-                break;  
+                 // Lokalni TS
+                 tHashTbl *local_htable_func;
+
+                 // naalokovani a inicializaci LOKALNI TS fce
+                 tableInit(&local_htable_func);
+
+                 // push adresy lokalni TS fce na stack
+                 pushStack(g_ptrs->function_stack,local_htable_func,NULL,ActiveList);//(TLitem*)(tHsrc1->data.pointer)
+                break;
               }
               i++;
             }
@@ -994,7 +1087,7 @@ void interpret (tHashTbl *global_htable, TList *L)
           }
           
         }
-         else 
+         else
          {
             // Lokalni TS
             tHashTbl *local_htable_func;
@@ -1019,12 +1112,12 @@ void interpret (tHashTbl *global_htable, TList *L)
 
          // nactu data na prohledani 3 TS
          tHsrc1 = (TblSearch (active_htable, src1));
-         tHsrc1 =  (tHsrc1!=NULL) ? tHsrc1 : (TblSearch (global_htable, src1));
+         tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : (TblSearch (global_htable, src1));
 
-         if (tHsrc1==NULL)  {
+         if (tHsrc1==NULL) {
              print_error(E_SEM_VAR, "id funkce v lokalni ani globalni TS neexistuje [I_PARAM]");
          }
-         else 
+         else
          {
             TblInsert (local_htable_Fce, result, tHsrc1->data, tHsrc1->type);
          }
@@ -1039,8 +1132,10 @@ void interpret (tHashTbl *global_htable, TList *L)
 
          tHsrc1 = (TblSearch (active_htable, src1));
          
-         if (tHsrc1==NULL) print_error(E_SEM_PARAM, "nespravny pocet parametru funkce [I_CHCKPAR]");
-         else 
+         if (tHsrc1==NULL) {
+          print_error(E_SEM_PARAM, "nespravny pocet parametru funkce [I_CHCKPAR]");
+         }
+         else
          {
              TblInsert(active_htable,result,tHsrc1->data,tHsrc1->type);
          }
@@ -1051,21 +1146,21 @@ void interpret (tHashTbl *global_htable, TList *L)
          case I_CALL:
          // nactu id src1 z INSTRUKCE
          src1 = instr->src1;
-			int i=0;
-			while (i<10)
-			{
-				if (strcmp (src1,vestaveneFunkce[i] )==0)
-				{
-					(*fun[i])((topStack(g_ptrs->function_stack))->hashTbl, active_htable);
-					// popStack(g_ptrs->function_stack);
-					break;	
-				}
-				i++;
-			}
-			if (i<10)
-			{
-			break;
-			}
+                        int i=0;
+                        while (i<10)
+                        {
+                                if (strcmp (src1,vestaveneFunkce[i] )==0)
+                                {
+                                        (*fun[i])((topStack(g_ptrs->function_stack))->hashTbl, active_htable);
+                                        popStack(g_ptrs->function_stack);
+                                        break;        
+                                }
+                                i++;
+                        }
+                        if (i<10)
+                        {
+                        break;
+                        }
 
 
          // nactu id src1 z HASH nebo GLOBAL hash tabulky
@@ -1075,8 +1170,10 @@ void interpret (tHashTbl *global_htable, TList *L)
          // lokalni TS dane funkce
          local_htable_Fce = (topStack(g_ptrs->function_stack)->hashTbl);
 
-         if (tHsrc1==NULL) print_error(E_SEM_FCE, "id funkce v lokalni ani globalni TS neexistuje [I_CALL]");
-         else 
+         if (tHsrc1==NULL) {
+             print_error(E_SEM_FCE, "id funkce v lokalni ani globalni TS neexistuje [I_CALL]");
+         }
+         else
          {
               //ulozeni navratove adresy na stack
               (topStack(g_ptrs->function_stack))->NavrInstrukce = ActiveList->Act;
@@ -1101,15 +1198,19 @@ void interpret (tHashTbl *global_htable, TList *L)
          tHsrc1 = (TblSearch (active_htable, src1));
          tHsrc1 = (tHsrc1!=NULL) ? tHsrc1 : (TblSearch (global_htable, src1));
 
+         if (((topStack(g_ptrs->function_stack))->NavrInstrukce)==NULL){
+            print_error(E_OK,"");
+         }
+
          if (tHsrc1==NULL) {
             print_error(E_SEM_VAR, "id v lokalni ani globalni TS neexistuje [I_RETURN]");
          }
-         else 
+         else
          {
               // aktivuju list z vrcholu stacku a nastav aktivni instrukci
               ActiveList = (topStack(g_ptrs->function_stack))->list;
               ActivePtrItem(ActiveList,(topStack(g_ptrs->function_stack))->NavrInstrukce);
-
+              TblDelete((topStack(g_ptrs->function_stack))->hashTbl);
               // pop stack
               popStack(g_ptrs->function_stack);
 
@@ -1184,12 +1285,17 @@ void interpret (tHashTbl *global_htable, TList *L)
                   else jump = 0;
                 break;
 
+                case NIL:
+                  if (tHsrc1->data.pointer==NULL) jump = 1;
+                  else jump = 0;
+                break;
+
                 default: // chyba
                 break;
              }
 
            if (jump)
-            {  // proved skok
+            { // proved skok
                ActivePtrItem (ActiveList,((TLItem *)tHresult->data.pointer));
             }
          }
@@ -1232,12 +1338,17 @@ void interpret (tHashTbl *global_htable, TList *L)
                   else jump = 0;
                 break;
 
+                case NIL:
+                  if (tHsrc1->data.pointer!=NULL) jump = 1;
+                  else jump = 0;
+                break;
+
                 default: // chyba
                 break;
              }
 
            if (jump)
-            {   // proved skok 
+            { // proved skok
                ActivePtrItem (ActiveList,((TLItem *)tHresult->data.pointer));
             }
          }
@@ -1257,17 +1368,75 @@ void interpret (tHashTbl *global_htable, TList *L)
           ActiveNextItem(ActiveList);
       }
 
-      printf("================KONEC============================\n");
-         printf("%p\n",(void *)active_htable);
-         printf("instruction list\n");
-         PrintList(ActiveList);
-         printf("================\n");
-         TblPrint(global_htable);
-         TblPrint(active_htable);
-         printf("============================================\n");
-         printf("============================================\n");
-         printf("============================================\n");
-             
+  
   }
+       // printf("================KONEC============================\n");
+       // printf("%p\n",(void *)active_htable);
+       // printf("instruction list\n");
+       // PrintList(ActiveList);
+       // printf("================\n");
+       // TblPrint(global_htable);
+       // TblPrint(active_htable);
+       // printf("============================================\n");
+       // printf("============================================\n");
+       // printf("============================================\n");
+           
 // end func
+}
+
+
+/// FUNKCE ZJISTI, kdy ma a nema pretypovat promenne
+int max (int a, int b, TIType type) 
+{
+
+double temp;
+int is_ok=0;
+
+double g = (double) INT_MAX;
+double l = -g;
+
+ switch (type) 
+ {
+   case I_ADD:
+   temp = (double)a + (double)b;
+   if ((temp>=l) && (temp<=g)) 
+   {
+      is_ok=1;  // je to ok tak 1
+   }
+   else 
+   {
+      is_ok=0;
+   }
+  break;
+
+  case I_SUB:
+   temp = (double)a - (double)b;
+   if ((temp>=l) && (temp<=g)) 
+   {
+      is_ok=1;  // je to ok tak 1
+   }
+   else 
+   {
+      is_ok=0;
+   }
+  break;
+
+  case I_MUL:
+   temp = (double)a * (double)b;
+   if ((temp>=l) && (temp<=g)) 
+   {
+      is_ok=1;  // je to ok tak 1
+   }
+   else 
+   {
+      is_ok=0;
+   }
+  break;
+
+  default:
+  break;
+ }
+
+
+return is_ok;
 }

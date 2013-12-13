@@ -111,7 +111,7 @@ do
 done
 
 ./xifj13 ${name}"20.ifj" < test_data/prog3_file > ${cname}"20" 2>tmp2
-myreturn=$?;
+myreturn=$?;2
 valgrind --log-file="val_file" ./xifj13 ${name}$i".ifj" < test_data/prog3_file > /dev/null 2> /dev/null
 if diff -u ${tname}"20" ${cname}"20" >tmp; then
 	echo -e -n "Prog 20: ${Gre}OK\t\t"

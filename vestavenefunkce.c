@@ -35,6 +35,7 @@ void tovarint(item *item){
 			int blank= 0;
 			while ((zpracuj[i]!='\0')){
 				if((isspace(zpracuj[i]))&&(cislo==0)) {
+					i++;
 					continue;
 				}
   				if (isdigit(zpracuj[i]) && (cislo<=INT_MAX)){
@@ -45,7 +46,6 @@ void tovarint(item *item){
   					break;
   				}
   			}
-  			free(zpracuj);
   			// free(item->data);
   			// podle me to nemusime freeovat
   			// bo union zabira v pameti kolik jeho maximalni polozka takze by to melo bejt cajk
@@ -101,43 +101,48 @@ void toVARBOOL(item *item){
 void todouble(item *item){
 	switch(item->type){
 		case VARINT:
+			item->data.varDouble = (int)item->data.varInt;
 			item->type = VARDOUBLE;
 			break;
 		case STRING:{
 			int i = 0;
 			int cislo = 0;
-			int desetiny_cislo = 0;
+			double desetiny_cislo = 0;
 			int carka = 0;
 			int blank = 0;
+			int zbytek = 1;
 			char *zpracuj = item->data.varString;
 			while ((zpracuj[i]!='\0')){
 				if((isspace(zpracuj[i]))&&(cislo==0)&&(desetiny_cislo==0)) {
+					i++;
 					continue;
 				}
-  				if (isdigit(zpracuj[i]) && (cislo<=INT_MAX)&&(desetiny_cislo==0)){
+  				if (isdigit(zpracuj[i]) && (cislo<=INT_MAX)){
   					if(carka == 1){
-  						desetiny_cislo=desetiny_cislo+(zpracuj[i]-'0')/10;
+  						desetiny_cislo=desetiny_cislo*10+(zpracuj[i]-'0');
+  						zbytek = zbytek * 10;
   					}else{
   						cislo=cislo*10+(zpracuj[i]-'0');
   					}
+  					blank = 1;
   					i++;
-  				}else if((zpracuj[i] == '.')){
+  				}else if(zpracuj[i] == '.'){
+  					blank = 1;
+  					i++;
   					if(carka == 0){
   						carka = 1;
   					}else{
   						break;
   					}
-
   				}else{
   					break;
   				}
   			}
-  			// free(item->data);
-  			free(zpracuj);
+  			desetiny_cislo = desetiny_cislo / zbytek;
   			if(blank == 0)
-  				item->data.varDouble = cislo+desetiny_cislo;
-  			else
   				item->data.varDouble = 0.0;
+  			else
+  				item->data.varDouble = cislo+desetiny_cislo;
 			item->type = VARDOUBLE;
 			break;
 		}
@@ -159,10 +164,20 @@ void todouble(item *item){
 
 int get_int_len (int value){
   int l=1;
-  while(value>9){
-  	l++; 
-  	value/=10;
+  if(value>0){
+  	while(value>9){
+  		l++; 
+  		value/=10;
+  	}
+  }else{
+  	value = value * value;
+  	l++;
+  	while(value>9){
+  		l++; 
+  		value/=10;
+  	}
   }
+  
   return l;
 }
 
@@ -172,7 +187,7 @@ void tostring(item *item){
 			int delka = 0;
 			delka = get_int_len(item->data.varInt);
 			char *vysledek;
-			if((vysledek = malloc((char)sizeof(delka+1))) == NULL){
+			if((vysledek =(char *) malloc((delka+1)*sizeof(char))) == NULL){
 				print_error(E_INTERN,"chyba pri alokace tostring");
 			}
 			sprintf(vysledek, "%d", item->data.varInt);
@@ -183,7 +198,7 @@ void tostring(item *item){
 		case VARDOUBLE:{
 			// delka double cisla?
 			char *vysledek;
-			if((vysledek = malloc((char)sizeof(50))) == NULL){
+			if((vysledek = (char*)malloc(sizeof(char)*50)) == NULL){
 				print_error(E_INTERN,"chyba pri alokace tostring");
 			}
 			sprintf(vysledek, "%g", item->data.varDouble);
@@ -272,11 +287,7 @@ void vs_intval(tHashTbl *tab,tHashTbl *NavrTab){
 	item *tHsrc1 = (TblSearch (tab, "1000000\0"));
 	if(tHsrc1 == NULL)
     	print_error(E_SEM_PARAM,"Chybny pocet parametru ..  vs_intval");
-    printf("pred=======\n");
-    printf("%i\n",tHsrc1->data.varInt);
 	tovarint(tHsrc1);
-	printf("po========\n");
-	printf("%i\n",tHsrc1->data.varInt);
 	TblInsert(NavrTab,"$",tHsrc1->data,tHsrc1->type);
 }
 
@@ -294,6 +305,7 @@ void vs_get_string(tHashTbl *tab,tHashTbl *NavrTab){
 	int size = ALLOC_SIZE;
 	char *temp = allocString();
   	do {
+  		 
     	c=getchar();
     	if(i >= size){
     		reAllocString(temp,size+ALLOC_SIZE);
@@ -315,10 +327,10 @@ void vs_put_string(tHashTbl *tab,tHashTbl *NavrTab){
 	strcpy(g_ptrs->params,"0000000\0");
 	while((tempitem = TblSearch (tab, gen_param(g_ptrs->params)))!= NULL){
 		tostring(tempitem);
-		printf("%s\n",tempitem->data.varString);
+		printf("%s",tempitem->data.varString);
 		i.varInt++;
 	}
-
+	// printf("%s",konk);
 	TblInsert(NavrTab,"$",i,VARINT);
 }
 
@@ -335,11 +347,77 @@ void vs_strlen(tHashTbl *tab,tHashTbl *NavrTab){
 }
 
 void vs_get_substring(tHashTbl *tab,tHashTbl *NavrTab){
+	// prvni parametr
+	item *param1 = (TblSearch(tab,"1000000\0"));
+	if(param1 == NULL)
+    	print_error(E_SEM_PARAM,"Chybny pocet parametru ..  vs_get_substring");
+    if(param1->type != STRING)
+    	print_error(E_SEM_PARAM,"vs_get_substring prvni param neni string");
 
+    // druhy parametr
+	item *param2 = (TblSearch(tab,"2000000\0"));
+	if(param2 == NULL)
+    	print_error(E_SEM_PARAM,"Chybny pocet parametru ..  vs_get_substring");
+    if(param2->type != VARINT)
+    	print_error(E_SEM_PARAM,"vs_get_substring druhy param neni int");
+    if((param2->data.varInt < 0) || (param2->data.varInt >= strlen(param1->data.varString)))
+    	print_error(E_SEM_PARAM,"vs_get_substring druhy param < 0 nebo vetsi jak strlen string");
+
+    // treti parametr
+	item *param3 = (TblSearch(tab,"3000000\0"));
+	if(param3 == NULL)
+    	print_error(E_SEM_PARAM,"Chybny pocet parametru ..  vs_get_substring");
+    if(param3->type != VARINT)
+    	print_error(E_SEM_PARAM,"vs_get_substring treti param neni int");
+    if((param3->data.varInt < 0) || (param3->data.varInt > strlen(param1->data.varString)) || (param2->data.varInt > param3->data.varInt))
+    	print_error(E_SEM_PARAM,"vs_get_substring druhy param < 0 nebo vetsi jak strlen string");
+
+    // beh programu
+    int delka = param3->data.varInt - param2->data.varInt;
+    printf("%d\n",delka );
+    char *vysledek;
+	if((vysledek = malloc((delka+10)*sizeof(char))) == NULL){
+		print_error(E_INTERN,"chyba pri alokace vs_get_substring");
+	}
+	int start = param2->data.varInt;
+	int end = param3->data.varInt;
+	int i = 0;
+	while(start <= end){
+		vysledek[i] = param1->data.varString[start];
+		i++;
+		start++;
+	}
+	vysledek[i] = '\0';
+	tokenValue result;
+	result.varString = vysledek;
+	TblInsert(NavrTab,"$",result,STRING);
 }
 
 void vs_find_string(tHashTbl *tab,tHashTbl *NavrTab){
+	// prvni parametr
+	item *param1 = (TblSearch(tab,"1000000\0"));
+	if(param1 == NULL)
+    	print_error(E_SEM_PARAM,"Chybny pocet parametru ..  vs_get_substring");
+    if(param1->type != STRING)
+    	print_error(E_SEM_PARAM,"vs_get_substring prvni param neni string");
 
+    // druhy parametr
+	item *param2 = (TblSearch(tab,"2000000\0"));
+	if(param2 == NULL)
+    	print_error(E_SEM_PARAM,"Chybny pocet parametru ..  vs_get_substring");
+    if(param2->type != STRING)
+    	print_error(E_SEM_PARAM,"vs_get_substring prvni param neni string");
+
+    // beh programu
+    if((strcmp(param2->data.varString,""))==0){
+    	tokenValue result;
+    	result.varInt = 0;
+    	TblInsert(NavrTab,"$",result,VARINT);
+    	return;
+    }
+	tokenValue result;
+	result.varInt = find_string(param1->data.varString,param2->data.varString);
+	TblInsert(NavrTab,"$",result,VARINT);
 }
 
 void vs_sort_string(tHashTbl *tab,tHashTbl *NavrTab){
@@ -351,7 +429,7 @@ void vs_sort_string(tHashTbl *tab,tHashTbl *NavrTab){
 
 // konec vestavencyh funkci IFJ13
 
-int get_substring(char *text,char* word)
+int find_string(char *text,char* word)
 {
     int pozice=getSubstringKmp(text,word);
     int textLen=strlen(text);

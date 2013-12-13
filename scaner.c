@@ -19,7 +19,7 @@
 int getToken_test(FILE *fp,Ttoken *token)
 {
 int i= getToken(fp,token);
-printf("Token ID Load:%d\n",i);
+// printf("Token ID Load:%d\n",i);
 return i;
 }//////
 
@@ -28,32 +28,28 @@ void freeW(char **w)
     if(*w!=NULL)
         free(*w);
 }
-int reallocString(char** w)
+void reallocString(char** w,int len)
 {
     if(*w!=NULL)
     {
-        char* wPom;
-        if((wPom = malloc(sizeof(char) * BUFF))==NULL)   //Alokace pro retezec
-        {
-            print_error(E_INTERN,"LexAllocError");
-        }
-        wPom = realloc(*w,strlen(*w)+BUFF);
+
+        char* wPom = NULL;
+        int i = strlen(*w);
+        wPom = realloc(*w,i+BUFF+1);
         if(wPom==NULL)
         {
-            print_error(E_INTERN,"LexAllocError");
+            print_error(E_INTERN,"Scaner-reallocString()-realloc-error");
         }
         else
         {
             *w=wPom;
         }
-        return E_OK;
+        //return E_OK;
     }
     else
     {
-        print_error(E_INTERN,"LexAllocError");
-        return E_LEX;
+        print_error(E_INTERN,"Scaner-reallocString()- Cannot realloc NULL");
     }
-
 }
 
 void skipSpace(char *c,FILE *fp)
@@ -75,9 +71,9 @@ int getToken(FILE *fp,Ttoken *token){
     char c;
     int len=0;
 
-    if((w = malloc(sizeof(char) * BUFF))==NULL)   //Alokace pro retezec
+    if((w =malloc(BUFF*sizeof(char))) == NULL)   //Alokace pro retezec
     {
-        print_error(E_INTERN,"LexAllocError");
+        print_error(E_INTERN,"Scaner-getToken()-Couldn't allocate string");
     }
     skipSpace(&c,fp);
     while(1)
@@ -241,7 +237,7 @@ int getToken(FILE *fp,Ttoken *token){
                 else
                 {
                     freeW(&w); token->value.varString=NULL;
-                    print_error(E_LEX,"LexERROR"); return E_LEX;
+                    print_error(E_LEX,"Expected \"===\"instead of \"==\""); return E_LEX;
                 }
             }
             else
@@ -279,13 +275,13 @@ int getToken(FILE *fp,Ttoken *token){
                 else
                 {
                     freeW(&w); token->value.varString=NULL;
-                    print_error(E_LEX,"LexERROR"); return E_LEX;
+                    print_error(E_LEX,"Expected !== instead of !="); return E_LEX;
                 }
             }
             else
             {
                 freeW(&w); token->value.varString=NULL;
-                print_error(E_LEX,"LexERROR"); return E_LEX;
+                print_error(E_LEX,"Expected !== instead of !\t\"!\" is not a valid symbol"); return E_LEX;
             }
         }
     ///^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^///
@@ -334,22 +330,22 @@ int getToken(FILE *fp,Ttoken *token){
                             }
                             else{
                                 freeW(&w); token->value.varString=NULL;
-                                print_error(E_LEX,"LexERROR"); return E_LEX;
+                                print_error(E_LEX,"Expected space after <?php"); return E_LEX;
                             }
                        }
                        else{
                         freeW(&w); token->value.varString=NULL;
-                        print_error(E_LEX,"LexERROR"); return E_LEX;
+                        print_error(E_LEX,"Expected <?php instead of <?ph"); return E_LEX;
                         }
                     }
                     else{
                        freeW(&w); token->value.varString=NULL;
-                       print_error(E_LEX,"LexERROR"); return E_LEX;
+                       print_error(E_LEX,"Expected <?php instead of <?p"); return E_LEX;
                     }
                 }
                 else{
                     freeW(&w); token->value.varString=NULL;
-                    print_error(E_LEX,"LexERROR"); return E_LEX;
+                    print_error(E_LEX,"Expected <?php instead of <?"); return E_LEX;
                 }
             }
             else
@@ -385,12 +381,10 @@ int getToken(FILE *fp,Ttoken *token){
                 {
                     w[len]=c;
                     len++;
-                    if(len%10==9)
+                    if(((len)%(BUFF))==BUFF-2)
                     {
-                      if(reallocString(&w)!=E_OK)
-                      {
-                          print_error(E_LEX,"LexERROR"); return E_LEX;
-                      }
+                       w[len] = '\0';
+                      reallocString(&w,len);                       
                     }
                     c=fgetc(fp);
                 }
@@ -408,7 +402,7 @@ int getToken(FILE *fp,Ttoken *token){
             else
             {
                 freeW(&w); token->value.varString=NULL;
-                print_error(E_LEX,"LexERROR"); return E_LEX;
+                print_error(E_LEX,"Wrong variable format"); return E_LEX;
             }
         }
         ///^^^^^^/////////////
@@ -424,9 +418,10 @@ int getToken(FILE *fp,Ttoken *token){
             w[len]=c;
             do
             {
-                if(len%10==9)
+                if(((len)%(BUFF))==BUFF-2)
                 {
-                  if(reallocString(&w)!=E_OK){print_error(E_LEX,"LexERROR"); return E_LEX;}
+                    w[len+1] = '\0';
+                    reallocString(&w,len); 
                 }
                 c=fgetc(fp);
                 len++;
@@ -513,24 +508,26 @@ int getToken(FILE *fp,Ttoken *token){
             w[len]=c;
             do
             {
-                if(len%10==9)
+                if(((len)%(BUFF))==BUFF-2)
                 {
-                  if(reallocString(&w)!=E_OK){print_error(E_LEX,"LexERROR"); return E_LEX;}
+                    w[len+1] = '\0';
+                  reallocString(&w,len); 
                 }
                 c=fgetc(fp);
                 len++;
                 w[len]=c;
 
             }while(isdigit(c)!=0);
-            if(len==1)
+            if(len>=1)
             {
                 if(c=='.')
                 {
                     do
                     {
-                        if(len%10==9)
+                        if(((len)%(BUFF))==BUFF-2)
                         {
-                          if(reallocString(&w)!=E_OK){print_error(E_LEX,"LexERROR"); return E_LEX;}
+                            w[len+1] = '\0';
+                          reallocString(&w,len); 
                         }
                         c=fgetc(fp);
                         len++;
@@ -546,9 +543,10 @@ int getToken(FILE *fp,Ttoken *token){
                             w[len]=c;
                             do
                             {
-                                if(len%10==9)
+                                if(((len)%(BUFF))==BUFF-2)
                                 {
-                                    if(reallocString(&w)!=E_OK){print_error(E_LEX,"LexERROR"); return E_LEX;}
+                                    w[len] = '\0';
+                                    reallocString(&w,len); 
                                 }
                                 c=fgetc(fp);
                                 len++;
@@ -558,15 +556,35 @@ int getToken(FILE *fp,Ttoken *token){
                             w[len]='\0';
                             ungetc(c,fp);
                             token->id=VARDOUBLE;
-
                             token->value.varDouble = strtod(w,NULL);
-                            freeW(&w); ///token->value.varString=NULL;
+                            freeW(&w); //token->value.varString=NULL;
+                            return token->id;
+                        }
+                        else if(isdigit(c)){
+                            len++;
+                            w[len]=c;
+                            do
+                            {
+                                if(((len)%(BUFF))==BUFF-2)
+                                {
+                                    w[len] = '\0';
+                                    reallocString(&w,len); 
+                                }
+                                c=fgetc(fp);
+                                len++;
+                                w[len]=c;
+                            }while(isdigit(c));
+                            w[len]='\0';
+                            ungetc(c,fp);
+                            token->id=VARDOUBLE;
+                            token->value.varDouble = strtod(w,NULL);
+                            freeW(&w); //token->value.varString=NULL;
                             return token->id;
                         }
                         else
                         {
                             freeW(&w); //token->value.varString=NULL;
-                            print_error(E_LEX,"LexERROR"); return E_LEX;
+                            print_error(E_LEX,"Wrong double format.Expected X.Y+-eZ\nwhere X is single-digit number,\nY and Z are integers\nand\"e\"is upper/lower case E."); return E_LEX;
                         }
                     }
                     else
@@ -591,9 +609,10 @@ int getToken(FILE *fp,Ttoken *token){
             else if(c=='.')
             {
                 do{
-                    if(len%10==9)
+                    if(((len)%(BUFF))==BUFF-2)
                     {
-                      if(reallocString(&w)!=E_OK){print_error(E_LEX,"LexERROR"); return E_LEX;}
+                        w[len+1] = '\0';
+                      reallocString(&w,len); 
                     }
                     c=fgetc(fp);
                     len++;
@@ -629,13 +648,10 @@ int getToken(FILE *fp,Ttoken *token){
             //len++;
             while(c!='"'||pom==0)
             {
-                if(len%10==9)
+                if(((len)%(BUFF))==BUFF-2)
                 {
-                    if(reallocString(&w)!=E_OK)
-                    {
-                        print_error(E_LEX,"LexERROR");
-                        return E_LEX;
-                    }
+                    w[len] = '\0';
+                    reallocString(&w,len);                     
                 }
                 if(c>31 && c!='"' && c!='$' && c!='t' && c!='n' && c!='\\' && c!='x')
                 {
@@ -647,7 +663,11 @@ int getToken(FILE *fp,Ttoken *token){
                 }
                 else if(c=='"')
                 {
-                    if(w[len-1]=='\\')
+                    if(len == 0){
+                        w[len]=c;
+                        len++;
+                        c=fgetc(fp);
+                    }else if(w[len-1]=='\\')
                     {
                         w[len-1]=c;
                         c=fgetc(fp);
@@ -657,7 +677,11 @@ int getToken(FILE *fp,Ttoken *token){
                 }
                 else if(c=='n')
                 {
-                    if(w[len-1]=='\\')
+                    if(len == 0){
+                        w[len]=c;
+                        len++;
+                        c=fgetc(fp);
+                    }else if(w[len-1]=='\\')
                     {
                         w[len-1]='\n';
                         c=fgetc(fp);
@@ -671,19 +695,27 @@ int getToken(FILE *fp,Ttoken *token){
                 }
                 else if(c=='$')
                 {
-                    if(w[len-1]=='\\')
+                    if(len == 0){
+                        w[len]=c;
+                        len++;
+                        c=fgetc(fp);
+                    }else if(w[len-1]=='\\')
                     {
                         w[len-1]=c;
                         c=fgetc(fp);
                     }
                     else
                     {
-                        print_error(E_LEX,"$ neni predchazen \\");
+                        print_error(E_LEX,"Expected \\ before $ symbol inside of a string");
                     }
                 }
                 else if(c=='t')
                 {
-                    if(w[len-1]=='\\')
+                    if(len == 0){
+                        w[len]=c;
+                        len++;
+                        c=fgetc(fp);
+                    }else if(w[len-1]=='\\')
                     {
                         w[len-1]='\t';
                         c=fgetc(fp);
@@ -696,18 +728,24 @@ int getToken(FILE *fp,Ttoken *token){
                 }
                 else if(c=='x')
                 {
-                    if(w[len-1]=='\\')
+                    if(len == 0){
+                        w[len]=c;
+                        len++;
+                        c=fgetc(fp);
+                    }else if(w[len-1]=='\\')
                     {//\xDD kde DD jsou hexadecimalni cisla od 00 do FF/Ff/fF/ff
-                        char dd[2];
+                        char dd[3];
                         dd[0]=fgetc(fp);
                         dd[1]=fgetc(fp);
+                        dd[2]='\0';                    
                         if(isxdigit(dd[0])&&isxdigit(dd[1]))
                         {
                             w[len-1]=(char)strtol(dd,NULL,16);
+                            c=fgetc(fp);
                         }
                         else
                         {
-                            print_error(E_LEX,"Chybny format unikove skevence \xDD");
+                            print_error(E_LEX,"Chybny format unikove skevence \\xDD");
                         }
                     }
                     else
@@ -717,13 +755,16 @@ int getToken(FILE *fp,Ttoken *token){
                         c=fgetc(fp);
                     }
                 }
-                else if(c=='\\')
+                else if((c=='\\'))
                 {
-                    if(w[len-1]=='\\')
+                    if(len == 0){
+                        w[len]=c;
+                        len++;
+                        c=fgetc(fp);
+                    }else if(w[len-1]=='\\')
                     {
                         w[len-1]='\\';
                         c=fgetc(fp);
-                        //len++;
                     }
                     else
                     {
@@ -737,7 +778,6 @@ int getToken(FILE *fp,Ttoken *token){
                 }
 
             }
-
             w[len]='\0';
             token->id=STRING;
             token->value.varString=w;
@@ -749,6 +789,6 @@ int getToken(FILE *fp,Ttoken *token){
 }
     //k tomuhle by nemelo vubec dojit, jen kvuli warningu
     freeW(&w); token->value.varString=NULL;
-    print_error(E_LEX,"LexERROR");
+    print_error(E_LEX,"Nepovoleny znak na vstupu.");
     return E_LEX;
 }

@@ -30,7 +30,6 @@ int main(int argc,char** argv){
   if ((g_ptrs->source = fopen(argv[1], "r")) == NULL){
     print_error(E_INTERN,"nelze otevrit soubor");
   } 
-  printf("lezu do parseru\n");
   // Provedeni syntakticke analyzy
   parser(g_ptrs);
 

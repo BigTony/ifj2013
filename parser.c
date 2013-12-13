@@ -31,14 +31,20 @@ void add_const_hashtbl(tHashTbl *hashTbl, int type,tokenValue value, char *id)
 char* gen_id(char *counter)
 {
 	int i=2;
+	int j = 2;
 	while ((counter[i]!='\0'))
 	{
-		if ((counter[i]<'9'))
+		if ((counter[i]<'a'))
 		{
 		counter[i]++;
+		j = i;
 		break;
 		}
 		i++;
+	}
+	while(j != 2){
+		j--;
+		counter[j] = '0';
 	}
 	char* new=allocString();
 	strcpy(new,counter);	
@@ -47,14 +53,20 @@ char* gen_id(char *counter)
 char* gen_param(char *counter)
 {
 	int i=0;
+	int j = 0;
 	while ((counter[i]!='\0'))
 	{
-		if ((counter[i]<'9'))
+		if ((counter[i]<'a'))
 		{
 		counter[i]++;
+		j = i;
 		break;
 		}
 		i++;
+	}
+	while(j != 0){
+		j--;
+		counter[j] = '0';
 	}
 	char* new=allocString();
 	strcpy(new,counter);	
@@ -224,13 +236,10 @@ void callFunction(char* dest){
 
 // vyber spravnej postup pro token
 void main_classify(){
-	printf("sem v main clasify\n");
 	while (getToken_test(g_ptrs->source,g_ptrs->token)!=KONEC)
 	{
-		printf("sem ve whilu main clasify\n");	
 		// token je bud promena nebo volani fce
 		if(g_ptrs->token->id == VARIABLE){
-			printf("VARIABLE\n");
 			defVar(g_ptrs->token->value);	
 		}else if(g_ptrs->token->id == FUNCTION){
 			defFunction(g_ptrs->token->value);
@@ -239,7 +248,6 @@ void main_classify(){
 		}else if(g_ptrs->token->id == WHILE){
 			defWhile();
 		}else if(g_ptrs->token->id == RETURN){
-			printf("nasel sem return mainclasify\n");
 			defReturn();
 		}else{
 		   print_error(E_SYN,"neocekavany token v main_clasify");
@@ -251,21 +259,17 @@ void main_classify(){
 
 // vyber spravnej postup pro token
 void classify(){
-	printf("sem v clasify\n");
 	while (getToken_test(g_ptrs->source,g_ptrs->token)!= ZAV_SLOZ_P)
 	// zkontroluje jestli je token }, kdyz jo tak konci
-	{
-		printf("sem ve whilu clasify\n");		
+	{	
 		// token je bud promena nebo volani fce
 		if(g_ptrs->token->id == VARIABLE){
-			printf("VARIABLE\n");
 			defVar(g_ptrs->token->value);	
 		}else if(g_ptrs->token->id == IF){
 			defIf();
 		}else if(g_ptrs->token->id == WHILE){
 			defWhile();
 		}else if(g_ptrs->token->id == RETURN){
-			printf("nasel sem return v clasify\n");
 			defReturn();
 		}
 			
@@ -278,13 +282,16 @@ void classify(){
 void parser(tPointers *ptrs){
 	tableInit(&(g_ptrs->main_symobol_tbl)); // init globalni tabulky symbolu
 	InitList((g_ptrs->list_instr=CreateList())); // init listu instrukci
-	g_ptrs->act_list_inst = g_ptrs->list_instr;	
+	g_ptrs->act_list_inst = g_ptrs->list_instr;
+    if (fgetc(g_ptrs->source)!='<'){
+            print_error(E_SYN,"Expected <?php with no symbol foregoing");
+    }
+    else{
+        rewind(g_ptrs->source);
+   	}        
 	getToken_test(g_ptrs->source,g_ptrs->token);
 	if (g_ptrs->token->id == START){
-			printf("clasify?\n");
 			main_classify();
-			printf("clasify end?\n");
-			printf("-----zaciname interpretovat------\n");
 			interpret(g_ptrs->main_symobol_tbl, g_ptrs->list_instr);
 		}
 	else{

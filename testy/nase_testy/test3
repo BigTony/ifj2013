@@ -1,0 +1,19 @@
+<?php
+/// [SPRAVNEJ VYSLEDEK: $y=92]  ==> [testuje operace volani vnorene funkce]
+function obsah ($a,$b) 
+{
+   return $a*$b;
+}
+
+
+function obvod ($a,$b) 
+{
+	$o = obsah ($a,$b); 
+   return (2*$a+2*$b)+$o;
+}
+
+
+$a = 10;
+$b = 6;
+
+$y = obvod($a,$b);
