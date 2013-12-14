@@ -129,11 +129,11 @@ void TblDeleteMain (tHashTbl *tab)
 	while (tab->tableItems[key]!=NULL)
 	{
 	    Temp=tab->tableItems[key]->nextItem; /// ulozim nasledujici polozku
-	    if(tab->tableItems[key]->type == STRING ){
+	   /* if(tab->tableItems[key]->type == STRING ){
 	    	if(tab->tableItems[key]->data.varString != NULL){
 	    		free(tab->tableItems[key]->data.varString);
 	    	}
-	    }
+	    }*/
 	    free (tab->tableItems[key]);    
       tab->tableItems[key] = Temp; /// navazeme na nasledujici polozku     
 	}

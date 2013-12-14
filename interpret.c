@@ -969,6 +969,11 @@ void interpret (tHashTbl *global_htable, TList *L)
                  if (tHsrc1->data.varInt == tHsrc2->data.varInt) datTyp = 1;
                  else datTyp = 0;
               }
+              else if (tHsrc1->type==NIL)
+              {
+                 if (tHsrc1->data.varString == tHsrc2->data.varString) datTyp = 1;
+                 else datTyp = 0;
+              }
          }
          else
          {
@@ -1037,7 +1042,11 @@ void interpret (tHashTbl *global_htable, TList *L)
                  if (tHsrc1->data.varInt != tHsrc2->data.varInt) datTyp = 1;
                  else datTyp = 0;
               }
-
+              else if (tHsrc1->type==NIL)
+              {
+                 if (tHsrc1->data.varString != tHsrc2->data.varString) datTyp = 1;
+                 else datTyp = 0;
+              }
          }
          else
          {
