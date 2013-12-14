@@ -216,7 +216,7 @@ int getToken(FILE *fp,Ttoken *token){
         ///////////////////
         //=== / =       //
         //////////////////
-        if(c=='=')
+        else if(c=='=')
         {
             w[len]=c;
             len++;
@@ -254,7 +254,7 @@ int getToken(FILE *fp,Ttoken *token){
         ///////////////////
         // !==   NEROVNO//
         //////////////////
-        if(c=='!')
+        else if(c=='!')
         {
             w[len]=c;
             len++;
@@ -291,7 +291,7 @@ int getToken(FILE *fp,Ttoken *token){
         //////////////////////
         //START // <?php    //
         //////////////////////
-        if(c=='<')
+        else if(c=='<')
         {
             w[len]=c;
             len++;
@@ -367,7 +367,7 @@ int getToken(FILE *fp,Ttoken *token){
         /////////////////
         //VARIABLE//
         /////////////////
-        if(c=='$')
+        else if(c=='$')
         {
             w[len]=c;
             len++;
@@ -384,7 +384,7 @@ int getToken(FILE *fp,Ttoken *token){
                     if(((len)%(BUFF))==BUFF-2)
                     {
                        w[len] = '\0';
-                      reallocString(&w,len);                       
+                      reallocString(&w,len);
                     }
                     c=fgetc(fp);
                 }
@@ -413,7 +413,7 @@ int getToken(FILE *fp,Ttoken *token){
         /////////////////
         //IDENTIFIKATOR//
         /////////////////
-        if( (c=='_') || isalpha(c)!=0)   // IDENTIFIKATOR ?
+        else if( (c=='_') || isalpha(c)!=0)   // IDENTIFIKATOR ?
         {
             w[len]=c;
             do
@@ -421,7 +421,7 @@ int getToken(FILE *fp,Ttoken *token){
                 if(((len)%(BUFF))==BUFF-2)
                 {
                     w[len+1] = '\0';
-                    reallocString(&w,len); 
+                    reallocString(&w,len);
                 }
                 c=fgetc(fp);
                 len++;
@@ -503,7 +503,7 @@ int getToken(FILE *fp,Ttoken *token){
         //NUMBERS   ///
         ///////////////
 
-        if( (isdigit(c)!=0) )
+        else if( (isdigit(c)!=0) )
         {
             w[len]=c;
             do
@@ -511,7 +511,7 @@ int getToken(FILE *fp,Ttoken *token){
                 if(((len)%(BUFF))==BUFF-2)
                 {
                     w[len+1] = '\0';
-                  reallocString(&w,len); 
+                  reallocString(&w,len);
                 }
                 c=fgetc(fp);
                 len++;
@@ -527,7 +527,7 @@ int getToken(FILE *fp,Ttoken *token){
                         if(((len)%(BUFF))==BUFF-2)
                         {
                             w[len+1] = '\0';
-                          reallocString(&w,len); 
+                          reallocString(&w,len);
                         }
                         c=fgetc(fp);
                         len++;
@@ -546,7 +546,7 @@ int getToken(FILE *fp,Ttoken *token){
                                 if(((len)%(BUFF))==BUFF-2)
                                 {
                                     w[len] = '\0';
-                                    reallocString(&w,len); 
+                                    reallocString(&w,len);
                                 }
                                 c=fgetc(fp);
                                 len++;
@@ -568,7 +568,7 @@ int getToken(FILE *fp,Ttoken *token){
                                 if(((len)%(BUFF))==BUFF-2)
                                 {
                                     w[len] = '\0';
-                                    reallocString(&w,len); 
+                                    reallocString(&w,len);
                                 }
                                 c=fgetc(fp);
                                 len++;
@@ -607,7 +607,7 @@ int getToken(FILE *fp,Ttoken *token){
                                 if(((len)%(BUFF))==BUFF-2)
                                 {
                                     w[len] = '\0';
-                                    reallocString(&w,len); 
+                                    reallocString(&w,len);
                                 }
                                 c=fgetc(fp);
                                 len++;
@@ -629,7 +629,7 @@ int getToken(FILE *fp,Ttoken *token){
                                 if(((len)%(BUFF))==BUFF-2)
                                 {
                                     w[len] = '\0';
-                                    reallocString(&w,len); 
+                                    reallocString(&w,len);
                                 }
                                 c=fgetc(fp);
                                 len++;
@@ -663,7 +663,7 @@ int getToken(FILE *fp,Ttoken *token){
                     if(((len)%(BUFF))==BUFF-2)
                     {
                         w[len+1] = '\0';
-                      reallocString(&w,len); 
+                      reallocString(&w,len);
                     }
                     c=fgetc(fp);
                     len++;
@@ -692,7 +692,7 @@ int getToken(FILE *fp,Ttoken *token){
         /**
         *VARSTRING
         **/
-        if(c=='"')
+        else if(c=='"')
         {
             c=fgetc(fp);
             int pom=0;// na rozliseni " nebo \"
@@ -708,7 +708,7 @@ int getToken(FILE *fp,Ttoken *token){
                 if(((len)%(BUFF))==BUFF-2)
                 {
                     w[len] = '\0';
-                    reallocString(&w,len);                     
+                    reallocString(&w,len);
                 }
                 if(c>31 && c!='"' && c!='$' && c!='t' && c!='n' && c!='\\' && c!='x')
                 {
@@ -794,7 +794,7 @@ int getToken(FILE *fp,Ttoken *token){
                         char dd[3];
                         dd[0]=fgetc(fp);
                         dd[1]=fgetc(fp);
-                        dd[2]='\0';                    
+                        dd[2]='\0';
                         if(isxdigit(dd[0])&&isxdigit(dd[1]))
                         {
                             w[len-1]=(char)strtol(dd,NULL,16);
@@ -805,7 +805,7 @@ int getToken(FILE *fp,Ttoken *token){
                             if(((len)%(BUFF))==BUFF-4)
                             {
                                 w[len] = '\0';
-                                reallocString(&w,len);                     
+                                reallocString(&w,len);
                             }
                             w[len]='x'; len++;
                             w[len]=dd[0]; len++;
@@ -848,12 +848,15 @@ int getToken(FILE *fp,Ttoken *token){
             token->value.varString=w;
             return token->id;
         }
+        else ///Neplatny znak
+        {
+            freeW(&w); token->value.varString=NULL;
+            print_error(E_LEX,"Nepovoleny znak na vstupu.");
+            return E_LEX;
+        }
         //////////////////
         //END VARSTRING //
         //////////////////
-}
-    //k tomuhle by nemelo vubec dojit, jen kvuli warningu
-    freeW(&w); token->value.varString=NULL;
-    print_error(E_LEX,"Nepovoleny znak na vstupu.");
-    return E_LEX;
-}
+    }//while
+
+}//getToken()
