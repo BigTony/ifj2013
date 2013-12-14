@@ -35,7 +35,7 @@ void reallocString(char** w,int len)
 
         char* wPom = NULL;
         int i = strlen(*w);
-        wPom = realloc(*w,i+BUFF+1);
+        wPom = realloc(*w,i+BUFF);
         if(wPom==NULL)
         {
             print_error(E_INTERN,"Scaner-reallocString()-realloc-error");
@@ -381,10 +381,10 @@ int getToken(FILE *fp,Ttoken *token){
                 {
                     w[len]=c;
                     len++;
-                    if(((len)%(BUFF))==BUFF-2)
+                    if(((len)%(BUFF))==BUFF-1)
                     {
                        w[len] = '\0';
-                      reallocString(&w,len);                       
+                      reallocString(&w,len);
                     }
                     c=fgetc(fp);
                 }
@@ -418,10 +418,10 @@ int getToken(FILE *fp,Ttoken *token){
             w[len]=c;
             do
             {
-                if(((len)%(BUFF))==BUFF-2)
+                if(((len)%(BUFF))==BUFF-1)
                 {
                     w[len+1] = '\0';
-                    reallocString(&w,len); 
+                    reallocString(&w,len);
                 }
                 c=fgetc(fp);
                 len++;
@@ -508,10 +508,10 @@ int getToken(FILE *fp,Ttoken *token){
             w[len]=c;
             do
             {
-                if(((len)%(BUFF))==BUFF-2)
+                if(((len)%(BUFF))==BUFF-1)
                 {
                     w[len+1] = '\0';
-                  reallocString(&w,len); 
+                  reallocString(&w,len);
                 }
                 c=fgetc(fp);
                 len++;
@@ -524,10 +524,10 @@ int getToken(FILE *fp,Ttoken *token){
                 {
                     do
                     {
-                        if(((len)%(BUFF))==BUFF-2)
+                        if(((len)%(BUFF))==BUFF-1)
                         {
                             w[len+1] = '\0';
-                          reallocString(&w,len); 
+                          reallocString(&w,len);
                         }
                         c=fgetc(fp);
                         len++;
@@ -543,10 +543,10 @@ int getToken(FILE *fp,Ttoken *token){
                             w[len]=c;
                             do
                             {
-                                if(((len)%(BUFF))==BUFF-2)
+                                if(((len)%(BUFF))==BUFF-1)
                                 {
                                     w[len] = '\0';
-                                    reallocString(&w,len); 
+                                    reallocString(&w,len);
                                 }
                                 c=fgetc(fp);
                                 len++;
@@ -565,10 +565,10 @@ int getToken(FILE *fp,Ttoken *token){
                             w[len]=c;
                             do
                             {
-                                if(((len)%(BUFF))==BUFF-2)
+                                if(((len)%(BUFF))==BUFF-1)
                                 {
                                     w[len] = '\0';
-                                    reallocString(&w,len); 
+                                    reallocString(&w,len);
                                 }
                                 c=fgetc(fp);
                                 len++;
@@ -604,10 +604,10 @@ int getToken(FILE *fp,Ttoken *token){
                             w[len]=c;
                             do
                             {
-                                if(((len)%(BUFF))==BUFF-2)
+                                if(((len)%(BUFF))==BUFF-1)
                                 {
                                     w[len] = '\0';
-                                    reallocString(&w,len); 
+                                    reallocString(&w,len);
                                 }
                                 c=fgetc(fp);
                                 len++;
@@ -626,10 +626,10 @@ int getToken(FILE *fp,Ttoken *token){
                             w[len]=c;
                             do
                             {
-                                if(((len)%(BUFF))==BUFF-2)
+                                if(((len)%(BUFF))==BUFF-1)
                                 {
                                     w[len] = '\0';
-                                    reallocString(&w,len); 
+                                    reallocString(&w,len);
                                 }
                                 c=fgetc(fp);
                                 len++;
@@ -660,10 +660,10 @@ int getToken(FILE *fp,Ttoken *token){
             else if(c=='.')
             {
                 do{
-                    if(((len)%(BUFF))==BUFF-2)
+                    if(((len)%(BUFF))==BUFF-1)
                     {
                         w[len+1] = '\0';
-                      reallocString(&w,len); 
+                      reallocString(&w,len);
                     }
                     c=fgetc(fp);
                     len++;
@@ -705,10 +705,10 @@ int getToken(FILE *fp,Ttoken *token){
             }
             while(c!='"'||pom==0)
             {
-                if(((len)%(BUFF))==BUFF-2)
+                if(((len)%(BUFF))==BUFF-1)
                 {
                     w[len] = '\0';
-                    reallocString(&w,len);                     
+                    reallocString(&w,len);
                 }
                 if(c>31 && c!='"' && c!='$' && c!='t' && c!='n' && c!='\\' && c!='x')
                 {
@@ -794,7 +794,7 @@ int getToken(FILE *fp,Ttoken *token){
                         char dd[3];
                         dd[0]=fgetc(fp);
                         dd[1]=fgetc(fp);
-                        dd[2]='\0';                    
+                        dd[2]='\0';
                         if(isxdigit(dd[0])&&isxdigit(dd[1]))
                         {
                             w[len-1]=(char)strtol(dd,NULL,16);
@@ -802,6 +802,7 @@ int getToken(FILE *fp,Ttoken *token){
                         }
                         else
                         {
+                            //print_error(E_LEX,"Chybny format unikove skevence \\xDD");
                             w[len]='x'; len++;
                             w[len]=dd[0]; len++;
                             w[len]=dd[1]; len++;
