@@ -41,18 +41,18 @@ void destr_global(){
 	if (g_ptrs->counter!=NULL){
 	 	free(g_ptrs->counter);
 	}
-	if (g_ptrs->main_symobol_tbl != NULL){
-		TblDeleteMain(g_ptrs->main_symobol_tbl);
-	}
 	if (g_ptrs->function_table != NULL){
 		TblDeleteFunction(g_ptrs->function_table);
 	}
+	// if (g_ptrs->main_symobol_tbl != NULL){
+	// 	TblDeleteMain(g_ptrs->main_symobol_tbl);
+	// }
 	if (g_ptrs->function_stack != NULL){
 		freeStack(g_ptrs->function_stack);
 	}
-	// if (g_ptrs->list_instr != NULL){
-	// 	free(g_ptrs->list_instr);
-	// }
+	if ((g_ptrs->list_instr != NULL) && (g_ptrs->list_instr != g_ptrs->act_list_inst)){
+		free(g_ptrs->list_instr);
+	}
 	if (g_ptrs->act_list_inst != NULL){
 		free(g_ptrs->act_list_inst);
 	}
