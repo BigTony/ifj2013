@@ -802,6 +802,11 @@ int getToken(FILE *fp,Ttoken *token){
                         }
                         else
                         {
+                            if(((len)%(BUFF))==BUFF-4)
+                            {
+                                w[len] = '\0';
+                                reallocString(&w,len);                     
+                            }
                             w[len]='x'; len++;
                             w[len]=dd[0]; len++;
                             w[len]=dd[1]; len++;
