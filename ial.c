@@ -34,11 +34,12 @@ void tableInit(tHashTbl **hash_table){
 
 // nahradit lepsi
 int hashCode ( char* key ) {
-	int retval = 1;
-	int keylen = strlen(key);
-	for ( int i=0; i<keylen; i++ )
-		retval += key[i];
-	return ( retval % ALLOC );
+	int return_value = 1;
+	int delka_klice = strlen(key);
+	for ( int i=0; i<delka_klice; i++ )
+		// return_value += key[i];
+    return_value = (return_value<<5)^(return_value>>27)^key[i];
+	return ( return_value % ALLOC );
 }
 
 /// HLEDANI
