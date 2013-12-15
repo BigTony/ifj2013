@@ -16,7 +16,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
-#include <limits.h> 
+#include <limits.h>
 #define VS_COUNT 11
 
 int max (int a, int b, TIType type);
@@ -215,12 +215,12 @@ void interpret (tHashTbl *global_htable, TList *L)
               if (dataType1==VARINT && dataType2==VARINT)
                {
                    /// OVERENI zdali neni INT_MAX, pokud jo tak pretypujem na double
-                   if (max(tHsrc1->data.varInt,tHsrc2->data.varInt,I_ADD)==1)   // OK
+                   if (max(tHsrc1->data.varInt,tHsrc2->data.varInt,I_ADD)==1) // OK
                     {
                           TypeOF = VARINT; // vysledek bude int
                           tmp.varInt = (tHsrc1->data.varInt + tHsrc2->data.varInt);
                     }
-                   else 
+                   else
                    {
                           TypeOF = VARDOUBLE; // vysledek bude double
                           tmp.varDouble = ((double)tHsrc1->data.varInt + (double)tHsrc2->data.varInt);
@@ -248,7 +248,7 @@ void interpret (tHashTbl *global_htable, TList *L)
                 {
                    if (dataType1==VARINT && dataType2==VARINT)
                    {
-                           if (TypeOF == VARINT) 
+                           if (TypeOF == VARINT)
                             {
                                tHresult->data.varInt = tmp.varInt; // uloim soucet do te exitusjici
                                tHresult->type=TypeOF;
@@ -311,12 +311,12 @@ void interpret (tHashTbl *global_htable, TList *L)
               if (dataType1==VARINT && dataType2==VARINT)
                {
                    /// OVERENI zdali neni INT_MAX, pokud jo tak pretypujem na double
-                   if (max(tHsrc1->data.varInt,tHsrc2->data.varInt,I_SUB)==1)   // OK
+                   if (max(tHsrc1->data.varInt,tHsrc2->data.varInt,I_SUB)==1) // OK
                     {
                           TypeOF = VARINT; // vysledek bude int
                           tmp.varInt = (tHsrc1->data.varInt - tHsrc2->data.varInt);
                     }
-                   else 
+                   else
                    {
                           TypeOF = VARDOUBLE; // vysledek bude double
                           tmp.varDouble = ((double)tHsrc1->data.varInt - (double)tHsrc2->data.varInt);
@@ -344,7 +344,7 @@ void interpret (tHashTbl *global_htable, TList *L)
                 {
                    if (dataType1==VARINT && dataType2==VARINT)
                    {
-                           if (TypeOF == VARINT) 
+                           if (TypeOF == VARINT)
                             {
                                tHresult->data.varInt = tmp.varInt; // uloim soucet do te exitusjici
                                tHresult->type=TypeOF;
@@ -407,12 +407,12 @@ void interpret (tHashTbl *global_htable, TList *L)
               if (dataType1==VARINT && dataType2==VARINT)
                {
                    /// OVERENI zdali neni INT_MAX, pokud jo tak pretypujem na double
-                   if (max(tHsrc1->data.varInt,tHsrc2->data.varInt,I_MUL)==1)   // OK
+                   if (max(tHsrc1->data.varInt,tHsrc2->data.varInt,I_MUL)==1) // OK
                     {
                           TypeOF = VARINT; // vysledek bude int
                           tmp.varInt = (tHsrc1->data.varInt * tHsrc2->data.varInt);
                     }
-                   else 
+                   else
                    {
                           TypeOF = VARDOUBLE; // vysledek bude double
                           tmp.varDouble = ((double)tHsrc1->data.varInt * (double)tHsrc2->data.varInt);
@@ -440,7 +440,7 @@ void interpret (tHashTbl *global_htable, TList *L)
                 {
                    if (dataType1==VARINT && dataType2==VARINT)
                    {
-                           if (TypeOF == VARINT) 
+                           if (TypeOF == VARINT)
                             {
                                tHresult->data.varInt = tmp.varInt; // uloim soucet do te exitusjici
                                tHresult->type=TypeOF;
@@ -1020,9 +1020,9 @@ void interpret (tHashTbl *global_htable, TList *L)
 
               if (tHsrc1->type==VARINT)
               {
-                 if (tHsrc1->data.varInt != tHsrc2->data.varInt) 
+                 if (tHsrc1->data.varInt != tHsrc2->data.varInt)
                     datTyp = 1;
-                 else 
+                 else
                     datTyp = 0;
               }
 
@@ -1167,7 +1167,7 @@ void interpret (tHashTbl *global_htable, TList *L)
                                 {
                                         (*fun[i])((topStack(g_ptrs->function_stack))->hashTbl, active_htable);
                                         popStack(g_ptrs->function_stack);
-                                        break;        
+                                        break;
                                 }
                                 i++;
                         }
@@ -1401,7 +1401,7 @@ void interpret (tHashTbl *global_htable, TList *L)
 
 
 /// FUNKCE ZJISTI, kdy ma a nema pretypovat promenne
-int max (int a, int b, TIType type) 
+int max (int a, int b, TIType type)
 {
 
 double temp;
@@ -1410,15 +1410,15 @@ int is_ok=0;
 double g = (double) INT_MAX;
 double l = -g;
 
- switch (type) 
+ switch (type)
  {
    case I_ADD:
    temp = (double)a + (double)b;
-   if ((temp>=l) && (temp<=g)) 
+   if ((temp>=l) && (temp<=g))
    {
-      is_ok=1;  // je to ok tak 1
+      is_ok=1; // je to ok tak 1
    }
-   else 
+   else
    {
       is_ok=0;
    }
@@ -1426,11 +1426,11 @@ double l = -g;
 
   case I_SUB:
    temp = (double)a - (double)b;
-   if ((temp>=l) && (temp<=g)) 
+   if ((temp>=l) && (temp<=g))
    {
-      is_ok=1;  // je to ok tak 1
+      is_ok=1; // je to ok tak 1
    }
-   else 
+   else
    {
       is_ok=0;
    }
@@ -1438,11 +1438,11 @@ double l = -g;
 
   case I_MUL:
    temp = (double)a * (double)b;
-   if ((temp>=l) && (temp<=g)) 
+   if ((temp>=l) && (temp<=g))
    {
-      is_ok=1;  // je to ok tak 1
+      is_ok=1; // je to ok tak 1
    }
-   else 
+   else
    {
       is_ok=0;
    }

@@ -1,6 +1,6 @@
 RM=rm
 CC=gcc
-CFLAGS= -Wall -std=c99 -O3 -pedantic -g
+CFLAGS= -Wall -std=c99 -O3 -pedantic
 BIN=xifj13
 
 

@@ -6,7 +6,7 @@
 // Skacel David   - xskace12
 // Skyva Petr     - xskyva02
 ////////////////////////////////
-// ial.c
+// ial.h
 // Iplementation sort and find functions
 //
 
@@ -21,15 +21,6 @@
 #include "scaner.h"
 #define ALLOC 17
 
-
-/*  // NEBUDU!! DoPiCI!! FURT!! LIST!!! DO SCANER.H!! dopcici!
-typedef union {
-    int varInt;
-    double varDouble;
-    char *varString;
-    void *pointer;
-}tokenValue;
-*/
 
 //typedef char* itemKey;
 typedef struct item {

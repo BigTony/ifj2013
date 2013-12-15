@@ -1,3 +1,14 @@
+// Project interpret IFJ2013
+// Dev team:
+////////////////////////////////
+// Seidl Antonin - xseidl01
+// Slunsky Tomas - xsluns01
+// Skacel David - xskace12
+// Skyva Petr - xskyva02
+////////////////////////////////
+// vyrazy.c
+//
+//
 #include <stdio.h>
 #include <stdlib.h>
 #include "vyrazy.h"
@@ -171,6 +182,7 @@ void ExLess(TStack *stack,TExpType input){
 	TStack *cur_ptr = stack;
 	TSItemPtr prev_ptr = NULL;	
 	tokenValue value;
+        value.varString = "";
 	switch(g_ptrs->token->id){
 		case VARINT:
 		case VARBOOL:

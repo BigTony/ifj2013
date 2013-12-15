@@ -6,7 +6,7 @@
 // Skacel David   - xskace12
 // Skyva Petr     - xskyva02
 ////////////////////////////////
-// interpret.c
+// parser.h
 // 
 //
 
