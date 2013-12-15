@@ -171,6 +171,7 @@ void ExLess(TStack *stack,TExpType input){
 	TStack *cur_ptr = stack;
 	TSItemPtr prev_ptr = NULL;	
 	tokenValue value;
+        value.varString = "";
 	switch(g_ptrs->token->id){
 		case VARINT:
 		case VARBOOL:

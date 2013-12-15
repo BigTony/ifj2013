@@ -33,13 +33,14 @@ void tableInit(tHashTbl **hash_table){
 
 
 // nahradit lepsi
-int hashCode ( char* key ) {
-	int retval = 1;
-	int keylen = strlen(key);
-	for ( int i=0; i<keylen; i++ )
-		retval += key[i];
-	return ( retval % ALLOC );
-}
+    int hashCode(char *str)
+    {
+	int hash = 1;
+	int c;
+	while ((c = *(str++))) hash += c;
+	return (hash%ALLOC);
+    }
+
 
 /// HLEDANI
 item* TblSearch (tHashTbl *tab, char* key)
